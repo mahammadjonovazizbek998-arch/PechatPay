@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pechat_pay/data/style/validaor.dart';
 import 'package:pechat_pay/presentation/sin_in/showi_dalog.dart';
 import '../../data/style/text_form_style.dart';
 import '../../data/style/text_style.dart';
@@ -107,20 +108,7 @@ class _SinInState extends State<SinIn> with WidgetsBindingObserver {
                           ? holat.error.data!.phone[0]
                           : null,
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Telfon raqamni  maydoni bo'sh qolishi mumkin emas";
-                      } else {
-                        if (value.length == 9 && !value.startsWith("+998")) {
-                          return null;
-                        } else if (value.length == 13 &&
-                            value.startsWith("+998")) {
-                          return null;
-                        } else {
-                          return "Telfon raqamni  maydoni notug'ri tuldirilgan";
-                        }
-                      }
-                    },
+                    validator: (value) => AppValidator.phone(value: value),
                     onSaved: (value) {
                       phone = value!;
                     },
@@ -154,19 +142,7 @@ class _SinInState extends State<SinIn> with WidgetsBindingObserver {
                                 : null)
                           : null,
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Parol maydoni bo'sh qolishi mumkin emas";
-                      } else if (value.length < 8) {
-                        return "Parol kamida 8 ta belgidan iborat bo'lishi kerak";
-                      } else if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                        return "Parolda kamida bitta katta harf bo'lishi kerak";
-                      } else if (!RegExp(r'[a-z]').hasMatch(value)) {
-                        return "Parolda kamida bitta kichik harf bo'lishi kerak";
-                      } else {
-                        return null;
-                      }
-                    },
+                    validator: (value) => AppValidator.password(value: value),
                     onSaved: (value) {
                       parol = value!;
                     },

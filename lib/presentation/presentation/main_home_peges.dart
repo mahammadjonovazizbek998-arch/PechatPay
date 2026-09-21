@@ -18,7 +18,7 @@ class MainHomePeges extends StatefulWidget {
 }
 
 class _HomePegesState extends State<MainHomePeges> {
-  final List<Widget> _pages = <Widget>[
+  final List<Widget> _pages = [
     HomePeges(),
     TasksPeges(),
     RatingPeges(),
@@ -34,50 +34,106 @@ class _HomePegesState extends State<MainHomePeges> {
       child: Builder(
         builder: (contex) {
           final myTheme = Theme.of(context).extension<ThemeClass>()!;
-          return Scaffold(
-            body:
-                BlocBuilder<BottomNavigationBarCubit, BottomNavigationBarState>(
-                  builder: (contex, state) {
-                    return _pages[state.currentIndex];
-                  },
-                ),
-            bottomNavigationBar:
-                BlocBuilder<BottomNavigationBarCubit, BottomNavigationBarState>(
-                  builder: (contex, state) {
-                    return BottomNavigationBar(
-                      backgroundColor: myTheme.globalBackgroundColor,
-                      type: BottomNavigationBarType.fixed,
-                      showUnselectedLabels: true,
-                      selectedItemColor: myTheme.globalColor,
-                      unselectedItemColor: myTheme.unselctedColor,
-                      currentIndex: contex
-                          .read<BottomNavigationBarCubit>()
-                          .state
-                          .currentIndex,
-                      onTap: (index) {
-                        contex.read<BottomNavigationBarCubit>().onTap(index);
-                      },selectedLabelStyle: AppTextStyles.style13,unselectedLabelStyle: AppTextStyles.style13,
-                      items: [
-                        BottomNavigationBarItem(
-                          icon: Icon(Icons.home, size: 25.sp),
-                          label: "Asosiy",
+          return PopScope(
+            child: Scaffold(
+              body:
+                  BlocBuilder<
+                    BottomNavigationBarCubit,
+                    BottomNavigationBarState
+                  >(
+                    builder: (contex, state) {
+                      return _pages[state.currentIndex];
+                    },
+                  ),
+              bottomNavigationBar:
+                  BlocBuilder<
+                    BottomNavigationBarCubit,
+                    BottomNavigationBarState
+                  >(
+                    builder: (contex, state) {
+                      return BottomNavigationBar(
+                        backgroundColor: myTheme.cardColor,
+                        type: BottomNavigationBarType.fixed,
+                        showUnselectedLabels: true,
+                        selectedItemColor: myTheme.globalColor,
+                        unselectedItemColor: myTheme.text.withValues(
+                          alpha: 0.8,
                         ),
-                        BottomNavigationBarItem(
-                          icon: Icon(Icons.person, size: 25.sp),
-                          label: "Guruhlar",
-                        ),
-                        BottomNavigationBarItem(
-                          icon: Icon(Icons.person, size: 30.sp),
-                          label: "Reyting",
-                        ),
-                        BottomNavigationBarItem(
-                          icon: Icon(Icons.person, size: 30.sp),
-                          label: "Profil",
-                        ),
-                      ],
-                    );
-                  },
-                ),
+                        currentIndex: contex
+                            .read<BottomNavigationBarCubit>()
+                            .state
+                            .currentIndex,
+                        onTap: (index) {
+                          contex.read<BottomNavigationBarCubit>().onTap(
+                            index,
+                            state.appProfilPeges,
+                          );
+                        },
+                        selectedLabelStyle: AppTextStyles.style12,
+                        unselectedLabelStyle: AppTextStyles.style12,
+
+                        items: [
+                          BottomNavigationBarItem(
+                            icon: Padding(
+                              padding: EdgeInsets.only(bottom: 2.h, top: 10.h),
+                              child: Image.asset(
+                                "assets/img_6.png",
+                                width: 18.w,
+                                height: 18.h,
+                                color: state.currentIndex == 0
+                                    ? myTheme.globalColor
+                                    : myTheme.text.withValues(alpha: 0.8),
+                              ),
+                            ),
+                            label: "Bosh sahifa",
+                          ),
+                          BottomNavigationBarItem(
+                            icon: Padding(
+                              padding: EdgeInsets.only(bottom: 2.h, top: 10.h),
+                              child: Image.asset(
+                                "assets/img_5.png",
+                                width: 18.w,
+                                height: 18.h,
+                                color: state.currentIndex == 1
+                                    ? myTheme.globalColor
+                                    : myTheme.text.withValues(alpha: 0.8),
+                              ),
+                            ),
+                            label: "Haydovchilar",
+                          ),
+                          BottomNavigationBarItem(
+                            icon: Padding(
+                              padding: EdgeInsets.only(bottom: 2.h, top: 10.h),
+                              child: Image.asset(
+                                "assets/img_4.png",
+                                width: 18.w,
+                                height: 18.h,
+                                color: state.currentIndex == 2
+                                    ? myTheme.globalColor
+                                    : myTheme.text.withValues(alpha: 0.8),
+                              ),
+                            ),
+                            label: "Hisobot",
+                          ),
+                          BottomNavigationBarItem(
+                            icon: Padding(
+                              padding: EdgeInsets.only(bottom: 2.h, top: 10.h),
+                              child: Image.asset(
+                                "assets/img_7.png",
+                                width: 17.5.w,
+                                height: 17.5.h,
+                                color: state.currentIndex == 3
+                                    ? myTheme.globalColor
+                                    : myTheme.text.withValues(alpha: 0.8),
+                              ),
+                            ),
+                            label: "Profil",
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+            ),
           );
         },
       ),

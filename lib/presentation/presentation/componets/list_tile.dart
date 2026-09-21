@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pechat_pay/data/style/text_style.dart';
 
 // ignore: must_be_immutable
 class ListTileWidget extends StatefulWidget {
-  final Color backgroundColor;
+  final ContainerWidget leading;
   Icon? icon;
-  final String selected;
-  String? unselected;
+  final Text selected;
+  final Text unselected;
   VoidCallback? onTap;
   String? assets;
+  Color? color;
+  bool peding;
+  Widget? trailing;
+  bool icoBool;
 
   ListTileWidget({
     super.key,
-    required this.backgroundColor,
     this.icon,
-    this.unselected,
+    required this.unselected,
     required this.selected,
     this.onTap,
     this.assets,
+    required this.leading,
+    this.color,
+    this.peding = false,
+    this.trailing,
+    this.icoBool = false,
   });
 
   @override
@@ -29,56 +36,75 @@ class _ListTileWidgetState extends State<ListTileWidget> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      titleAlignment: .center,
-      leading: CircleAvatar(
-        radius: 22.r,
-        child: widget.backgroundColor == Colors.red
-            ? widget.icon != null
-                  ? widget.icon!
-                  : Image.asset(
-                      widget.assets!,
-                      width: 28.w,
-                      color: Colors.white,
-                    )
-            : ShaderMask(
-                shaderCallback: (bounds) => const LinearGradient(
-                  colors: [
-                    Color(0xFF0601B4), // Asosiy to'q ko'k
-                    Color(0xFF3B82F6), // Yorqin ko'k (Blue)
-                    Color(0xFF06B6D4),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ).createShader(bounds),
-                child: widget.icon != null
-                    ? widget.icon!
-                    : Image.asset(
-                        widget.assets!,
-                        width: 28.w,
-                        color: Colors.white,
-                      ),
-              ),
-      ),
-      // Container(
-      //   width: 41.w,
-      //   height: 40.h,
-      //   alignment: .center,
-      //   decoration: BoxDecoration(
-      //     color: widget.backgroundColor,
-      //     borderRadius: BorderRadius.circular(40.r),
-      //   ),
-      //   child: widget.icon != null ? widget.icon! : Image.asset(widget.assets!,width: 30,),
-      // ),
+      minLeadingWidth: 0,
+      titleAlignment: ListTileTitleAlignment.center,
+      visualDensity: widget.peding
+          ? const VisualDensity(vertical: -2)
+          : const VisualDensity(vertical: 0),
+      contentPadding: widget.peding
+          ? EdgeInsets.symmetric(horizontal: 8.w)
+          : EdgeInsets.symmetric(horizontal: 16.w),
+      leading: widget.leading,
+      onTap: widget.onTap,
+      subtitle: widget.icon != null
+          ? Row(
+              mainAxisAlignment: .start,
+              children: [widget.icon!, widget.unselected],
+            )
+          : widget.unselected,
+      title: widget.selected,
       trailing: widget.onTap != null
-          ? Icon(Icons.arrow_forward_ios, size: 17.w, color: Colors.grey)
-          : null,
-      subtitle: widget.unselected != null
-          ? Text(widget.unselected!, style: AppTextStyles.style14)
-          : null,
-      title: Text(
-        widget.selected,
-        style: AppTextStyles.style16.copyWith(fontWeight: .bold),
-      ),
+          ? widget.icoBool
+                ? Icon(
+                    Icons.keyboard_arrow_down,
+                    color: widget.color!.withValues(alpha: 0.8),
+                  )
+                : Icon(
+                    Icons.chevron_right,
+                    color: widget.color!.withValues(alpha: 0.8),
+                  )
+          : widget.trailing,
+    );
+  }
+}
+
+class ContainerWidget extends StatelessWidget {
+  final double vertical;
+  final double horizontal;
+  final String? assets;
+  final double? assetsHorizontal;
+  final double? assetsVertical;
+  final BoxDecoration boxDecoration;
+  final Color? assetsColor;
+  final Text? text;
+
+  const ContainerWidget({
+    super.key,
+    required this.vertical,
+    required this.horizontal,
+    this.assets,
+    this.assetsHorizontal,
+    this.assetsVertical,
+    required this.boxDecoration,
+    this.assetsColor,
+    this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: .center,
+      decoration: boxDecoration,
+      width: horizontal.w,
+      height: vertical.h,
+      child:
+          text ??
+          Image.asset(
+            assets!,
+            color: assetsColor,
+            height: assetsVertical!.h,
+            width: assetsHorizontal!.w,
+          ),
     );
   }
 }

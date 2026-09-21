@@ -5,6 +5,7 @@ import 'package:pechat_pay/logon/theme/theme_cubit.dart';
 import 'package:pechat_pay/presentation/presentation/main_home_peges.dart';
 import 'data/theme/theme_class.dart';
 import 'logon/login/login_cubit.dart';
+import 'logon/tasks/tasks_cubit.dart';
 
 void main() {
   runApp(
@@ -12,6 +13,7 @@ void main() {
       providers: [
         BlocProvider(create: (ctx) => ThemeCubit()),
         BlocProvider(create: (ctx) => LoginCubit()),
+        BlocProvider(create: (ctx) => TasksCubit()),
       ],
       child: const MyApp(),
     ),
@@ -24,12 +26,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(360, 690),
+      designSize: const Size(390, 884),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return
-          BlocBuilder<ThemeCubit, ThemeState>(
+        return BlocBuilder<ThemeCubit, ThemeState>(
           builder: (context, state) {
             final bool isTheme = state.theme ?? true;
             return MaterialApp(

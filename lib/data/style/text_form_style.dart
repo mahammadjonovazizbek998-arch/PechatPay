@@ -50,7 +50,64 @@ class AppTextFormStyle {
     return ElevatedButton.styleFrom(
       backgroundColor: background,
       foregroundColor: foreground,
+      elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),
+    );
+  }
+
+  static ButtonStyle buttonStyleBorder({
+    required Color background,
+    required Color foreground,
+    bool button = false,
+    bool padding=false
+  }) {
+    return ElevatedButton.styleFrom(
+      backgroundColor: background,
+      foregroundColor: foreground,
+      surfaceTintColor: Colors.transparent,
+      shadowColor: background.withValues(alpha: 0.3),
+      elevation: 1,padding: padding? .symmetric(horizontal: 14, vertical: 8):EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.r),
+        side: button
+            ? BorderSide(color: Colors.transparent, width: 0)
+            : BorderSide(color: foreground.withValues(alpha: 0.5), width: 1.w),
+      ),
+    );
+  }
+
+  static BoxDecoration container({required Color color, Color? borderColor}) {
+    return BoxDecoration(
+      border: borderColor != null
+          ? BoxBorder.all(color: borderColor, width: 0.3)
+          : null,
+      borderRadius: BorderRadius.circular(15.r),
+      color: color,
+    );
+  }
+
+  static InputDecoration sorchText({
+    required Color color,
+    required String text,
+    VoidCallback? onTap,
+    String? errorText,
+    required Icon icon,
+  }) {
+    final border = OutlineInputBorder(
+      borderSide: BorderSide(color: color, width: 0.5.w),
+      borderRadius: BorderRadius.circular(15.r),
+    );
+    return InputDecoration(prefixIcon: icon,contentPadding: .all(0),
+      constraints: BoxConstraints(minHeight: 40.h),
+      errorStyle: AppTextStyles.style10.copyWith(color: color),
+      hintStyle: AppTextStyles.style12.copyWith(color: color),
+      hintText: text,
+      errorText: errorText,
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+      errorBorder: border,
+      focusedErrorBorder: border,
+      enabledBorder: border,
+      focusedBorder: border,
     );
   }
 }

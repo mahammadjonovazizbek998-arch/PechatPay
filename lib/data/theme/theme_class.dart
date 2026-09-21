@@ -6,7 +6,12 @@ class ThemeClass extends ThemeExtension<ThemeClass> {
       textColor,
       unselctedColor,
       text,
-      cardColor;
+      cardColor,
+      container,
+      unselctedCardColor,
+      logUot,
+      phonColor,
+      shiftColor;
 
   ThemeClass({
     required this.globalBackgroundColor,
@@ -15,6 +20,11 @@ class ThemeClass extends ThemeExtension<ThemeClass> {
     required this.unselctedColor,
     required this.text,
     required this.cardColor,
+    required this.container,
+    required this.unselctedCardColor,
+    required this.logUot,
+    required this.phonColor,
+    required this.shiftColor,
   });
 
   @override
@@ -26,6 +36,11 @@ class ThemeClass extends ThemeExtension<ThemeClass> {
       unselctedColor: unselctedColor,
       text: text,
       cardColor: cardColor,
+      container: container,
+      unselctedCardColor: unselctedCardColor,
+      logUot: logUot,
+      phonColor: phonColor,
+      shiftColor: shiftColor,
     );
   }
 
@@ -46,6 +61,15 @@ class ThemeClass extends ThemeExtension<ThemeClass> {
       unselctedColor: Color.lerp(unselctedColor, unselctedColor, t)!,
       text: Color.lerp(text, text, t)!,
       cardColor: Color.lerp(cardColor, cardColor, t)!,
+      container: Color.lerp(container, container, t)!,
+      unselctedCardColor: Color.lerp(
+        unselctedCardColor,
+        unselctedCardColor,
+        t,
+      )!,
+      logUot: Color.lerp(logUot, logUot, t)!,
+      phonColor: Color.lerp(phonColor, phonColor, t)!,
+      shiftColor: Color.lerp(shiftColor, shiftColor, t)!,
     );
   }
 }
@@ -55,8 +79,13 @@ final ThemeClass lightCustom = ThemeClass(
   globalColor: const Color(0xFF104DE8),
   textColor: const Color(0xFFFFFFFF),
   unselctedColor: Colors.grey,
-  text: const Color(0xFF232020),
+  text: const Color(0xFF3D3D3D),
   cardColor: const Color(0xFFFFFFFF),
+  container: const Color(0x1A104DE8),
+  unselctedCardColor: const Color(0xFFF3F3F3),
+  logUot: Color(0xFF93000A),
+  phonColor: Color(0xFF059669),
+  shiftColor: Color(0xFF92400E),
 );
 final ThemeClass darkCustom = ThemeClass(
   globalBackgroundColor: const Color(0xFF0F172A),
@@ -65,4 +94,9 @@ final ThemeClass darkCustom = ThemeClass(
   unselctedColor: Colors.black54,
   text: const Color(0xFF232020),
   cardColor: const Color(0xFFE2E8F0),
+  container: const Color(0xFFFFFFFF),
+  unselctedCardColor: const Color(0xFFF3F3F3),
+  logUot: Color(0xFF93000A),
+  phonColor: Color(0xFF059669),
+  shiftColor: Color(0xFF92400E),
 );
