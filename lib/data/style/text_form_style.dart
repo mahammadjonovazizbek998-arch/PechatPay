@@ -43,6 +43,46 @@ class AppTextFormStyle {
     );
   }
 
+  static InputDecoration textFormFild({
+    required Color color,
+    required String text,
+    VoidCallback? onTap,
+    String? errorText,
+    required Widget? prefix,
+    bool licensePlate = false,
+    Widget? suffix,
+  }) {
+    final border = OutlineInputBorder(
+      borderSide: BorderSide(color: color, width: 0.5.w),
+      borderRadius: BorderRadius.circular(15.r),
+    );
+    return InputDecoration(
+      prefixIcon: prefix,
+      suffixIcon: Align(alignment: .center,heightFactor: 1,widthFactor: 1,
+          child: suffix),
+      prefixIconConstraints: BoxConstraints(minWidth: 36.w, minHeight: 36.h),
+      isDense: true,
+      contentPadding: licensePlate
+          ? EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w)
+          : EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
+      filled: true,
+      fillColor: Colors.white,
+      constraints: BoxConstraints(minHeight: 40.h, maxHeight: 62.h),
+      errorStyle: AppTextStyles.style12.copyWith(color: color),
+      hintStyle: licensePlate
+          ? AppTextStyles.style16.copyWith(color: color)
+          : AppTextStyles.style14.copyWith(color: color),
+      hintText: text,
+      errorText: errorText,
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+      errorBorder: border,
+      focusedErrorBorder: border,
+      enabledBorder: border,
+      focusedBorder: border,
+      counterText: "",
+    );
+  }
+
   static ButtonStyle buttonStyle({
     required Color background,
     required Color foreground,
@@ -59,30 +99,54 @@ class AppTextFormStyle {
     required Color background,
     required Color foreground,
     bool button = false,
-    bool padding=false
+    bool? padding = false,
   }) {
     return ElevatedButton.styleFrom(
       backgroundColor: background,
       foregroundColor: foreground,
       surfaceTintColor: Colors.transparent,
-      shadowColor: background.withValues(alpha: 0.3),
-      elevation: 1,padding: padding? .symmetric(horizontal: 14, vertical: 8):EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      alignment: .center,
+      elevation: 0,
+      padding: padding != null
+          ? padding
+                ? .symmetric(horizontal: 14, vertical: 8)
+                : EdgeInsets.symmetric(horizontal: 24, vertical: 8)
+          : EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.r),
         side: button
             ? BorderSide(color: Colors.transparent, width: 0)
-            : BorderSide(color: foreground.withValues(alpha: 0.5), width: 1.w),
+            : BorderSide(color: foreground.withValues(alpha: 0.1), width: 1.w),
       ),
     );
   }
 
-  static BoxDecoration container({required Color color, Color? borderColor}) {
+  static BoxDecoration container({
+    required Color color,
+    Color? borderColor,
+    bool shadow = false,
+    Color? shadowColor, // agar berilmasa — neytral qora ishlatiladi
+  }) {
     return BoxDecoration(
       border: borderColor != null
           ? BoxBorder.all(color: borderColor, width: 0.3)
           : null,
       borderRadius: BorderRadius.circular(15.r),
       color: color,
+      boxShadow: shadow
+          ? [
+              BoxShadow(
+                color: (shadowColor ?? Colors.black).withValues(alpha: 0.10),
+                blurRadius: 6,
+                offset: Offset(0, 1.h),
+              ),
+              BoxShadow(
+                color: (shadowColor ?? Colors.black).withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: Offset(0, 2.h),
+              ),
+            ]
+          : null,
     );
   }
 
@@ -97,7 +161,9 @@ class AppTextFormStyle {
       borderSide: BorderSide(color: color, width: 0.5.w),
       borderRadius: BorderRadius.circular(15.r),
     );
-    return InputDecoration(prefixIcon: icon,contentPadding: .all(0),
+    return InputDecoration(
+      prefixIcon: icon,
+      contentPadding: .all(0),
       constraints: BoxConstraints(minHeight: 40.h),
       errorStyle: AppTextStyles.style10.copyWith(color: color),
       hintStyle: AppTextStyles.style12.copyWith(color: color),

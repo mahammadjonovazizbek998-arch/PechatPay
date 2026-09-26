@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../data/style/text_form_style.dart';
-import '../../../data/style/text_style.dart';
-import '../../../data/theme/theme_class.dart';
-import 'list_tile.dart';
+import '../../../../data/style/text_form_style.dart';
+import '../../../../data/style/text_style.dart';
+import '../../../../data/theme/theme_class.dart';
+import '../list_tile.dart';
 
 class Repidoperations extends StatefulWidget {
   const Repidoperations({super.key});
@@ -22,8 +22,8 @@ class _RepidoperationsState extends State<Repidoperations> {
     return  Column(children: [
       Container(
         decoration: AppTextFormStyle.container(
-          color: myTheme.unselctedCardColor.withValues(
-            alpha: 0.7,
+          color: myTheme.phonColor.withValues(
+            alpha: 0.07,
           ),
         ),
         child:  ListTileWidget(peding: true,
@@ -87,7 +87,7 @@ class _RepidoperationsState extends State<Repidoperations> {
           child: Row(
             mainAxisSize: .min,
             children: [
-              Image.asset("assets/img_26.png",width: 16.75.w,height: 17.5,),
+              Image.asset("assets/img_26.png",width: 16.75.w,height: 17.5,color: myTheme.textColor,),
               Text(
                 " Haydovchini tahrirlash",
                 style: AppTextStyles.style14,

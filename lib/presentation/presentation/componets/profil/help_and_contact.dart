@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pechat_pay/data/style/text_form_style.dart';
 
-import '../../../data/style/text_style.dart';
-import '../../../data/theme/theme_class.dart';
-import 'list_tile.dart';
+import '../../../../data/style/text_style.dart';
+import '../../../../data/theme/theme_class.dart';
+import '../list_tile.dart';
 
 class HelpAndContact extends StatefulWidget {
   const HelpAndContact({super.key});
@@ -53,7 +53,7 @@ class _HelpAndContactState extends State<HelpAndContact> {
             Container(
               width: MediaQuery.of(context).size.width,
               decoration: AppTextFormStyle.container(
-                color: myTheme.globalColor,
+                color: myTheme.globalColor,shadow: true
               ),
               child: Stack(
                 children: [
@@ -106,7 +106,7 @@ class _HelpAndContactState extends State<HelpAndContact> {
             SizedBox(height: 16.h),
             Container(
               width: MediaQuery.of(context).size.width,
-              decoration: AppTextFormStyle.container(color: myTheme.cardColor),
+              decoration: AppTextFormStyle.container(color: myTheme.cardColor,shadow: true),
               child: Column(
                 mainAxisAlignment: .start,
                 crossAxisAlignment: .start,
@@ -250,7 +250,7 @@ class _HelpAndContactState extends State<HelpAndContact> {
             SizedBox(height: 16.h),
             Container(
               width: MediaQuery.of(context).size.width,
-              decoration: AppTextFormStyle.container(color: myTheme.cardColor),
+              decoration: AppTextFormStyle.container(color: myTheme.cardColor,shadow: true),
               child: Column(
                 mainAxisAlignment: .start,
                 crossAxisAlignment: .start,

@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pechat_pay/logon/tasks/tasks_cubit.dart';
 
-import '../../../data/style/text_form_style.dart';
-import '../../../data/style/text_style.dart';
-import '../../../data/theme/theme_class.dart';
-import 'list_tile.dart';
+import '../../../../data/style/text_form_style.dart';
+import '../../../../data/style/text_style.dart';
+import '../../../../data/theme/theme_class.dart';
+import '../list_tile.dart';
 
 class HistoryOfOperations extends StatefulWidget {
   const HistoryOfOperations({super.key});
@@ -23,7 +23,7 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
       builder: (context, state) {
         return Container(
           margin: .symmetric(vertical: 14.h),
-          decoration: AppTextFormStyle.container(
+          decoration: AppTextFormStyle.container(shadow: true,
             color: myTheme.cardColor,
             borderColor: myTheme.globalColor,
           ),
@@ -40,14 +40,14 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                     Text(
                       "1 ta muhr",
                       style: AppTextStyles.style14.copyWith(
-                        color: myTheme.phonColor,
+                        color: myTheme.text,
                         fontWeight: .bold,
                       ),
                     ),
                     Text(
                       "50000",
                       style: AppTextStyles.style14.copyWith(
-                        color: myTheme.text,
+                        color: myTheme.globalColor,
                       ),
                     ),
                   ],
@@ -71,12 +71,12 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                 leading: ContainerWidget(
                   vertical: 46.h,
                   horizontal: 44.w,
-                  assets: "assets/img_25.png",
+                  assets: "assets/img_24.png",
                   assetsHorizontal: 16.75,
                   assetsVertical: 17.5,
-                  assetsColor: myTheme.phonColor,
+                  assetsColor: myTheme.globalColor.withValues(alpha: 0.8),
                   boxDecoration: AppTextFormStyle.container(
-                    color: myTheme.phonColor.withValues(alpha: 0.1),
+                    color: myTheme.globalColor.withValues(alpha: 0.1),
                   ),
                 ),
               ),
@@ -86,7 +86,7 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                 padding: .symmetric(vertical: 10.h, horizontal: 10.w),
                 margin: .symmetric(vertical: 14.h, horizontal: 14.w),
                 decoration: AppTextFormStyle.container(
-                  color: myTheme.text.withValues(alpha: 0.1),
+                  color: myTheme.unselctedColor.withValues(alpha: 0.09),
                 ),
                 child: Column(
                   crossAxisAlignment: .start,
@@ -109,7 +109,7 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                 ),
               ),
               Padding(
-                padding: .symmetric(horizontal: 14.w),
+                padding: .symmetric(horizontal: 14.w,vertical: 5.h),
                 child: Row(
                   mainAxisAlignment: .spaceBetween,
                   children: [
@@ -120,19 +120,7 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                         color: myTheme.text,
                       ),
                     ),
-                    Container(
-                      padding: .symmetric(vertical: 8.h, horizontal: 8.w),
 
-                      decoration: AppTextFormStyle.container(
-                        color: myTheme.globalColor.withValues(alpha: 0.1),
-                      ),
-                      child: Text(
-                        "2 ta muhr",
-                        style: AppTextStyles.style10.copyWith(
-                          color: myTheme.globalColor,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -145,7 +133,7 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                     width: MediaQuery.of(context).size.width,
                     margin: .symmetric(horizontal: 14.w),
                     decoration: AppTextFormStyle.container(
-                      color: myTheme.text.withValues(alpha: 0.1),
+                      color:  myTheme.unselctedColor.withValues(alpha: 0.09),
                     ),
                     child: ListTileWidget(
                       peding: true,
@@ -175,10 +163,10 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                       leading: ContainerWidget(
                         vertical: 46.h,
                         horizontal: 44.w,
-                        assets: "assets/img_24.png",
+                        assets: "assets/img_22.png",
                         assetsHorizontal: 16.75,
                         assetsVertical: 17.5,
-                        assetsColor: myTheme.globalColor,
+                        assetsColor: myTheme.globalColor.withValues(alpha: 0.8),
                         boxDecoration: AppTextFormStyle.container(
                           color: myTheme.globalColor.withValues(alpha: 0.1),
                         ),
@@ -195,7 +183,7 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                 padding: .symmetric(vertical: 10.h, horizontal: 10.w),
                 margin: .symmetric(vertical: 14.h, horizontal: 14.w),
                 decoration: AppTextFormStyle.container(
-                  color: myTheme.globalColor.withValues(alpha: 0.1),
+                  color:  myTheme.globalColor.withValues(alpha: 0.06),
                 ),
                 child: Column(
                   children: [
@@ -246,9 +234,9 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                   height: 38.h,
                   child: ElevatedButton(
                     style: AppTextFormStyle.buttonStyleBorder(
-                      button: true,
+                      button: false,
                       padding: true,
-                      background: myTheme.text.withValues(alpha: 0.1),
+                      background:  myTheme.unselctedColor.withValues(alpha: 0.09),
                       foreground: myTheme.text,
                     ),
                     onPressed: () {

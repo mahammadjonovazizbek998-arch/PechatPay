@@ -3,13 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pechat_pay/data/style/text_style.dart';
 
-import '../../../data/style/text_form_style.dart';
-import '../../../data/theme/theme_class.dart';
-import '../../../logon/bottom_navigation_bar/bottom_navigation_bar_cubit.dart';
-import '../../../logon/login/login_cubit.dart';
+import '../../../../data/style/text_form_style.dart';
+import '../../../../data/theme/theme_class.dart';
+import '../../../../logon/bottom_navigation_bar/bottom_navigation_bar_cubit.dart';
+import '../../../../logon/login/login_cubit.dart';
 import 'branch_peges.dart';
 import 'help_and_contact.dart';
-import 'list_tile.dart';
+import '../list_tile.dart';
 
 class ProfilComponets extends StatefulWidget {
   const ProfilComponets({super.key});
@@ -27,10 +27,7 @@ class _ProfilComponetsState extends State<ProfilComponets> {
         return BlocBuilder<BottomNavigationBarCubit, BottomNavigationBarState>(
           builder: (context, holat) {
             return DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: .circular(15.r),
-                color: myTheme.cardColor,
-              ),
+              decoration:AppTextFormStyle.container( color: myTheme.cardColor,shadow: true),
               child: Column(
                 children: [
                   ListTileWidget(

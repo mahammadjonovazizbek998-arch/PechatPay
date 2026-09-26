@@ -5,7 +5,7 @@ import 'package:pechat_pay/data/style/text_form_style.dart';
 import 'package:pechat_pay/data/style/text_style.dart';
 import 'package:pechat_pay/logon/tasks/tasks_cubit.dart';
 
-import '../../../data/theme/theme_class.dart';
+import '../../../../data/theme/theme_class.dart';
 
 class FilterButton extends StatefulWidget {
   final Function(String) onFilterSelected;
@@ -37,7 +37,7 @@ class _FilterButtonState extends State<FilterButton> {
             fontWeight: .w500,))))
               .toList(),
           child: Container(
-            decoration: AppTextFormStyle.container(color: myTheme.textColor),
+            decoration: AppTextFormStyle.container(color: myTheme.textColor,shadow: true),
             padding: .symmetric(horizontal: 10.w, vertical: 5.h),
 
             child: Row(

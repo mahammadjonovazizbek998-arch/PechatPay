@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../data/style/text_form_style.dart';
-import '../../../data/style/text_style.dart';
-import '../../../data/theme/theme_class.dart';
-import 'list_tile.dart';
+import '../../../../data/style/text_form_style.dart';
+import '../../../../data/style/text_style.dart';
+import '../../../../data/theme/theme_class.dart';
+import '../list_tile.dart';
+import 'branch_add_edi.dart';
 
 class BranchComponets extends StatefulWidget {
   final bool myBranch;
@@ -30,7 +31,10 @@ class _BranchComponetsState extends State<BranchComponets> {
           : .symmetric(vertical: 10.h),
       width: 358.w,
 
-      decoration: AppTextFormStyle.container(color: myTheme.cardColor),
+      decoration: AppTextFormStyle.container(
+        color: myTheme.cardColor,
+        shadow: true,
+      ),
       child: Column(
         mainAxisAlignment: .start,
         crossAxisAlignment: .start,
@@ -241,12 +245,66 @@ class _BranchComponetsState extends State<BranchComponets> {
           Padding(
             padding: .only(left: 16.w, right: 16.w),
             child: widget.myBranch
-                ? widget.isacctiv?Row(
-                    children: [
-                      Expanded(
-                        child: SizedBox(
-                          height: 48.h,
+                ? widget.isacctiv
+                      ? Row(
+                          children: [
+                            Expanded(
+                              child: SizedBox(
+                                height: 48.h,
 
+                                child: ElevatedButton(
+                                  style: AppTextFormStyle.buttonStyleBorder(
+                                    background: myTheme.unselctedCardColor,
+                                    foreground: myTheme.text,
+                                    button: true,
+                                  ),
+                                  onPressed: () {},
+                                  child: Row(
+                                    mainAxisSize: .min,
+                                    children: [
+                                      Image.asset(
+                                        "assets/img.png",
+                                        width: 14.w,
+                                        color: myTheme.text,
+                                      ),
+                                      Text(
+                                        " Statistika",
+                                        style: AppTextStyles.style14,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 8.w),
+                            Expanded(
+                              child: SizedBox(
+                                height: 48.h,
+                                child: ElevatedButton(
+                                  style: AppTextFormStyle.buttonStyleBorder(
+                                    button: true,
+                                    background: myTheme.container,
+                                    foreground: myTheme.globalColor,
+                                  ),
+                                  onPressed: () {},
+                                  child: Row(
+                                    mainAxisSize: .min,
+                                    children: [
+                                      Icon(Icons.edit_outlined, size: 18.w),
+                                      Text(
+                                        " tahrirlash",
+                                        style: AppTextStyles.style14,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : SizedBox(
+                          height: 48.h,
+                          width: MediaQuery.of(context).size.width,
                           child: ElevatedButton(
                             style: AppTextFormStyle.buttonStyleBorder(
                               background: myTheme.unselctedCardColor,
@@ -269,60 +327,7 @@ class _BranchComponetsState extends State<BranchComponets> {
                               ],
                             ),
                           ),
-                        ),
-                      ),
-                      SizedBox(width: 8.w),
-                      Expanded(
-                        child: SizedBox(
-                          height: 48.h,
-                          child: ElevatedButton(
-                            style: AppTextFormStyle.buttonStyleBorder(
-                              button: true,
-                              background: myTheme.container,
-                              foreground: myTheme.globalColor,
-                            ),
-                            onPressed: () {},
-                            child: Row(
-                              mainAxisSize: .min,
-                              children: [
-                                Icon(Icons.edit_outlined, size: 18.w),
-                                Text(
-                                  " tahrirlash",
-                                  style: AppTextStyles.style14,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ):
-            SizedBox(
-              height: 48.h,
-              width: MediaQuery.of(context).size.width,
-              child:  ElevatedButton(
-                style: AppTextFormStyle.buttonStyleBorder(
-                  background: myTheme.unselctedCardColor,
-                  foreground: myTheme.text,
-                  button: true,
-                ),
-                onPressed: () {},
-                child: Row(
-                  mainAxisSize: .min,
-                  children: [
-                    Image.asset(
-                      "assets/img.png",
-                      width: 14.w,
-                      color: myTheme.text,
-                    ),
-                    Text(
-                      " Statistika",
-                      style: AppTextStyles.style14,
-                    ),
-                  ],
-                ),
-              ),
-            )
+                        )
                 : SizedBox(
                     height: 48.h,
                     width: MediaQuery.of(context).size.width,
@@ -331,7 +336,22 @@ class _BranchComponetsState extends State<BranchComponets> {
                         background: myTheme.container,
                         foreground: myTheme.globalColor,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BranchAddEdi(
+                              branchName: "PechatPay — Chilonzor",
+                              phon: "712004560",
+                              amount: "50000",
+                              daytimeStart: "08:00",
+                              daytimeEnd: "20:00",
+                              nightStart: "20:00",
+                              nightEnd: "08:00",
+                            ),
+                          ),
+                        );
+                      },
                       child: Row(
                         mainAxisSize: .min,
                         children: [

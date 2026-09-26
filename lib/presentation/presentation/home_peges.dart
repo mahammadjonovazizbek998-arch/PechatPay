@@ -6,7 +6,8 @@ import '../../data/style/text_form_style.dart';
 import '../../data/style/text_style.dart';
 import '../../data/theme/theme_class.dart';
 import '../../logon/tasks/tasks_cubit.dart';
-import 'componets/taxis_widget.dart';
+import 'componets/taxis/taxis_widget.dart';
+
 
 class HomePeges extends StatefulWidget {
   const HomePeges({super.key});

@@ -6,10 +6,10 @@ import 'package:pechat_pay/data/style/text_style.dart';
 import 'package:pechat_pay/logon/bottom_navigation_bar/bottom_navigation_bar_cubit.dart';
 import '../../data/theme/theme_class.dart';
 import '../../logon/login/login_cubit.dart';
-import 'componets/branch_componets.dart';
+import 'componets/profil/branch_componets.dart';
 
-import 'componets/logout_dialog.dart';
-import 'componets/profil_componets.dart';
+import 'componets/dialog/logout_dialog.dart';
+import 'componets/profil/profil_componets.dart';
 
 class ProfilePeges extends StatefulWidget {
   const ProfilePeges({super.key});
@@ -30,9 +30,9 @@ class _ProfilePegesState extends State<ProfilePeges> {
               appBar: AppBar(
                 backgroundColor: myTheme.globalBackgroundColor,
                 title: Row(
-                  crossAxisAlignment: .center,
-                  mainAxisAlignment: .start,
-                  mainAxisSize: .min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(
                       "assets/icons/logo_p_p.png",
@@ -41,23 +41,23 @@ class _ProfilePegesState extends State<ProfilePeges> {
                     ),
                     SizedBox(width: 5.w),
                     Column(
-                      mainAxisAlignment: .start,
-                      crossAxisAlignment: .start,
-                      mainAxisSize: .min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          textAlign: .start,
+                          textAlign: TextAlign.start,
                           "PechatPay",
                           style: AppTextStyles.style18.copyWith(
-                            fontWeight: .bold,
+                            fontWeight: FontWeight.bold,
                             color: myTheme.text,
                           ),
                         ),
                         Text(
-                          textAlign: .start,
+                          textAlign: TextAlign.start,
                           "Chilonzor filiali",
                           style: AppTextStyles.style10.copyWith(
-                            fontWeight: .w400,
+                            fontWeight: FontWeight.w400,
                             color: myTheme.text.withValues(alpha: 0.9),
                           ),
                         ),
@@ -70,7 +70,7 @@ class _ProfilePegesState extends State<ProfilePeges> {
               body: CustomScrollView(
                 slivers: [
                   SliverPadding(
-                    padding: .symmetric(horizontal: 16.h),
+                    padding: EdgeInsets.symmetric(horizontal: 16.h),
                     sliver: SliverMainAxisGroup(
                       slivers: [
                         SliverToBoxAdapter(child: BranchComponets()),
@@ -80,7 +80,7 @@ class _ProfilePegesState extends State<ProfilePeges> {
                             "BOSHQARUV VA MONITORING",
                             style: AppTextStyles.style12.copyWith(
                               color: myTheme.text.withValues(alpha: 0.9),
-                              fontWeight: .w500,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
@@ -88,14 +88,14 @@ class _ProfilePegesState extends State<ProfilePeges> {
                         SliverToBoxAdapter(child: SizedBox(height: 12.h)),
                         SliverToBoxAdapter(
                           child: Container(
-                            padding: .symmetric(vertical: 10.h),
+                            padding: EdgeInsets.symmetric(vertical: 10.h),
                             width: 358.w,
 
-                            decoration: AppTextFormStyle.container(
+                            decoration: AppTextFormStyle.container(shadow: true,
                               color: myTheme.cardColor,
                             ),
                             child: Padding(
-                              padding: .only(left: 16.w, right: 16.w),
+                              padding: EdgeInsets.only(left: 16.w, right: 16.w),
                               child: SizedBox(
                                 height: 48.h,
                                 width: MediaQuery.of(context).size.width,
@@ -114,7 +114,7 @@ class _ProfilePegesState extends State<ProfilePeges> {
                                     );
                                   },
                                   child: Row(
-                                    mainAxisSize: .min,
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Icon(Icons.logout, size: 18.w),
                                       Text(

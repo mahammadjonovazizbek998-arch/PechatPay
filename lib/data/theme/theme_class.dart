@@ -11,7 +11,8 @@ class ThemeClass extends ThemeExtension<ThemeClass> {
       unselctedCardColor,
       logUot,
       phonColor,
-      shiftColor;
+      shiftColor,
+      rejectionStampDialog;
 
   ThemeClass({
     required this.globalBackgroundColor,
@@ -25,6 +26,7 @@ class ThemeClass extends ThemeExtension<ThemeClass> {
     required this.logUot,
     required this.phonColor,
     required this.shiftColor,
+    required this.rejectionStampDialog,
   });
 
   @override
@@ -41,6 +43,7 @@ class ThemeClass extends ThemeExtension<ThemeClass> {
       logUot: logUot,
       phonColor: phonColor,
       shiftColor: shiftColor,
+      rejectionStampDialog: rejectionStampDialog,
     );
   }
 
@@ -70,6 +73,11 @@ class ThemeClass extends ThemeExtension<ThemeClass> {
       logUot: Color.lerp(logUot, logUot, t)!,
       phonColor: Color.lerp(phonColor, phonColor, t)!,
       shiftColor: Color.lerp(shiftColor, shiftColor, t)!,
+      rejectionStampDialog: Color.lerp(
+        rejectionStampDialog,
+        rejectionStampDialog,
+        t,
+      )!,
     );
   }
 }
@@ -86,6 +94,7 @@ final ThemeClass lightCustom = ThemeClass(
   logUot: Color(0xFF93000A),
   phonColor: Color(0xFF059669),
   shiftColor: Color(0xFF92400E),
+  rejectionStampDialog:Color(0xFFD97706),
 );
 final ThemeClass darkCustom = ThemeClass(
   globalBackgroundColor: const Color(0xFF0F172A),
@@ -99,4 +108,5 @@ final ThemeClass darkCustom = ThemeClass(
   logUot: Color(0xFF93000A),
   phonColor: Color(0xFF059669),
   shiftColor: Color(0xFF92400E),
+  rejectionStampDialog: Color(0xFFD2691E),
 );

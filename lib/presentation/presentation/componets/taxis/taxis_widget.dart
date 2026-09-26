@@ -5,8 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pechat_pay/data/style/text_form_style.dart';
 import 'package:pechat_pay/data/style/text_style.dart';
 import 'package:pechat_pay/presentation/presentation/componets/list_tile.dart';
-
-import '../../../data/theme/theme_class.dart';
+import '../../../../data/theme/theme_class.dart';
+import '../dialog/rejection_stamp_dialog.dart';
 import 'issuing_a_seal_peges.dart';
 
 class TaxisWidget extends StatefulWidget {
@@ -56,7 +56,10 @@ class _TaxisWidgetState extends State<TaxisWidget> {
   Widget build(BuildContext context) {
     final myTheme = Theme.of(context).extension<ThemeClass>()!;
     return Container(
-      decoration: AppTextFormStyle.container(color: myTheme.cardColor),
+      decoration: AppTextFormStyle.container(
+        color: myTheme.cardColor,
+        shadow: true,
+      ),
 
       child: Column(
         mainAxisSize: .min,
@@ -228,7 +231,12 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                         background: myTheme.container,
                         foreground: myTheme.globalColor,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        showDialog(barrierDismissible: false,
+                          context: context,
+                          builder: (ctx) => RejectionStampDialog(),
+                        );
+                      },
                       child: Row(
                         mainAxisSize: .min,
                         children: [

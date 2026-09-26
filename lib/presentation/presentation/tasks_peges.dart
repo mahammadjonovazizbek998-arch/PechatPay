@@ -3,11 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pechat_pay/data/style/text_form_style.dart';
 import 'package:pechat_pay/logon/tasks/tasks_cubit.dart';
-import 'package:pechat_pay/presentation/presentation/componets/filter_button.dart';
+import 'package:pechat_pay/presentation/presentation/componets/profil/filter_button.dart';
 import '../../data/style/text_style.dart';
 import '../../data/theme/theme_class.dart';
-import 'componets/chip_widget.dart';
-import 'componets/taxis_widget.dart';
+import 'componets/taxis/chip_widget.dart';
+import 'componets/taxis/driver_add_edit.dart';
+import 'componets/taxis/taxis_widget.dart';
 
 class TasksPeges extends StatefulWidget {
   const TasksPeges({super.key});
@@ -23,7 +24,7 @@ class _TasksPegesState extends State<TasksPeges> {
     {"name": "Eng faol"},
     {"name": "Yangi kelganlar"},
   ];
-
+//key quysh kerak
   @override
   Widget build(BuildContext context) {
     final myTheme = Theme.of(context).extension<ThemeClass>()!;
@@ -89,7 +90,14 @@ class _TasksPegesState extends State<TasksPeges> {
                         SizedBox(
                           height: 44.h,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => DriverAddEdit(),
+                                ),
+                              );
+                            },
                             style: AppTextFormStyle.buttonStyleBorder(
                               background: myTheme.globalColor,
                               foreground: myTheme.textColor,
@@ -137,7 +145,9 @@ class _TasksPegesState extends State<TasksPeges> {
                                 onTap: () => context.read<TasksCubit>().onTap(
                                   index,
                                   state.value,
-                                    state.hidingData,state.rapidOperations,state.selectedIndex
+                                  state.hidingData,
+                                  state.rapidOperations,
+                                  state.selectedIndex,
                                 ),
                               ),
                             );
@@ -198,9 +208,14 @@ class _TasksPegesState extends State<TasksPeges> {
                             ],
                           ),
                           FilterButton(
-                            onFilterSelected: (value) => context
-                                .read<TasksCubit>()
-                                .onTap(state.index, value,state.hidingData,state.rapidOperations,state.selectedIndex),
+                            onFilterSelected: (value) =>
+                                context.read<TasksCubit>().onTap(
+                                  state.index,
+                                  value,
+                                  state.hidingData,
+                                  state.rapidOperations,
+                                  state.selectedIndex,
+                                ),
                           ),
                         ],
                       );
@@ -210,10 +225,11 @@ class _TasksPegesState extends State<TasksPeges> {
                 SliverToBoxAdapter(child: SizedBox(height: 10.h)),
                 SliverList.separated(
                   itemBuilder: (ctx, index) {
-                    return TaxisWidget(key: ValueKey(index),);
+                    return TaxisWidget(key: ValueKey(index));
                   },
                   itemCount: 12,
-                  separatorBuilder: (ctx, index) => SizedBox(height: 12.h,key: ValueKey(index),),
+                  separatorBuilder: (ctx, index) =>
+                      SizedBox(height: 12.h, key: ValueKey(index)),
                 ),
               ],
             ),

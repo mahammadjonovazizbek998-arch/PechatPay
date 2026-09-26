@@ -7,7 +7,13 @@ import '../../data/token_model/token_model.dart';
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit() : super(LoginInitial(toHider: true)) {
+  LoginCubit()
+    : super(
+        LoginInitial(
+          toHider: true,
+          token: TokenModel(id: 0, name: "", phone: "", token: ""),
+        ),
+      ) {
     getSheredPreferences();
   }
 
@@ -49,7 +55,6 @@ class LoginCubit extends Cubit<LoginState> {
 
   //sin in
   Future<void> sinIn(String phone, String password) async {
-
     emit(LoginLoding(toHider: state.toHider, token: state.token));
     final response = await authRepository.sinIn(phone, password);
     if (response is TokenModelApi) {
@@ -75,7 +80,6 @@ class LoginCubit extends Cubit<LoginState> {
       );
     }
     if (response is TokenErorrModel) {
-
       emit(
         LoginError(error: response, toHider: state.toHider, token: state.token),
       );
@@ -84,8 +88,6 @@ class LoginCubit extends Cubit<LoginState> {
 
   //profil malumotlari
   Future<void> authMe(String token) async {
-
-
     final response = await authRepository.authMe(token);
     if (response is TokenModel) {
       TokenModel tokenModelApi = response;

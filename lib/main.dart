@@ -3,17 +3,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pechat_pay/logon/theme/theme_cubit.dart';
 import 'package:pechat_pay/presentation/presentation/main_home_peges.dart';
+import 'package:pechat_pay/presentation/sin_in/sin_in.dart';
+import 'data/get_it/get_it.dart';
 import 'data/theme/theme_class.dart';
+import 'logon/bottom_navigation_bar/bottom_navigation_bar_cubit.dart';
+import 'logon/home/homle_cubit.dart';
 import 'logon/login/login_cubit.dart';
+import 'logon/profil/profil_cubit.dart';
 import 'logon/tasks/tasks_cubit.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await setupServiceLocator();
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider(create: (ctx) => ThemeCubit()),
-        BlocProvider(create: (ctx) => LoginCubit()),
-        BlocProvider(create: (ctx) => TasksCubit()),
+        BlocProvider.value(value: sl<ThemeCubit>()),
+        BlocProvider.value(value: sl<LoginCubit>()),
+        BlocProvider.value(value: sl<ProfilCubit>()),
+        BlocProvider.value(value: sl<TasksCubit>()),
+        BlocProvider.value(value: sl<HomleCubit>()),
+        BlocProvider.value(value: sl<BottomNavigationBarCubit>()),
       ],
       child: const MyApp(),
     ),
@@ -52,20 +62,22 @@ class MyApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               home: BlocBuilder<ThemeCubit, ThemeState>(
                 builder: (ctx, state) {
-                  return MainHomePeges();
-                  // if (state is ThemeFinish) {
-                  //   return BlocBuilder<LoginCubit, LoginState>(
-                  //     builder: (context, stateToken) {
-                  //      if (stateToken.token != null) {
-                  //         return SinIn();
-                  //       } else {
-                  //         return MainHomePeges();
-                  //       }
-                  //     },
-                  //   );
-                  // } else {
-                  //   return CircularIndicator();
-                  // }
+                  if (state is ThemeFinish) {
+                    return BlocBuilder<LoginCubit, LoginState>(
+                      builder: (context, stateToken) {
+                        if (stateToken is LoginLoding &&
+                            (stateToken.token == null || stateToken.token?.name == "")) {
+                          return const CircularIndicator();
+                        } else if (stateToken.token == null || stateToken.token?.token == "") {
+                          return const SinIn();
+                        } else {
+                          return const MainHomePeges();
+                        }
+                      },
+                    );
+                  } else {
+                    return const CircularIndicator();
+                  }
                 },
               ),
             );
@@ -86,6 +98,13 @@ class CircularIndicator extends StatefulWidget {
 class _CircularIndicatorState extends State<CircularIndicator> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: CircularProgressIndicator()));
+    final myTheme = Theme.of(context).extension<ThemeClass>()!;
+    return Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(
+          color: myTheme.globalColor.withValues(alpha: 0.7),
+        ),
+      ),
+    );
   }
 }

@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pechat_pay/logon/tasks/tasks_cubit.dart';
 
-import '../../../data/style/text_form_style.dart';
-import '../../../data/style/text_style.dart';
-import '../../../data/theme/theme_class.dart';
+import '../../../../data/style/text_form_style.dart';
+import '../../../../data/style/text_style.dart';
+import '../../../../data/theme/theme_class.dart';
 
 class Cash extends StatefulWidget {
   const Cash({super.key});
@@ -25,7 +25,7 @@ class _CashState extends State<Cash> {
             Container(
               padding: .symmetric(horizontal: 12.w, vertical: 18.h),
               decoration: AppTextFormStyle.container(
-                color: myTheme.unselctedCardColor.withValues(alpha: 0.7),
+                color:  myTheme.unselctedColor.withValues(alpha: 0.09),
               ),
               child: Row(
                 mainAxisAlignment: .spaceBetween,
@@ -37,21 +37,19 @@ class _CashState extends State<Cash> {
                     ),
                   ),
                   Container(
-                    padding: .symmetric(horizontal: 2.w, vertical: 2.h),
-
+                    padding: .symmetric(horizontal: 6.w, vertical: 6.h),
+                    width: 140.w,height: 50.h,
                     decoration: AppTextFormStyle.container(
-                      color: myTheme.unselctedColor.withValues(alpha: 0.1),
+                      color: myTheme.cardColor,
                     ),
                     child: Row(
                       mainAxisAlignment: .spaceBetween,
                       children: [
-                        SizedBox(
-                          height: 38.h,
-                          width: 38.w,
+                        SizedBox(width: 40.w,height: 40.h,
                           child: ElevatedButton(
                             style: AppTextFormStyle.buttonStyleBorder(
                               button: true,
-                              padding: true,
+                              padding: null,
                               background: myTheme.unselctedCardColor,
 
                               foreground: myTheme.text,
@@ -66,7 +64,6 @@ class _CashState extends State<Cash> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 10.w),
                         Text(
                           textAlign: .center,
                           state.number.toString(),
@@ -74,14 +71,11 @@ class _CashState extends State<Cash> {
                             color: myTheme.text.withValues(alpha: 0.9),
                           ),
                         ),
-                        SizedBox(width: 10.w),
-                        SizedBox(
-                          height: 38.h,
-                          width: 38.w,
+                        SizedBox(width: 40.w,height: 40.h,
                           child: ElevatedButton(
                             style: AppTextFormStyle.buttonStyleBorder(
                               button: true,
-                              padding: true,
+                              padding: null,
                               background: myTheme.unselctedCardColor,
 
                               foreground: myTheme.text,
@@ -116,7 +110,7 @@ class _CashState extends State<Cash> {
                         ),
                       ),
                       Text(
-                        "${state.number} * muhir",
+                        "${state.number} * muhr",
                         style: AppTextStyles.style14.copyWith(
                           fontWeight: .bold,
                           color: myTheme.text,
@@ -148,7 +142,7 @@ class _CashState extends State<Cash> {
                 ],
               ),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 12.h),
             SizedBox(width: MediaQuery.of(context).size.width,
               height: 48.h,
               child: ElevatedButton(

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../data/style/text_form_style.dart';
-import '../../../data/style/text_style.dart';
-import '../../../data/theme/theme_class.dart';
+import '../../../../data/style/text_form_style.dart';
+import '../../../../data/style/text_style.dart';
+import '../../../../data/theme/theme_class.dart';
+import 'branch_add_edi.dart';
 import 'branch_componets.dart';
 
 class BranchPeges extends StatefulWidget {
@@ -58,7 +59,7 @@ class _BranchPegesState extends State<BranchPeges> {
                         background: myTheme.globalColor,
                         foreground: myTheme.textColor,
                       ),
-                      onPressed: () {},
+                      onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (_)=>BranchAddEdi()));},
                       child: Row(
                         mainAxisSize: .min,
                         children: [

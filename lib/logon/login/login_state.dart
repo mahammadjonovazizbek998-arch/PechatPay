@@ -8,7 +8,8 @@ sealed class LoginState {
 }
 
 final class LoginInitial extends LoginState {
-  const LoginInitial({required super.toHider});
+
+  const LoginInitial({required super.toHider,required super.token});
 }
 
 final class LoginLoding extends LoginState {

@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pechat_pay/logon/tasks/tasks_cubit.dart';
-import 'package:pechat_pay/presentation/presentation/componets/repid_operations.dart';
+import 'package:pechat_pay/presentation/presentation/componets/taxis/repid_operations.dart';
 
-import '../../../data/style/text_form_style.dart';
-import '../../../data/style/text_style.dart';
-import '../../../data/theme/theme_class.dart';
+import '../../../../data/style/text_form_style.dart';
+import '../../../../data/style/text_style.dart';
+import '../../../../data/theme/theme_class.dart';
 import 'cash.dart';
+import 'driver_add_edit.dart';
 import 'history_of_operations.dart';
-import 'list_tile.dart';
+import '../list_tile.dart';
 
 class IssuingASealPeges extends StatefulWidget {
   final Color color;
@@ -48,6 +49,7 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
                         margin: .symmetric(vertical: 14.h),
                         decoration: AppTextFormStyle.container(
                           color: myTheme.cardColor,
+                          shadow: true,
                         ),
 
                         child: Column(
@@ -103,7 +105,8 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
                                     ).copyWith(
                                       border: BoxBorder.all(
                                         width: 0.5.w,
-                                        color: myTheme.unselctedColor,
+                                        color: myTheme.unselctedColor
+                                            .withValues(alpha: 0.2),
                                       ),
                                       borderRadius: .circular(25.r),
                                     ),
@@ -212,7 +215,18 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
                                     background: myTheme.unselctedCardColor,
                                     foreground: myTheme.text,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => DriverAddEdit(
+                                          driverName: "Jasur Olimov",
+                                          driverPhoneNumber: "901234567",
+                                          licensePlate: "01A777A",
+                                        ),
+                                      ),
+                                    );
+                                  },
                                   child: Row(
                                     mainAxisSize: .min,
                                     children: [
@@ -236,6 +250,7 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
                         padding: .symmetric(vertical: 16.h, horizontal: 16.w),
                         decoration: AppTextFormStyle.container(
                           color: myTheme.cardColor,
+                          shadow: true,
                         ),
 
                         child: Column(
@@ -391,37 +406,19 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
                             margin: .symmetric(vertical: 14.h),
                             decoration: AppTextFormStyle.container(
                               color: myTheme.cardColor,
+                              shadow: true,
                             ),
 
                             child: Column(
                               mainAxisSize: .min,
                               children: <Widget>[
                                 Row(
-                                  mainAxisAlignment: .spaceBetween,
+                                  mainAxisAlignment: .start,
                                   children: [
                                     Text(
                                       "Tezkor operatsiyalar",
                                       style: AppTextStyles.style16.copyWith(
                                         color: myTheme.text,
-                                      ),
-                                    ),
-
-                                    Container(
-                                      decoration: AppTextFormStyle.container(
-                                        color: myTheme.globalColor.withValues(
-                                          alpha: 0.1,
-                                        ),
-                                      ),
-                                      padding: .symmetric(
-                                        vertical: 7.h,
-                                        horizontal: 6.w,
-                                      ),
-                                      child: Text(
-                                        "Chilonzor filiali",
-                                        style: AppTextStyles.style12.copyWith(
-                                          color: myTheme.globalColor,
-                                          fontWeight: .bold,
-                                        ),
                                       ),
                                     ),
                                   ],
@@ -572,72 +569,76 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
                     SliverList.builder(
                       itemCount: 12,
                       itemBuilder: (context, index) {
-                        if(state.selectedIndex==index){
-                         return HistoryOfOperations();
-                        }else{
-                        return Container(
-                          padding: .symmetric(vertical: 3.h, horizontal: 3.w),
-                          margin: .symmetric(vertical: 10.h),
-                          decoration: AppTextFormStyle.container(
-                            color: myTheme.textColor,
-                          ),
-                          child: ListTileWidget(icoBool: true,
-                            onTap: () => context.read<TasksCubit>().onTap(
-                              state.index,
-                              state.value,
-                              state.hidingData,
-                              state.rapidOperations,
-                              index,
+                        if (state.selectedIndex == index) {
+                          return HistoryOfOperations();
+                        } else {
+                          return Container(
+                            padding: .symmetric(vertical: 3.h, horizontal: 3.w),
+                            margin: .symmetric(vertical: 10.h),
+                            decoration: AppTextFormStyle.container(
+                              color: myTheme.textColor,
                             ),
-                            color: myTheme.unselctedColor,
-                            trailing: Column(
-                              crossAxisAlignment: .end,
-                              mainAxisAlignment: .start,
-                              children: [
-                                Text(
-                                  "1 ta muhr",
-                                  style: AppTextStyles.style14.copyWith(
-                                    color: myTheme.phonColor,
-                                    fontWeight: .bold,
+                            child: ListTileWidget(
+                              icoBool: true,
+                              onTap: () => context.read<TasksCubit>().onTap(
+                                state.index,
+                                state.value,
+                                state.hidingData,
+                                state.rapidOperations,
+                                index,
+                              ),
+                              color: myTheme.unselctedColor,
+                              trailing: Column(
+                                crossAxisAlignment: .end,
+                                mainAxisAlignment: .start,
+                                children: [
+                                  Text(
+                                    "1 ta muhr",
+                                    style: AppTextStyles.style14.copyWith(
+                                      color: myTheme.phonColor,
+                                      fontWeight: .bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    "50000",
+                                    style: AppTextStyles.style14.copyWith(
+                                      color: myTheme.text,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              selected: Text(
+                                textAlign: .start,
+                                "Muhr berildi",
+                                style: AppTextStyles.style14.copyWith(
+                                  fontWeight: .bold,
+                                  color: myTheme.text,
+                                ),
+                              ),
+                              unselected: Text(
+                                textAlign: .start,
+                                "Kecha, 17:30 • Chilonzor (Kunduzgi)",
+                                style: AppTextStyles.style13.copyWith(
+                                  fontWeight: .w500,
+                                  color: myTheme.text.withValues(alpha: 0.8),
+                                ),
+                              ),
+                              leading: ContainerWidget(
+                                vertical: 46.h,
+                                horizontal: 44.w,
+                                assets: "assets/img_25.png",
+                                assetsHorizontal: 16.75,
+                                assetsVertical: 17.5,
+                                assetsColor: myTheme.phonColor,
+                                boxDecoration: AppTextFormStyle.container(
+                                  color: myTheme.phonColor.withValues(
+                                    alpha: 0.1,
                                   ),
                                 ),
-                                Text(
-                                  "50000",
-                                  style: AppTextStyles.style14.copyWith(
-                                    color: myTheme.text,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            selected: Text(
-                              textAlign: .start,
-                              "Muhr berildi",
-                              style: AppTextStyles.style14.copyWith(
-                                fontWeight: .bold,
-                                color: myTheme.text,
                               ),
                             ),
-                            unselected: Text(
-                              textAlign: .start,
-                              "Kecha, 17:30 • Chilonzor (Kunduzgi)",
-                              style: AppTextStyles.style13.copyWith(
-                                fontWeight: .w500,
-                                color: myTheme.text.withValues(alpha: 0.8),
-                              ),
-                            ),
-                            leading: ContainerWidget(
-                              vertical: 46.h,
-                              horizontal: 44.w,
-                              assets: "assets/img_25.png",
-                              assetsHorizontal: 16.75,
-                              assetsVertical: 17.5,
-                              assetsColor: myTheme.phonColor,
-                              boxDecoration: AppTextFormStyle.container(
-                                color: myTheme.phonColor.withValues(alpha: 0.1),
-                              ),
-                            ),
-                          ),
-                        );}
+                          );
+                        }
                       },
                     ),
                   ],

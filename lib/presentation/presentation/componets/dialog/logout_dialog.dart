@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pechat_pay/data/style/text_style.dart';
 
-import '../../../data/style/text_form_style.dart';
-import '../../../data/theme/theme_class.dart';
+import '../../../../data/style/text_form_style.dart';
+import '../../../../data/theme/theme_class.dart';
 
 class LogoutDialog extends StatelessWidget {
   const LogoutDialog({super.key});
