@@ -38,7 +38,6 @@ class _TaxisWidgetState extends State<TaxisWidget> {
   @override
   void initState() {
     indexColorInst();
-    // TODO: implement initState
     super.initState();
   }
 
@@ -314,22 +313,40 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                         // Faqat ushbu widget so'rov yuborgan bo'lsa dialog ochamiz
                         if (_isRequesting && state is HomleFinish &&
                             state.pechatCreateResponse != null) {
-                          setState(() {
-                            _isRequesting = false;
-                          });
-                          showDialog(
-                            context: context,
-                            builder: (_) => StampDialog(response: state.pechatCreateResponse!),
-                            barrierDismissible: false,
-                          ).then((_) {
-                            if (context.mounted) {
-                              context.read<HomleCubit>().resetPechatResponse();
-                            }
-                          });
+                          
+                          // Id bo'yicha ham tekshiramiz (ishonch uchun)
+                          final currentId = widget.driver != null && widget.driverNoactiveModel == null
+                              ? widget.driver!.id
+                              : widget.driverNoactiveModel!.id;
+                          
+                          // Eslatma: PechatCreateData ichida driverId yo'q bo'lsa carNumber ishlatamiz
+                          final currentCar = widget.driver != null && widget.driverNoactiveModel == null
+                              ? widget.driver!.carNumber
+                              : widget.driverNoactiveModel!.carNumber;
+
+                          if (state.pechatCreateResponse!.data?.carNumber.replaceAll(' ', '').toUpperCase() == 
+                              currentCar.replaceAll(' ', '').toUpperCase()) {
+                            
+                            setState(() => _isRequesting = false);
+                            
+                            showDialog(
+                              context: context,
+                              builder: (dialogCtx) => StampDialog(response: state.pechatCreateResponse!),
+                              barrierDismissible: false,
+                            ).then((_) {
+                              if (mounted) {
+                                context.read<HomleCubit>().resetPechatResponse();
+                              }
+                            });
+                          }
                         } else if (_isRequesting && state is HomeError) {
-                          setState(() {
-                            _isRequesting = false;
-                          });
+                          setState(() => _isRequesting = false);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(state.tokenErorrModel.message ?? "Xatolik yuz berdi"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
                         }
                       },
                       builder: (context, state) {
@@ -339,7 +356,7 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                             background: myTheme.container,
                             foreground: myTheme.globalColor,
                           ),
-                          onPressed: () {
+                          onPressed: (state is HomeLoding && _isRequesting) ? null : () {
                             if (widget.phone) {
                                 authRepository.callNumber(
                                     widget.driver != null &&
