@@ -23,7 +23,6 @@ class TasksCubit extends Cubit<TasksState> {
           unpaidPechatsSum: 0,
           driverHistoryResponse: null,
           type: true,
-
         ),
       );
 
@@ -47,10 +46,10 @@ class TasksCubit extends Cubit<TasksState> {
         driverDetailData: state.driverDetailData,
         driverHistoryResponse: state.driverHistoryResponse,
         type: type,
-
       ),
     );
   }
+
 
   void number(int value) {
     final list = state.driverDetailData!.unpaidPechat.reversed.toList();
@@ -70,7 +69,6 @@ class TasksCubit extends Cubit<TasksState> {
           driverDetailData: state.driverDetailData,
           driverHistoryResponse: state.driverHistoryResponse,
           type: state.type,
-
         ),
       );
     } else {
@@ -95,12 +93,12 @@ class TasksCubit extends Cubit<TasksState> {
   Future<void> show(int id, int page) async {
     emit(
       TasksLoding(
-        unpaidPechatsSum: state.unpaidPechatsSum,
+        unpaidPechatsSum: 0,
         index: state.index,
         value: state.value,
         hidingData: state.hidingData,
         rapidOperations: state.rapidOperations,
-        number: state.number,
+        number: 0,
         selectedIndex: state.selectedIndex,
         driverDetailData: null,
         driverHistoryResponse: state.driverHistoryResponse,
@@ -208,6 +206,4 @@ class TasksCubit extends Cubit<TasksState> {
       );
     }
   }
-
-
 }

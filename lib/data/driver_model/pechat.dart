@@ -24,6 +24,8 @@ class PechatCreateData {
   final int unpaidPechatsCount;
   final int unpaidPechatsSum;
   final DateTime? createdAt;
+  final String count;
+  final int summa;
 
   const PechatCreateData({
     required this.id,
@@ -34,10 +36,13 @@ class PechatCreateData {
     required this.pechatCount,
     required this.unpaidPechatsCount,
     required this.unpaidPechatsSum,
+    required this.count,
+    required this.summa,
     this.createdAt,
   });
 
   bool get isNasiya => type == 'nasiya';
+
   bool get isNaqt => type == 'naqt';
 
   factory PechatCreateData.fromJson(Map<String, dynamic> json) {
@@ -50,6 +55,8 @@ class PechatCreateData {
       pechatCount: (json['pechat_count'] as num?)?.toInt() ?? 0,
       unpaidPechatsCount: (json['unpaid_pechats_count'] as num?)?.toInt() ?? 0,
       unpaidPechatsSum: (json['unpaid_pechats_sum'] as num?)?.toInt() ?? 0,
+      summa: (json["summa"] ?? 0),
+      count: (json["count"] ?? "0"),
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'].toString())
           : null,

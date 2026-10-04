@@ -18,7 +18,6 @@ class HomleCubit extends Cubit<HomleState> {
           historyHomePage: null,
           driverNoactiveResponse: null,
           pechatCreateResponse: null,
-          pay: null,
         ),
       );
   AuthRepository authRepository = AuthRepository();
@@ -31,7 +30,6 @@ class HomleCubit extends Cubit<HomleState> {
           historyHomePage: state.historyHomePage,
           driverNoactiveResponse: state.driverNoactiveResponse,
           pechatCreateResponse: state.pechatCreateResponse,
-          pay: state.pay,
         ),
       );
     }
@@ -45,7 +43,6 @@ class HomleCubit extends Cubit<HomleState> {
           tokenErorrModel: response,
           driverNoactiveResponse: state.driverNoactiveResponse,
           pechatCreateResponse: state.pechatCreateResponse,
-          pay: state.pay,
         ),
       );
     } else if (response is HistoryHomePage) {
@@ -60,7 +57,6 @@ class HomleCubit extends Cubit<HomleState> {
                 ),
           driverNoactiveResponse: state.driverNoactiveResponse,
           pechatCreateResponse: state.pechatCreateResponse,
-          pay: state.pay,
         ),
       );
     }
@@ -74,7 +70,6 @@ class HomleCubit extends Cubit<HomleState> {
           historyHomePage: state.historyHomePage,
           driverNoactiveResponse: state.driverNoactiveResponse,
           pechatCreateResponse: state.pechatCreateResponse,
-          pay: state.pay,
         ),
       );
     }
@@ -88,7 +83,6 @@ class HomleCubit extends Cubit<HomleState> {
           tokenErorrModel: response,
           driverNoactiveResponse: state.driverNoactiveResponse,
           pechatCreateResponse: state.pechatCreateResponse,
-          pay: state.pay,
         ),
       );
     } else if (response is DriverNoactiveResponse) {
@@ -106,7 +100,6 @@ class HomleCubit extends Cubit<HomleState> {
                   meta: response.meta,
                 ),
           pechatCreateResponse: state.pechatCreateResponse,
-          pay: state.pay,
         ),
       );
     }
@@ -119,13 +112,11 @@ class HomleCubit extends Cubit<HomleState> {
         historyHomePage: state.historyHomePage,
         driverNoactiveResponse: state.driverNoactiveResponse,
         pechatCreateResponse: null,
-        pay: null,
       ),
     );
     final response = await authRepository.pechat(id, type);
 
     if (response is TokenErorrModel) {
-      print("salom ${response.message}");
       emit(
         HomeError(
           currentIndex: state.currentIndex,
@@ -133,18 +124,15 @@ class HomleCubit extends Cubit<HomleState> {
           tokenErorrModel: response,
           driverNoactiveResponse: state.driverNoactiveResponse,
           pechatCreateResponse: state.pechatCreateResponse,
-          pay: state.pay,
         ),
       );
     } else if (response is PechatCreateResponse) {
-      print(response.message);
       emit(
         HomleFinish(
           currentIndex: state.currentIndex,
           historyHomePage: state.historyHomePage,
           driverNoactiveResponse: state.driverNoactiveResponse,
           pechatCreateResponse: response,
-          pay: state.pay,
         ),
       );
     }
@@ -157,8 +145,39 @@ class HomleCubit extends Cubit<HomleState> {
         historyHomePage: state.historyHomePage,
         driverNoactiveResponse: state.driverNoactiveResponse,
         pechatCreateResponse: null,
-        pay: state.pay,
       ),
     );
+  }
+
+  Future<void> pay(int id, int count) async {
+    emit(
+      HomeLoding(
+        currentIndex: state.currentIndex,
+        historyHomePage: state.historyHomePage,
+        driverNoactiveResponse: state.driverNoactiveResponse,
+        pechatCreateResponse: null,
+      ),
+    );
+    final response = await authRepository.pay(id, count);
+    if (response is TokenErorrModel) {
+      emit(
+        HomeError(
+          currentIndex: state.currentIndex,
+          historyHomePage: state.historyHomePage,
+          tokenErorrModel: response,
+          driverNoactiveResponse: state.driverNoactiveResponse,
+          pechatCreateResponse: state.pechatCreateResponse,
+        ),
+      );
+    } else if (response is PechatCreateResponse) {
+      emit(
+        HomleFinish(
+          currentIndex: state.currentIndex,
+          historyHomePage: state.historyHomePage,
+          driverNoactiveResponse: state.driverNoactiveResponse,
+          pechatCreateResponse: response,
+        ),
+      );
+    }
   }
 }

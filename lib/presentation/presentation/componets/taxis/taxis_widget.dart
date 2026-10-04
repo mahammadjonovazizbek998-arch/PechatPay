@@ -310,16 +310,9 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                     height: 40.h,
                     child: BlocConsumer<HomleCubit, HomleState>(
                       listener: (context, state) {
-                        // Faqat ushbu widget so'rov yuborgan bo'lsa dialog ochamiz
                         if (_isRequesting && state is HomleFinish &&
                             state.pechatCreateResponse != null) {
                           
-                          // Id bo'yicha ham tekshiramiz (ishonch uchun)
-                          final currentId = widget.driver != null && widget.driverNoactiveModel == null
-                              ? widget.driver!.id
-                              : widget.driverNoactiveModel!.id;
-                          
-                          // Eslatma: PechatCreateData ichida driverId yo'q bo'lsa carNumber ishlatamiz
                           final currentCar = widget.driver != null && widget.driverNoactiveModel == null
                               ? widget.driver!.carNumber
                               : widget.driverNoactiveModel!.carNumber;
@@ -335,18 +328,15 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                               barrierDismissible: false,
                             ).then((_) {
                               if (mounted) {
+                                // ignore: use_build_context_synchronously
+                                context.read<HomleCubit>().historyHomePage(1);
+                                // ignore: use_build_context_synchronously
                                 context.read<HomleCubit>().resetPechatResponse();
                               }
                             });
                           }
                         } else if (_isRequesting && state is HomeError) {
                           setState(() => _isRequesting = false);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(state.tokenErorrModel.message ?? "Xatolik yuz berdi"),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
                         }
                       },
                       builder: (context, state) {
@@ -419,6 +409,8 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                         button: true,
                       ),
                       onPressed: () {
+                        // Cubitni saqlab qolamiz (Async gap bo'lgani uchun)
+                        final homleCubit = context.read<HomleCubit>();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -429,7 +421,10 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                                   : widget.driver!.id,
                             ),
                           ),
-                        );
+                        ).then((_) {
+                          // Profil sahifasi yopilganda Home ma'lumotlarini yangilaymiz
+                          homleCubit.historyHomePage(1);
+                        });
                       },
                       child: Row(
                         mainAxisSize: .min,

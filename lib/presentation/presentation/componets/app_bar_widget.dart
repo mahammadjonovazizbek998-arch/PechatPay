@@ -15,6 +15,9 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return BlocBuilder<LoginCubit, LoginState>(
       builder: (context, state) {
         return AppBar(
+          surfaceTintColor: Colors.transparent,
+          scrolledUnderElevation: 0,
+          elevation: 0,
           backgroundColor: myTheme.globalBackgroundColor,
           title: Row(
             crossAxisAlignment: CrossAxisAlignment.center,

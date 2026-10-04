@@ -6,14 +6,12 @@ sealed class HomleState {
   final HistoryHomePage? historyHomePage;
   final DriverNoactiveResponse? driverNoactiveResponse;
   final PechatCreateResponse? pechatCreateResponse;
-  final PechatCreateResponse? pay;
 
   const HomleState({
     required this.currentIndex,
     required this.historyHomePage,
     required this.driverNoactiveResponse,
     required this.pechatCreateResponse,
-    required this.pay,
   });
 }
 
@@ -23,7 +21,6 @@ final class HomleInitial extends HomleState {
     required super.historyHomePage,
     required super.driverNoactiveResponse,
     required super.pechatCreateResponse,
-    required super.pay,
   });
 }
 
@@ -33,7 +30,6 @@ final class HomleFinish extends HomleState {
     required super.historyHomePage,
     required super.driverNoactiveResponse,
     required super.pechatCreateResponse,
-    required super.pay,
   });
 }
 
@@ -43,7 +39,6 @@ final class HomeLoding extends HomleState {
     required super.historyHomePage,
     required super.driverNoactiveResponse,
     required super.pechatCreateResponse,
-    required super.pay,
   });
 }
 
@@ -56,6 +51,5 @@ final class HomeError extends HomleState {
     required super.driverNoactiveResponse,
     required this.tokenErorrModel,
     required super.pechatCreateResponse,
-    required super.pay,
   });
 }

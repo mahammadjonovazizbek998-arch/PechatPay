@@ -19,10 +19,14 @@ class FilterButton extends StatefulWidget {
 
 class _FilterButtonState extends State<FilterButton> {
   final Map<String, String> filters = {
-    'all': 'Barchasi',
-    'active': 'Faol',
-    'completed': 'Bajarilgan',
-    'pending': 'Kutilmoqda',
+    'name': 'Ism bo‘yicha',
+    'car_number': 'Mashina raqami bo‘yicha',
+    'phone': 'Telefon bo‘yicha',
+    'oldest': 'Eng eski',
+    'newest': 'Eng yangi',
+    'least_visits': 'Eng kam tashrif',
+    'most_visits': 'Eng ko‘p tashrif',
+    'oldest_visit': 'Eng eski tashrif',
   };
 
   @override
@@ -38,7 +42,7 @@ class _FilterButtonState extends State<FilterButton> {
             state.hidingData,
             state.rapidOperations,
             state.selectedIndex,
-              state.type
+            state.type,
           ),
           itemBuilder: (ctx) => filters.entries
               .map(
@@ -55,6 +59,7 @@ class _FilterButtonState extends State<FilterButton> {
               )
               .toList(),
           child: Container(
+            constraints: BoxConstraints(minWidth: 75.w, maxWidth: 150.w),
             decoration: AppTextFormStyle.container(
               color: myTheme.textColor,
               shadow: true,
@@ -62,6 +67,7 @@ class _FilterButtonState extends State<FilterButton> {
             padding: .symmetric(horizontal: 10.w, vertical: 5.h),
 
             child: Row(
+              mainAxisSize: .min,
               children: [
                 Image.asset(
                   "assets/img_19.png",
@@ -71,7 +77,9 @@ class _FilterButtonState extends State<FilterButton> {
                 ),
                 SizedBox(width: 3.w),
                 Text(
-                  filters[state.value] ?? "Barchasi",
+                  maxLines: 1,
+                  overflow: .ellipsis,
+                  filters[state.value] ?? "Ism bo‘yicha",
                   style: AppTextStyles.style13.copyWith(
                     color: myTheme.text.withValues(alpha: 0.9),
                     fontWeight: .w500,
@@ -111,7 +119,8 @@ class _NoActiveDriverFilterButtonState
       builder: (ctx, state) {
         return PopupMenuButton<String>(
           color: myTheme.cardColor,
-          onSelected: (value) => context.read<ProfilCubit>().noActiveDriver(int.parse(value), 1),
+          onSelected: (value) =>
+              context.read<ProfilCubit>().noActiveDriver(int.parse(value), 1),
           itemBuilder: (ctx) => filters.entries
               .map(
                 (e) => PopupMenuItem(

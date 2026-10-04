@@ -181,7 +181,11 @@ class _RepidoperationsState extends State<Repidoperations> {
                       barrierDismissible: false,
                     ).then((_) {
                       if (context.mounted) {
+                        // 1. Profil balansini yangilash
                         context.read<TasksCubit>().show(widget.id, 1);
+                        // 2. Bosh sahifa ma'lumotlarini yangilash
+                        context.read<HomleCubit>().historyHomePage(1);
+                        // 3. Cubit state-dagi response-ni tozalash
                         context.read<HomleCubit>().resetPechatResponse();
                       }
                     });
@@ -189,14 +193,6 @@ class _RepidoperationsState extends State<Repidoperations> {
                     setState(() {
                       _isRequesting = false;
                     });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          homeState.tokenErorrModel.message ?? "Xatolik yuz berdi",
-                        ),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
                   }
                 },
                 builder: (context, homeState) {

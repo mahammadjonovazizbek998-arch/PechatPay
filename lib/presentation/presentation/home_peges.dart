@@ -23,19 +23,20 @@ class _HomePegesState extends State<HomePeges> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _refreshController = RefreshController(initialRefresh: false);
   }
+
   @override
   void dispose() {
-    // TODO: implement dispose
-    super.dispose();
     _refreshController.dispose();
+    super.dispose();
   }
-void openSerachBar(BuildContext context){
+
+  void openSerachBar(BuildContext context) {
     showSearch(context: context, delegate: SerarchBar());
-}
+  }
+
   @override
   Widget build(BuildContext context) {
     final myTheme = Theme.of(context).extension<ThemeClass>()!;
@@ -43,11 +44,15 @@ void openSerachBar(BuildContext context){
       appBar: AppBarWidget(),
       body: BlocBuilder<HomleCubit, HomleState>(
         builder: (context, state) {
-          if (state is HomeLoding) {
+          // FAQAT ma'lumot hali umuman yo'q bo'lsa loader chiqaramiz
+          if (state is HomeLoding && state.historyHomePage == null) {
             return Center(
               child: CircularProgressIndicator(color: myTheme.globalColor),
             );
-          } else {
+          }
+          
+          // Agar ma'lumot bo'lsa (yoki yuklash tugagan bo'lsa), ro'yxatni ko'rsatamiz
+          if (state.historyHomePage != null) {
             return SmartRefresher(
               enablePullDown: true,
               enablePullUp: true,
@@ -97,7 +102,6 @@ void openSerachBar(BuildContext context){
                 _refreshController.refreshCompleted();
                 _refreshController.resetNoData();
               },
-
               onLoading: () async {
                 final cubit = context.read<HomleCubit>();
                 final model = cubit.state.historyHomePage;
@@ -130,67 +134,54 @@ void openSerachBar(BuildContext context){
                                 enableInteractiveSelection: false,
                                 decoration: AppTextFormStyle.sorchText(
                                   color: myTheme.text.withValues(alpha: 0.9),
-                                  text:
-                                      "Haydovchi qidirish (ism, tel, davlat raqam)...",
+                                  text: "Haydovchi qidirish (ism, tel, davlat raqam)...",
                                   icon: Icon(Icons.search, size: 19.w),
                                 ),
-                                onTap: ()=>openSerachBar(context),
+                                onTap: () => openSerachBar(context),
                               ),
                             ),
                           ),
                         ),
                         SliverToBoxAdapter(child: SizedBox(height: 14.h)),
                         SliverToBoxAdapter(
-                          child: BlocBuilder<HomleCubit, HomleState>(
-                            builder: (context, state) {
-                              return Row(
-                                mainAxisAlignment: .spaceBetween,
-                                children: [
-                                  Text(
-                                    "HAYDOVCHILAR RO'YXATI",
-                                    style: AppTextStyles.style12.copyWith(
-                                      color: myTheme.text.withValues(
-                                        alpha: 0.9,
-                                      ),
-                                      fontWeight: .w500,
-                                    ),
+                          child: Row(
+                            mainAxisAlignment: .spaceBetween,
+                            children: [
+                              Text(
+                                "HAYDOVCHILAR RO'YXATI",
+                                style: AppTextStyles.style12.copyWith(
+                                  color: myTheme.text.withValues(alpha: 0.9),
+                                  fontWeight: .w500,
+                                ),
+                              ),
+                              Container(
+                                decoration: AppTextFormStyle.container(
+                                  color: myTheme.globalColor.withValues(alpha: 0.1),
+                                ),
+                                padding: .symmetric(vertical: 5.h, horizontal: 6.w),
+                                child: Text(
+                                  "${state.historyHomePage!.meta.total} ta topildi",
+                                  style: AppTextStyles.style12.copyWith(
+                                    color: myTheme.globalColor,
+                                    fontWeight: .bold,
                                   ),
-
-                                  Container(
-                                    decoration: AppTextFormStyle.container(
-                                      color: myTheme.globalColor.withValues(
-                                        alpha: 0.1,
-                                      ),
-                                    ),
-                                    padding: .symmetric(
-                                      vertical: 5.h,
-                                      horizontal: 6.w,
-                                    ),
-                                    child: Text(
-                                      "${state.historyHomePage!.meta.total} ta topildi",
-                                      style: AppTextStyles.style12.copyWith(
-                                        color: myTheme.globalColor,
-                                        fontWeight: .bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         SliverToBoxAdapter(child: SizedBox(height: 10.h)),
                         SliverList.separated(
                           itemBuilder: (ctx, index) {
                             return TaxisWidget(
-                              key: ValueKey(index),
+                              key: ValueKey(state.historyHomePage!.data[index].id), // ID dan foydalanamiz
                               driverNoactiveModel: null,
                               driver: state.historyHomePage!.data[index],
                             );
                           },
-                          itemCount: state.historyHomePage!=null? state.historyHomePage!.data.length:0,
+                          itemCount: state.historyHomePage!.data.length,
                           separatorBuilder: (ctx, index) =>
-                              SizedBox(height: 12.h, key: ValueKey(index)),
+                              SizedBox(height: 12.h, key: ValueKey("sep_$index")),
                         ),
                       ],
                     ),
@@ -199,6 +190,14 @@ void openSerachBar(BuildContext context){
               ),
             );
           }
+          
+          // Hech qanday ma'lumot yo'q bo'lsa
+          return Center(
+            child: Text(
+              "Ma'lumot topilmadi",
+              style: AppTextStyles.style14.copyWith(color: myTheme.text),
+            ),
+          );
         },
       ),
     );

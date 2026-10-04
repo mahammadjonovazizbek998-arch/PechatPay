@@ -6,15 +6,21 @@ import 'package:pechat_pay/logon/tasks/tasks_cubit.dart';
 import '../../../../data/style/text_form_style.dart';
 import '../../../../data/style/text_style.dart';
 import '../../../../data/theme/theme_class.dart';
+import '../../../../logon/home/homle_cubit.dart';
+import '../dialog/stamp_dialog.dart';
 
 class Cash extends StatefulWidget {
-  const Cash({super.key});
+  final int id;
+
+  const Cash({super.key, required this.id});
 
   @override
   State<Cash> createState() => _CashState();
 }
 
 class _CashState extends State<Cash> {
+  bool _isRequesting = false;
+
   @override
   Widget build(BuildContext context) {
     final myTheme = Theme.of(context).extension<ThemeClass>()!;
@@ -25,7 +31,7 @@ class _CashState extends State<Cash> {
             Container(
               padding: .symmetric(horizontal: 12.w, vertical: 18.h),
               decoration: AppTextFormStyle.container(
-                color:  myTheme.unselctedColor.withValues(alpha: 0.09),
+                color: myTheme.unselctedColor.withValues(alpha: 0.09),
               ),
               child: Row(
                 mainAxisAlignment: .spaceBetween,
@@ -38,14 +44,17 @@ class _CashState extends State<Cash> {
                   ),
                   Container(
                     padding: .symmetric(horizontal: 6.w, vertical: 6.h),
-                    width: 140.w,height: 50.h,
+                    width: 140.w,
+                    height: 50.h,
                     decoration: AppTextFormStyle.container(
                       color: myTheme.cardColor,
                     ),
                     child: Row(
                       mainAxisAlignment: .spaceBetween,
                       children: [
-                        SizedBox(width: 40.w,height: 40.h,
+                        SizedBox(
+                          width: 40.w,
+                          height: 40.h,
                           child: ElevatedButton(
                             style: AppTextFormStyle.buttonStyleBorder(
                               button: true,
@@ -71,7 +80,9 @@ class _CashState extends State<Cash> {
                             color: myTheme.text.withValues(alpha: 0.9),
                           ),
                         ),
-                        SizedBox(width: 40.w,height: 40.h,
+                        SizedBox(
+                          width: 40.w,
+                          height: 40.h,
                           child: ElevatedButton(
                             style: AppTextFormStyle.buttonStyleBorder(
                               button: true,
@@ -143,28 +154,80 @@ class _CashState extends State<Cash> {
               ),
             ),
             SizedBox(height: 12.h),
-            SizedBox(width: MediaQuery.of(context).size.width,
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
               height: 48.h,
-              child: ElevatedButton(
-                style: AppTextFormStyle.buttonStyleBorder(
-                  button: true,
-                  padding: true,
-                  background: myTheme.globalColor,
-                  foreground: myTheme.textColor,
-                ),
-                onPressed: () {},
-                child: Row(
-                  mainAxisSize: .min,
-                  children: [
-                    Icon(Icons.check, size: 18.w, color: myTheme.textColor),
-                    Text(
-                      " ${state.unpaidPechatsSum} so'm to'lashni tasdiqlash",
-                      style: AppTextStyles.style14.copyWith(
-                        color: myTheme.textColor,
+              child: BlocConsumer<HomleCubit, HomleState>(
+                listener: (context, homeState) {
+                  if (_isRequesting &&
+                      homeState is HomleFinish &&
+                      homeState.pechatCreateResponse != null) {
+                    setState(() {
+                      _isRequesting = false;
+                    });
+                    showDialog(
+                      context: context,
+                      builder: (_) => StampDialog(
+                        response: homeState.pechatCreateResponse!,
                       ),
+                      barrierDismissible: false,
+                    ).then((_) {
+                      if (context.mounted) {
+                        // 1. Profil balansini yangilash
+                        context.read<TasksCubit>().show(widget.id, 1);
+                        // 2. Bosh sahifa ma'lumotlarini yangilash
+                        context.read<HomleCubit>().historyHomePage(1);
+                        // 3. Cubit state-dagi response-ni tozalash
+                        context.read<HomleCubit>().resetPechatResponse();
+                      }
+                    });
+                  } else if (_isRequesting && homeState is HomeError) {
+                    setState(() {
+                      _isRequesting = false;
+                    });
+                  }
+                },
+                builder: (context, homeState) {
+                  return ElevatedButton(
+                    style: AppTextFormStyle.buttonStyleBorder(
+                      button: true,
+                      padding: true,
+                      background: myTheme.globalColor,
+                      foreground: myTheme.textColor,
                     ),
-                  ],
-                ),
+                    onPressed: () {
+                      setState(() {
+                        _isRequesting = true;
+                      });
+                      context.read<HomleCubit>().pay(widget.id, state.number);
+                    },
+                    child: (homeState is HomeLoding && _isRequesting)
+                        ? SizedBox(
+                            width: 20.w,
+                            height: 20.w,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: myTheme.textColor,
+                            ),
+                          )
+                        : Row(
+                            mainAxisSize: .min,
+                            children: [
+                              Icon(
+                                Icons.check,
+                                size: 18.w,
+                                color: myTheme.textColor,
+                              ),
+                              Text(
+                                " ${state.unpaidPechatsSum} so'm to'lashni tasdiqlash",
+                                style: AppTextStyles.style14.copyWith(
+                                  color: myTheme.textColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                  );
+                },
               ),
             ),
           ],

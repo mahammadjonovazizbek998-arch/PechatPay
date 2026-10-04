@@ -12,6 +12,7 @@ import '../../../../data/repository/auth.dart';
 import '../../../../data/style/text_form_style.dart';
 import '../../../../data/style/text_style.dart';
 import '../../../../data/theme/theme_class.dart';
+import '../../../../logon/home/homle_cubit.dart';
 import '../list_tile.dart';
 import 'cash.dart';
 import 'driver_add_edit.dart';
@@ -33,17 +34,14 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    super.dispose();
     _refreshController.dispose();
+    super.dispose();
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     sl<TasksCubit>().show(widget.id, 1);
-
     _refreshController = RefreshController(initialRefresh: false);
   }
 
@@ -347,6 +345,10 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
                                         foreground: myTheme.text,
                                       ),
                                       onPressed: () {
+                                        final tasksCubit = context
+                                            .read<TasksCubit>();
+                                        final homleCubit = context
+                                            .read<HomleCubit>();
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -365,7 +367,11 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
                                                   .carNumber,
                                             ),
                                           ),
-                                        );
+                                        ).then((_) {
+                                          // Tahrirlash tugagandan so'ng ma'lumotlarni yangilaymiz
+                                          tasksCubit.show(widget.id, 1);
+                                          homleCubit.historyHomePage(1);
+                                        });
                                       },
                                       child: Row(
                                         mainAxisSize: .min,
@@ -710,8 +716,8 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
                                       ),
                                     ),
                                     state.rapidOperations
-                                        ? Cash()
-                                        : Repidoperations(id: widget.id,),
+                                        ? Cash(id: widget.id)
+                                        : Repidoperations(id: widget.id),
                                   ],
                                 ),
                               );
@@ -877,7 +883,7 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
               ),
             );
           } else {
-            return SizedBox();
+            return const SizedBox();
           }
         },
       ),
