@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'componets/app_bar_widget.dart';
+
 class RatingPeges extends StatefulWidget {
   const RatingPeges({super.key});
 
@@ -10,7 +12,7 @@ class RatingPeges extends StatefulWidget {
 class _RatingPegesState extends State<RatingPeges> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Text("RatingPeges"),),);
+    return Scaffold(appBar: AppBarWidget(),
+        body: Center(child: Text("RatingPeges")));
   }
 }
-

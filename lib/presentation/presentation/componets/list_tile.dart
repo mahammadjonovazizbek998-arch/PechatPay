@@ -3,21 +3,23 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // ignore: must_be_immutable
 class ListTileWidget extends StatefulWidget {
-  final ContainerWidget leading;
+  final ContainerWidget? leading;
   Icon? icon;
   final Text selected;
-  final Text unselected;
+  final Text? unselected;
   VoidCallback? onTap;
   String? assets;
   Color? color;
   bool peding;
   Widget? trailing;
   bool icoBool;
+  bool widget;
+  Widget? leading1;
 
   ListTileWidget({
     super.key,
     this.icon,
-    required this.unselected,
+    this.unselected,
     required this.selected,
     this.onTap,
     this.assets,
@@ -26,6 +28,8 @@ class ListTileWidget extends StatefulWidget {
     this.peding = false,
     this.trailing,
     this.icoBool = false,
+    this.widget = true,
+    this.leading1,
   });
 
   @override
@@ -44,26 +48,38 @@ class _ListTileWidgetState extends State<ListTileWidget> {
       contentPadding: widget.peding
           ? EdgeInsets.symmetric(horizontal: 8.w)
           : EdgeInsets.symmetric(horizontal: 16.w),
-      leading: widget.leading,
+      leading: widget.leading ?? widget.leading1,
       onTap: widget.onTap,
-      subtitle: widget.icon != null
+      subtitle: widget.unselected == null
+          ? null
+          : widget.icon != null
           ? Row(
               mainAxisAlignment: .start,
-              children: [widget.icon!, widget.unselected],
+              children: [widget.icon!, widget.unselected!],
             )
           : widget.unselected,
       title: widget.selected,
-      trailing: widget.onTap != null
-          ? widget.icoBool
-                ? Icon(
-                    Icons.keyboard_arrow_down,
-                    color: widget.color!.withValues(alpha: 0.8),
-                  )
-                : Icon(
-                    Icons.chevron_right,
-                    color: widget.color!.withValues(alpha: 0.8),
-                  )
-          : widget.trailing,
+      trailing: widget.widget
+          ? widget.onTap != null
+                ? widget.icoBool
+                      ? Icon(
+                          Icons.keyboard_arrow_down,
+                          color: widget.color!.withValues(alpha: 0.8),
+                        )
+                      : Icon(
+                          Icons.chevron_right,
+                          color: widget.color!.withValues(alpha: 0.8),
+                        )
+                : widget.trailing
+          : Row(mainAxisSize: .min,
+              children: [
+                widget.trailing!,
+                Icon(
+                  Icons.keyboard_arrow_down,
+                  color: widget.color!.withValues(alpha: 0.8),
+                ),
+              ],
+            ),
     );
   }
 }

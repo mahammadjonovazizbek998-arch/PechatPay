@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
-
 import '../../data/repository/auth.dart';
 import '../../data/token_model/token_erorr_model.dart';
 import '../../data/token_model/token_model.dart';
+
 
 part 'login_state.dart';
 
@@ -11,7 +11,19 @@ class LoginCubit extends Cubit<LoginState> {
     : super(
         LoginInitial(
           toHider: true,
-          token: TokenModel(id: 0, name: "", phone: "", token: ""),
+          token: TokenModel(
+            id: 0,
+            name: "",
+            phone: "",
+            token: "",
+            role: '',
+            shift1Start: '',
+            shift1End: '',
+            shift2Start: '',
+            shift2End: '',
+            stampPrice: 0,
+            stampPauseHours: 0,
+          ),
         ),
       ) {
     getSheredPreferences();
@@ -23,14 +35,14 @@ class LoginCubit extends Cubit<LoginState> {
 
   AuthRepository authRepository = AuthRepository();
 
-  //token ni xotridan o'qish
   Future<void> getSheredPreferences() async {
     emit(LoginLoding(token: state.token, toHider: state.toHider));
     TokenModel? tokenModel = await authRepository.tokenGetSharePreferences();
+    emit(LoginFinish(token: tokenModel, toHider: state.toHider));
     if (tokenModel != null) {
-      await authMe(tokenModel.token);
-    } else {
-      emit(LoginFinish(token: tokenModel, toHider: state.toHider));
+
+      authMe();
+
     }
   }
 
@@ -63,8 +75,16 @@ class LoginCubit extends Cubit<LoginState> {
         TokenModel(
           id: tokenModelApi.tokenModelApiUserModel!.id,
           name: tokenModelApi.tokenModelApiUserModel!.name,
-          phone: tokenModelApi.tokenModelApiUserModel!.name,
+          phone: tokenModelApi.tokenModelApiUserModel!.phone,
           token: tokenModelApi.token,
+          role: tokenModelApi.tokenModelApiUserModel!.role,
+          shift1Start: tokenModelApi.tokenModelApiUserModel!.shift1Start,
+          shift1End: tokenModelApi.tokenModelApiUserModel!.shift2End,
+          shift2Start: tokenModelApi.tokenModelApiUserModel!.shift2Start,
+          shift2End: tokenModelApi.tokenModelApiUserModel!.shift2End,
+          stampPrice: tokenModelApi.tokenModelApiUserModel!.stampPrice,
+          stampPauseHours: tokenModelApi.tokenModelApiUserModel!.stampPauseHours
+              .toInt(),
         ),
       );
       emit(
@@ -74,6 +94,14 @@ class LoginCubit extends Cubit<LoginState> {
             name: tokenModelApi.tokenModelApiUserModel!.name,
             phone: tokenModelApi.tokenModelApiUserModel!.name,
             token: tokenModelApi.token,
+            role: tokenModelApi.tokenModelApiUserModel!.role,
+            shift1Start: tokenModelApi.tokenModelApiUserModel!.shift1Start,
+            shift1End: tokenModelApi.tokenModelApiUserModel!.shift2End,
+            shift2Start: tokenModelApi.tokenModelApiUserModel!.shift2Start,
+            shift2End: tokenModelApi.tokenModelApiUserModel!.shift2End,
+            stampPrice: tokenModelApi.tokenModelApiUserModel!.stampPrice,
+            stampPauseHours:
+                tokenModelApi.tokenModelApiUserModel!.stampPauseHours,
           ),
           toHider: state.toHider,
         ),
@@ -87,11 +115,10 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   //profil malumotlari
-  Future<void> authMe(String token) async {
-    final response = await authRepository.authMe(token);
+  Future<void> authMe() async {
+    final response = await authRepository.authMe();
     if (response is TokenModel) {
-      TokenModel tokenModelApi = response;
-      emit(LoginFinish(token: tokenModelApi, toHider: state.toHider));
+      emit(LoginFinish(token: state.token, toHider: state.toHider));
     } else if (response == 401) {
       await authRepository.tokenSetSharedPreferences(null);
       emit(LoginFinish(token: null, toHider: state.toHider));
@@ -102,14 +129,16 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  // //logout
-  // Future<void> logOut() async {
-  //   emit(LoginLoding(toHider: state.toHider, token: state.token));
-  //   final response = await authRepository.logOut();
-  //   if (response is TokenErorrModel) {
-  //     emit(
-  //       LoginError(error: response, toHider: state.toHider, token: state.token),
-  //     );
-  //   }
-  // }
+  //logout
+  Future<void> logOut() async {
+    emit(LoginLoding(toHider: state.toHider, token: state.token));
+    final response = await authRepository.logOut();
+    if (response == null) {
+      await setSharedPrefences(null);
+    } else if (response is TokenErorrModel) {
+      emit(
+        LoginError(error: response, toHider: state.toHider, token: state.token),
+      );
+    }
+  }
 }

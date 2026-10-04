@@ -4,8 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pechat_pay/data/style/text_form_style.dart';
 import 'package:pechat_pay/logon/tasks/tasks_cubit.dart';
 import 'package:pechat_pay/presentation/presentation/componets/profil/filter_button.dart';
+import '../../data/driver_model/driver_noactive_model.dart';
 import '../../data/style/text_style.dart';
 import '../../data/theme/theme_class.dart';
+import 'componets/app_bar_widget.dart';
 import 'componets/taxis/chip_widget.dart';
 import 'componets/taxis/driver_add_edit.dart';
 import 'componets/taxis/taxis_widget.dart';
@@ -24,47 +26,13 @@ class _TasksPegesState extends State<TasksPeges> {
     {"name": "Eng faol"},
     {"name": "Yangi kelganlar"},
   ];
-//key quysh kerak
+
+  //key quysh kerak
   @override
   Widget build(BuildContext context) {
     final myTheme = Theme.of(context).extension<ThemeClass>()!;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: myTheme.globalBackgroundColor,
-        title: Row(
-          crossAxisAlignment: .center,
-          mainAxisAlignment: .start,
-          mainAxisSize: .min,
-          children: [
-            Image.asset("assets/icons/logo_p_p.png", height: 45.h, width: 45.w),
-            SizedBox(width: 5.w),
-            Column(
-              mainAxisAlignment: .start,
-              crossAxisAlignment: .start,
-              mainAxisSize: .min,
-              children: [
-                Text(
-                  textAlign: .start,
-                  "PechatPay",
-                  style: AppTextStyles.style18.copyWith(
-                    fontWeight: .bold,
-                    color: myTheme.text,
-                  ),
-                ),
-                Text(
-                  textAlign: .start,
-                  "Chilonzor filiali",
-                  style: AppTextStyles.style10.copyWith(
-                    fontWeight: .w400,
-                    color: myTheme.text.withValues(alpha: 0.9),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        toolbarHeight: 64.h,
-      ),
+      appBar: AppBarWidget(),
       body: CustomScrollView(
         slivers: [
           SliverPadding(
@@ -148,6 +116,7 @@ class _TasksPegesState extends State<TasksPeges> {
                                   state.hidingData,
                                   state.rapidOperations,
                                   state.selectedIndex,
+                                  state.type
                                 ),
                               ),
                             );
@@ -215,6 +184,7 @@ class _TasksPegesState extends State<TasksPeges> {
                                   state.hidingData,
                                   state.rapidOperations,
                                   state.selectedIndex,
+                                    state.type
                                 ),
                           ),
                         ],
@@ -225,7 +195,21 @@ class _TasksPegesState extends State<TasksPeges> {
                 SliverToBoxAdapter(child: SizedBox(height: 10.h)),
                 SliverList.separated(
                   itemBuilder: (ctx, index) {
-                    return TaxisWidget(key: ValueKey(index));
+                    return TaxisWidget(
+                      key: ValueKey(index),
+                      driverNoactiveModel: DriverNoactiveModel(
+                        id: 1,
+                        name: "Azizbek",
+                        phone: "+998901234561",
+                        carNumber: "01A909AA",
+                        unpaidPechatsCount: 13,
+                        unpaidPechatsSum: 1234567,
+                        createdAt: "2026-09-03 13:23:23",
+                        updatedAt: "2026-09-03 13:23:23",
+                        totalPechatsCount: 200,
+                        paidPechatsCount: 200,
+                      ),
+                    );
                   },
                   itemCount: 12,
                   separatorBuilder: (ctx, index) =>

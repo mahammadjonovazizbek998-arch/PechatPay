@@ -2,21 +2,39 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'package:pechat_pay/data/driver_model/history_home_page.dart';
+import 'package:pechat_pay/data/repository/auth.dart';
 import 'package:pechat_pay/data/style/text_form_style.dart';
 import 'package:pechat_pay/data/style/text_style.dart';
 import 'package:pechat_pay/presentation/presentation/componets/list_tile.dart';
+import '../../../../data/driver_model/driver_noactive_model.dart';
 import '../../../../data/theme/theme_class.dart';
-import '../dialog/rejection_stamp_dialog.dart';
+
+import '../../../../logon/home/homle_cubit.dart';
+import '../dialog/stamp_dialog.dart';
 import 'issuing_a_seal_peges.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TaxisWidget extends StatefulWidget {
-  const TaxisWidget({super.key});
+  final bool phone;
+  final DriverNoactiveModel? driverNoactiveModel;
+  final Driver? driver;
+
+  const TaxisWidget({
+    super.key,
+    this.phone = false,
+    this.driverNoactiveModel,
+    this.driver,
+  });
 
   @override
   State<TaxisWidget> createState() => _TaxisWidgetState();
 }
 
 class _TaxisWidgetState extends State<TaxisWidget> {
+  bool _isRequesting = false; // Local so'rov holati
+
   @override
   void initState() {
     indexColorInst();
@@ -24,6 +42,7 @@ class _TaxisWidgetState extends State<TaxisWidget> {
     super.initState();
   }
 
+  AuthRepository authRepository = AuthRepository();
   final List<Color> profileColors = [
     Color(0xFF104DE8),
     Color(0xFF1D4ED8),
@@ -66,14 +85,22 @@ class _TaxisWidgetState extends State<TaxisWidget> {
         children: [
           ListTileWidget(
             selected: Text(
-              "Jasur Olimov",
+              maxLines: 1,
+              overflow: .clip,
+              widget.driver != null && widget.driverNoactiveModel == null
+                  ? widget.driver!.name
+                  : widget.driverNoactiveModel!.name,
               style: AppTextStyles.style16.copyWith(
                 color: myTheme.text,
                 fontWeight: .w900,
               ),
             ),
             unselected: Text(
-              "+998 97 845 12 34",
+              AuthRepository.formatUzbekPhone(
+                widget.driver != null && widget.driverNoactiveModel == null
+                    ? widget.driver!.phone
+                    : widget.driverNoactiveModel!.phone,
+              ),
               style: AppTextStyles.style12.copyWith(
                 color: myTheme.text.withValues(alpha: 0.9),
               ),
@@ -87,7 +114,19 @@ class _TaxisWidgetState extends State<TaxisWidget> {
               vertical: 54.h,
               horizontal: 50.w,
               text: Text(
-                "SR",
+                widget.driver != null && widget.driverNoactiveModel == null
+                    ? widget.driver!.name.split(" ").length > 1
+                          ? "${widget.driver!.name.split(" ")[0].substring(0, 1)}${widget.driver!.name.split(" ")[1].substring(0, 1)}"
+                          : widget.driver!.name
+                                .split(" ")[0]
+                                .substring(0, 2)
+                                .toUpperCase()
+                    : widget.driverNoactiveModel!.name.split(" ").length > 1
+                    ? "${widget.driverNoactiveModel!.name.split(" ")[0].substring(0, 1)}${widget.driverNoactiveModel!.name.split(" ")[1].substring(0, 1)}"
+                    : widget.driverNoactiveModel!.name
+                          .split(" ")[0]
+                          .substring(0, 2)
+                          .toUpperCase(),
                 style: AppTextStyles.style14.copyWith(
                   fontWeight: .bold,
                   color: myTheme.textColor,
@@ -112,14 +151,28 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                   decoration: AppTextFormStyle.container(
                     color: myTheme.globalColor.withValues(alpha: 0.1),
                   ),
-                  padding: .symmetric(vertical: 5.h, horizontal: 6.w),
+                  padding: .symmetric(vertical: 5.h, horizontal: 10.w),
                   child: Row(
                     mainAxisSize: .min,
                     children: [
-                      Image.asset("assets/img_20.png", width: 17.w),
+                      Image.asset(
+                        widget.driverNoactiveModel != null
+                            ? "assets/rubber-stamp.png"
+                            : widget.driver!.action == "pechat"
+                            ? "assets/rubber-stamp.png"
+                            : widget.driver!.action == "naqtlashtirish1"
+                            ? "assets/money.png"
+                            : "assets/add.png",
+                        color: myTheme.globalColor,
+                        width: 17.w,
+                      ),
                       SizedBox(width: 2.w),
                       Text(
-                        "3 ta muhr",
+                        widget.driverNoactiveModel != null
+                            ? " ${widget.driverNoactiveModel!.unpaidPechatsCount} muhr"
+                            : widget.driver!.action == "naqtlashtirish1"
+                            ? " naqd"
+                            : " ${widget.driver!.action}",
                         style: AppTextStyles.style12.copyWith(
                           color: myTheme.globalColor,
                           fontWeight: .bold,
@@ -129,12 +182,22 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                   ),
                 ),
                 SizedBox(height: 2.h),
-                Text(
-                  "150 000 so'm",
-                  style: AppTextStyles.style12.copyWith(
-                    color: myTheme.text.withValues(alpha: 0.9),
-                  ),
-                ),
+
+                widget.driverNoactiveModel != null
+                    ? Text(
+                        "${AuthRepository.formatSum(widget.driverNoactiveModel!.unpaidPechatsSum.toString())} so'm",
+                        style: AppTextStyles.style12.copyWith(
+                          color: myTheme.text.withValues(alpha: 0.9),
+                        ),
+                      )
+                    : widget.driver!.actionData != null
+                    ? Text(
+                        "${AuthRepository.formatSum(widget.driver!.actionData!.summa.toString())} so'm",
+                        style: AppTextStyles.style12.copyWith(
+                          color: myTheme.text.withValues(alpha: 0.9),
+                        ),
+                      )
+                    : SizedBox(),
               ],
             ),
           ),
@@ -157,10 +220,20 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                   mainAxisSize: .min,
                   crossAxisAlignment: .start,
                   children: [
-                    Image.asset("assets/img_21.png", width: 16.w),
+                    Icon(
+                      Icons.calendar_today_outlined,
+                      size: 16.w,
+                      color: myTheme.text,
+                    ),
                     SizedBox(width: 5.w),
                     Text(
-                      "Chevrolet Lacetti / Gentra",
+                      widget.driver != null &&
+                              widget.driverNoactiveModel == null
+                          ? widget.driver!.updatedAt.substring(0, 10)
+                          : widget.driverNoactiveModel!.updatedAt.substring(
+                              0,
+                              10,
+                            ),
                       style: AppTextStyles.style12.copyWith(
                         color: myTheme.text.withValues(alpha: 0.9),
                       ),
@@ -188,7 +261,13 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                           ),
                         ),
                         child: Text(
-                          "01",
+                          widget.driver != null &&
+                                  widget.driverNoactiveModel == null
+                              ? widget.driver!.carNumber.substring(0, 2)
+                              : widget.driverNoactiveModel!.carNumber.substring(
+                                  0,
+                                  2,
+                                ),
                           style: AppTextStyles.style12.copyWith(
                             color: myTheme.text,
                             fontWeight: .bold,
@@ -196,7 +275,12 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                         ),
                       ),
                       Text(
-                        "A777AA",
+                        AuthRepository.formatUzbekCarNumber(
+                          widget.driver != null &&
+                                  widget.driverNoactiveModel == null
+                              ? widget.driver!.carNumber
+                              : widget.driverNoactiveModel!.carNumber,
+                        ),
                         style: AppTextStyles.style12.copyWith(
                           color: myTheme.text,
                           fontWeight: .bold,
@@ -225,29 +309,84 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                 Expanded(
                   child: SizedBox(
                     height: 40.h,
-                    child: ElevatedButton(
-                      style: AppTextFormStyle.buttonStyleBorder(
-                        button: true,
-                        background: myTheme.container,
-                        foreground: myTheme.globalColor,
-                      ),
-                      onPressed: () {
-                        showDialog(barrierDismissible: false,
-                          context: context,
-                          builder: (ctx) => RejectionStampDialog(),
+                    child: BlocConsumer<HomleCubit, HomleState>(
+                      listener: (context, state) {
+                        // Faqat ushbu widget so'rov yuborgan bo'lsa dialog ochamiz
+                        if (_isRequesting && state is HomleFinish &&
+                            state.pechatCreateResponse != null) {
+                          setState(() {
+                            _isRequesting = false;
+                          });
+                          showDialog(
+                            context: context,
+                            builder: (_) => StampDialog(response: state.pechatCreateResponse!),
+                            barrierDismissible: false,
+                          ).then((_) {
+                            if (context.mounted) {
+                              context.read<HomleCubit>().resetPechatResponse();
+                            }
+                          });
+                        } else if (_isRequesting && state is HomeError) {
+                          setState(() {
+                            _isRequesting = false;
+                          });
+                        }
+                      },
+                      builder: (context, state) {
+                        return ElevatedButton(
+                          style: AppTextFormStyle.buttonStyleBorder(
+                            button: true,
+                            background: myTheme.container,
+                            foreground: myTheme.globalColor,
+                          ),
+                          onPressed: () {
+                            if (widget.phone) {
+                                authRepository.callNumber(
+                                    widget.driver != null &&
+                                            widget.driverNoactiveModel == null
+                                        ? widget.driver!.phone
+                                        : widget.driverNoactiveModel!.phone,
+                                  );
+                            } else {
+                                setState(() {
+                                  _isRequesting = true;
+                                });
+                                context.read<HomleCubit>().pechat(
+                                    widget.driver != null &&
+                                            widget.driverNoactiveModel == null
+                                        ? widget.driver!.id
+                                        : widget.driverNoactiveModel!.id,
+                                    "nasiya",
+                                  );
+                            }
+                          },
+                          child: (state is HomeLoding && _isRequesting) 
+                            ? SizedBox(
+                                width: 18.w,
+                                height: 18.w,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: myTheme.globalColor,
+                                ),
+                              )
+                            : Row(
+                            mainAxisSize: .min,
+                            children: [
+                              Image.asset(
+                                widget.phone
+                                    ? "assets/img_23.png"
+                                    : "assets/img_22.png",
+                                width: 17.w,
+                                color: myTheme.globalColor,
+                              ),
+                              Text(
+                                widget.phone ? " Bog‘lanish" : " Muhr berish",
+                                style: AppTextStyles.style14,
+                              ),
+                            ],
+                          ),
                         );
                       },
-                      child: Row(
-                        mainAxisSize: .min,
-                        children: [
-                          Image.asset(
-                            "assets/img_22.png",
-                            width: 13.w,
-                            color: myTheme.globalColor,
-                          ),
-                          Text("  Muhr berish", style: AppTextStyles.style14),
-                        ],
-                      ),
                     ),
                   ),
                 ),
@@ -268,6 +407,9 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                           MaterialPageRoute(
                             builder: (context) => IssuingASealPeges(
                               color: profileColors[colorIndex],
+                              id: widget.driverNoactiveModel != null
+                                  ? widget.driverNoactiveModel!.id
+                                  : widget.driver!.id,
                             ),
                           ),
                         );

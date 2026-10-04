@@ -10,6 +10,7 @@ import '../../../../logon/login/login_cubit.dart';
 import 'branch_peges.dart';
 import 'help_and_contact.dart';
 import '../list_tile.dart';
+import 'no_active_driver.dart';
 
 class ProfilComponets extends StatefulWidget {
   const ProfilComponets({super.key});
@@ -91,7 +92,7 @@ class _ProfilComponetsState extends State<ProfilComponets> {
                     ),
                     unselected: Text(
                       textAlign: .start,
-                      "3 ta faol filial, boshqaruv",
+                      "Filiallar va boshqaruv",
                       style: AppTextStyles.style13.copyWith(
                         fontWeight: .w500,
                         color: myTheme.text.withValues(alpha: 0.8),
@@ -119,10 +120,7 @@ class _ProfilComponetsState extends State<ProfilComponets> {
                   ListTileWidget(
                     color: myTheme.unselctedColor,
                     onTap: () {
-                      context.read<BottomNavigationBarCubit>().onTap(
-                        holat.currentIndex,
-                        AppProfilPeges.myAccount,
-                      );
+                     Navigator.push(context, MaterialPageRoute(builder: (_)=>NoActiveDriver()));
                     },
 
                     selected: Text(
@@ -137,7 +135,7 @@ class _ProfilComponetsState extends State<ProfilComponets> {
                       maxLines: 1,
                       overflow: .ellipsis,
                       textAlign: .start,
-                      "14 nafar haydovchi tashrif buyurmagan",
+                      "Uzoq mudat tashrif buyurmagan haydochilar",
                       style: AppTextStyles.style13.copyWith(
                         fontWeight: .w500,
                         color: myTheme.text.withValues(alpha: 0.8),

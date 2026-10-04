@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pechat_pay/data/style/text_style.dart';
+import 'package:pechat_pay/logon/login/login_cubit.dart';
 
 import '../../../../data/style/text_form_style.dart';
 import '../../../../data/theme/theme_class.dart';
@@ -18,15 +20,15 @@ class LogoutDialog extends StatelessWidget {
         decoration: BoxDecoration(
           shape: .circle,
           boxShadow: [
-
             BoxShadow(
               color: myTheme.logUot.withValues(alpha: 0.01),
-              blurRadius:8,
+              blurRadius: 8,
               spreadRadius: 2,
             ),
           ],
         ),
-        child: CircleAvatar(backgroundColor: myTheme.logUot.withValues(alpha: 0.09),
+        child: CircleAvatar(
+          backgroundColor: myTheme.logUot.withValues(alpha: 0.09),
           radius: 32.r,
           child: Icon(Icons.logout, color: myTheme.logUot, size: 22.5.w),
         ),
@@ -52,18 +54,42 @@ class LogoutDialog extends StatelessWidget {
         SizedBox(
           width: MediaQuery.of(context).size.width,
           height: 40.h,
-          child: ElevatedButton(
-            onPressed: () => Navigator.pop(context),
-            style: AppTextFormStyle.buttonStyle(
-              background: myTheme.logUot.withValues(alpha: 0.8),
-              foreground: myTheme.textColor,
-            ),
-            child: Text("Ha, tizimdan chiqish", style: AppTextStyles.style14),
+          child: BlocConsumer<LoginCubit, LoginState>(
+            builder: (contx, state) {
+              return ElevatedButton(
+                onPressed: () {
+                  context.read<LoginCubit>().logOut();
+                },
+                style: AppTextFormStyle.buttonStyle(
+                  background: myTheme.logUot.withValues(alpha: 0.8),
+                  foreground: myTheme.textColor,
+                ),
+                child: state is LoginLoding
+                    ? Center(
+                        child: SizedBox(
+                          width: 18.w,
+                          height: 18.h,
+                          child: CircularProgressIndicator(
+                            color: myTheme.textColor,
+                          ),
+                        ),
+                      )
+                    : Text(
+                        "Ha, tizimdan chiqish",
+                        style: AppTextStyles.style14,
+                      ),
+              );
+            },
+            listener: (BuildContext context, LoginState state) {
+              if (state is LoginFinish) {
+                Navigator.pop(context);
+              }
+            },
           ),
         ),
-        SizedBox(height: 10.h,),
+        SizedBox(height: 10.h),
         SizedBox(
-         width: MediaQuery.of(context).size.width,
+          width: MediaQuery.of(context).size.width,
           height: 44.h,
           child: ElevatedButton(
             onPressed: () => Navigator.pop(context),
@@ -74,8 +100,6 @@ class LogoutDialog extends StatelessWidget {
             child: Text("Bekor qilish", style: AppTextStyles.style14),
           ),
         ),
-
-
       ],
     );
   }

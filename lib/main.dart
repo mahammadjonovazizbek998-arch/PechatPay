@@ -66,9 +66,11 @@ class MyApp extends StatelessWidget {
                     return BlocBuilder<LoginCubit, LoginState>(
                       builder: (context, stateToken) {
                         if (stateToken is LoginLoding &&
-                            (stateToken.token == null || stateToken.token?.name == "")) {
+                            stateToken.token != null &&
+                            stateToken.token!.token == "") {
                           return const CircularIndicator();
-                        } else if (stateToken.token == null || stateToken.token?.token == "") {
+                        } else if (stateToken.token == null ||
+                            stateToken.token?.token == "") {
                           return const SinIn();
                         } else {
                           return const MainHomePeges();

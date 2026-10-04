@@ -67,7 +67,7 @@ class AppTextFormStyle {
           : EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
       filled: true,
       fillColor: Colors.white,
-      constraints: BoxConstraints(minHeight: 40.h, maxHeight: 62.h),
+      constraints: BoxConstraints(minHeight: 40.h,),
       errorStyle: AppTextStyles.style12.copyWith(color: color),
       hintStyle: licensePlate
           ? AppTextStyles.style16.copyWith(color: color)

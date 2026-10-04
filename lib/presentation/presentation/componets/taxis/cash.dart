@@ -131,7 +131,7 @@ class _CashState extends State<Cash> {
                         ),
                       ),
                       Text(
-                        "100000 so'm",
+                        "${state.unpaidPechatsSum} so'm",
                         style: AppTextStyles.style20.copyWith(
                           fontWeight: .bold,
                           color: myTheme.globalColor,
@@ -158,7 +158,7 @@ class _CashState extends State<Cash> {
                   children: [
                     Icon(Icons.check, size: 18.w, color: myTheme.textColor),
                     Text(
-                      " 100 000 so'm to'lashni tasdiqlash",
+                      " ${state.unpaidPechatsSum} so'm to'lashni tasdiqlash",
                       style: AppTextStyles.style14.copyWith(
                         color: myTheme.textColor,
                       ),

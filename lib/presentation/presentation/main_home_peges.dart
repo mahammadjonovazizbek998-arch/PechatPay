@@ -7,7 +7,9 @@ import 'package:pechat_pay/presentation/presentation/profile_peges.dart';
 import 'package:pechat_pay/presentation/presentation/rating_peges.dart';
 import 'package:pechat_pay/presentation/presentation/tasks_peges.dart';
 
+import '../../data/get_it/get_it.dart';
 import '../../data/theme/theme_class.dart';
+import '../../logon/home/homle_cubit.dart';
 import 'home_peges.dart';
 
 class MainHomePeges extends StatefulWidget {
@@ -17,7 +19,12 @@ class MainHomePeges extends StatefulWidget {
   State<MainHomePeges> createState() => _HomePegesState();
 }
 
-class _HomePegesState extends State<MainHomePeges> {
+class _HomePegesState extends State<MainHomePeges> {@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    sl<HomleCubit>().historyHomePage(1);
+  }
   final List<Widget> _pages = [
     HomePeges(),
     TasksPeges(),

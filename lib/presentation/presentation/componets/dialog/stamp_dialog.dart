@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pechat_pay/data/driver_model/pechat.dart';
+import 'package:pechat_pay/data/repository/auth.dart';
 
 import '../../../../data/style/text_form_style.dart';
 import '../../../../data/style/text_style.dart';
 import '../../../../data/theme/theme_class.dart';
 
-class StampDialog extends StatefulWidget {
-  const StampDialog({super.key});
+class StampDialog extends StatelessWidget {
+  final PechatCreateResponse response;
 
-  @override
-  State<StampDialog> createState() => _StampDialogState();
-}
+  const StampDialog({super.key, required this.response});
 
-class _StampDialogState extends State<StampDialog> {
   @override
   Widget build(BuildContext context) {
     final myTheme = Theme.of(context).extension<ThemeClass>()!;
+    final data = response.data;
+    
     return AlertDialog(
       insetPadding: EdgeInsets.symmetric(horizontal: 35.w, vertical: 24.h),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.r),
+      ),
       alignment: .center,
       icon: DecoratedBox(
-        decoration: BoxDecoration(border: BoxBorder.all(color: myTheme.phonColor, width: 0.3),
+        decoration: BoxDecoration(
+          border: BoxBorder.all(color: myTheme.phonColor, width: 0.3),
           shape: .circle,
           boxShadow: [
             BoxShadow(
@@ -62,7 +66,8 @@ class _StampDialogState extends State<StampDialog> {
           ),
         ],
       ),
-      content: Container(height: 195.h,
+      content: Container(
+        height: 150.h,
         decoration: AppTextFormStyle.container(
           color: myTheme.unselctedColor.withValues(alpha: 0.1),
           borderColor: myTheme.unselctedColor,
@@ -83,7 +88,7 @@ class _StampDialogState extends State<StampDialog> {
                 ),
                 Text(
                   textAlign: .center,
-                  "Farhod Nurmatov",
+                  data?.driverName ?? "Noma'lum",
                   style: AppTextStyles.style12.copyWith(
                     fontWeight: .bold,
                     color: myTheme.text,
@@ -118,13 +123,17 @@ class _StampDialogState extends State<StampDialog> {
                         height: 28.h,
                         width: 30.w,
                         decoration: BoxDecoration(
-                          color: myTheme.unselctedColor.withValues(alpha: 0.3),
+                          color: myTheme.unselctedColor.withValues(
+                            alpha: 0.3,
+                          ),
                           border: .fromLTRB(
-                            right: BorderSide(color: myTheme.unselctedColor),
+                            right: BorderSide(
+                              color: myTheme.unselctedColor,
+                            ),
                           ),
                         ),
                         child: Text(
-                          "01",
+                          data?.carNumber.substring(0, 2) ?? "xx",
                           style: AppTextStyles.style12.copyWith(
                             color: myTheme.text,
                             fontWeight: .bold,
@@ -132,7 +141,9 @@ class _StampDialogState extends State<StampDialog> {
                         ),
                       ),
                       Text(
-                        "A777AA",
+                        AuthRepository.formatUzbekCarNumber(
+                          data?.carNumber ?? "A777AA",
+                        ),
                         style: AppTextStyles.style12.copyWith(
                           color: myTheme.text,
                           fontWeight: .bold,
@@ -158,7 +169,9 @@ class _StampDialogState extends State<StampDialog> {
               children: [
                 Text(
                   textAlign: .center,
-                  "Berilgan muhr:",
+                  data?.type == "nasiya"
+                      ? "Berilgan muhr:"
+                      : "Berilgan summa:",
                   style: AppTextStyles.style12.copyWith(
                     fontWeight: .w500,
                     color: myTheme.unselctedColor,
@@ -169,24 +182,32 @@ class _StampDialogState extends State<StampDialog> {
                     color: myTheme.phonColor.withValues(alpha: 0.1),
                   ),
                   padding: .symmetric(vertical: 5.h, horizontal: 6.w),
-                  child: Row(
-                    mainAxisSize: .min,
-                    children: [
-                      Image.asset(
-                        "assets/img_28.png",
-                        width: 17.w,
-                        color: myTheme.phonColor,
-                      ),
-                      SizedBox(width: 2.w),
-                      Text(
-                        "1 ta muhr",
-                        style: AppTextStyles.style12.copyWith(
-                          color: myTheme.phonColor,
-                          fontWeight: .bold,
+                  child: data?.type == "nasiya"
+                      ? Row(
+                          mainAxisSize: .min,
+                          children: [
+                            Image.asset(
+                              "assets/img_28.png",
+                              width: 10.w,
+                              color: myTheme.phonColor,
+                            ),
+                            SizedBox(width: 2.w),
+                            Text(
+                              "${data?.pechatCount ?? "1"} ta muhr",
+                              style: AppTextStyles.style12.copyWith(
+                                color: myTheme.phonColor,
+                                fontWeight: .bold,
+                              ),
+                            ),
+                          ],
+                        )
+                      : Text(
+                          "${AuthRepository.formatSum(data?.stampPrice.toString() ?? "0")} so'm",
+                          style: AppTextStyles.style12.copyWith(
+                            color: myTheme.phonColor,
+                            fontWeight: .bold,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
                 ),
               ],
             ),
@@ -204,33 +225,10 @@ class _StampDialogState extends State<StampDialog> {
                 ),
                 Text(
                   textAlign: .center,
-                  "6 ta muhr (300 000 so'm)",
+                  "${data?.unpaidPechatsCount} ta muhr (${data?.unpaidPechatsSum} so'm)",
                   style: AppTextStyles.style12.copyWith(
                     fontWeight: .bold,
                     color: myTheme.globalColor,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 5.h),
-            Divider(color: myTheme.unselctedColor.withValues(alpha: 0.3),),
-            SizedBox(height: 5.h),
-            Row(
-              mainAxisAlignment: .spaceBetween,
-              children: [
-                Text(
-                  textAlign: .center,
-                  "Vaqt:",
-                  style: AppTextStyles.style12.copyWith(
-                    fontWeight: .w500,
-                    color: myTheme.unselctedColor,
-                  ),
-                ),
-                Text(
-                  textAlign: .center,
-                  "Hozir (Bugun, 15:42)",
-                  style: AppTextStyles.style12.copyWith(
-                    color: myTheme.text,
                   ),
                 ),
               ],
@@ -262,7 +260,7 @@ class _StampDialogState extends State<StampDialog> {
               background: myTheme.unselctedColor.withValues(alpha: 0.5),
               foreground: myTheme.text,
             ),
-            child: Text("Bekor qilish", style: AppTextStyles.style14),
+            child: Text("Bosh sahifa", style: AppTextStyles.style14),
           ),
         ),
       ],

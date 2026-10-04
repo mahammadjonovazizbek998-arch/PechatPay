@@ -76,23 +76,23 @@ class _SinInState extends State<SinIn> with WidgetsBindingObserver {
         child: Stack(
           children: [
             Positioned(
-              top: isKeyboardOpen ? 134.h : 190.h,
-              left: 55.w,
-              right: 55.w,
+              top: isKeyboardOpen ? 172.h : 243.h,
+              left: 60.w,
+              right: 60.w,
               child: Image.asset(
-                alignment: .center,
+                alignment: Alignment.center,
                 "assets/pechat_pay_logo.png",
-                width: 250.w,
+                width: 271.w,
               ),
             ),
             Positioned(
-              top: isKeyboardOpen ? 262.h : 327.h,
-              left: 20.w,
-              right: 20.w,
+              top: isKeyboardOpen ? 336.h : 419.h,
+              left: 22.w,
+              right: 22.w,
               child: BlocBuilder<LoginCubit, LoginState>(
                 builder: (builderContext, holat) {
                   return TextFormField(
-                    keyboardType: .phone,
+                    keyboardType: TextInputType.phone,
                     style: AppTextStyles.style16.copyWith(color: myTheme.text),
                     cursorColor: myTheme.unselctedColor,
                     cursorErrorColor: myTheme.unselctedColor,
@@ -117,9 +117,9 @@ class _SinInState extends State<SinIn> with WidgetsBindingObserver {
               ),
             ),
             Positioned(
-              top: isKeyboardOpen ? 333.h : 398.h,
-              left: 20.w,
-              right: 20.w,
+              top: isKeyboardOpen ? 427.h : 510.h,
+              left: 22.w,
+              right: 22.w,
               child: BlocBuilder<LoginCubit, LoginState>(
                 builder: (builderContext, holat) {
                   return TextFormField(
@@ -142,7 +142,8 @@ class _SinInState extends State<SinIn> with WidgetsBindingObserver {
                                 : null)
                           : null,
                     ),
-                    validator: (value) => AppValidator.password(value: value),
+                    validator: (value) =>
+                        AppValidator.password(value: value, name: "Parol"),
                     onSaved: (value) {
                       parol = value!;
                     },
@@ -151,10 +152,10 @@ class _SinInState extends State<SinIn> with WidgetsBindingObserver {
               ),
             ),
             Positioned(
-              top: isKeyboardOpen ? 415.h : 480.h,
-              left: 20.w,
-              right: 20.w,
-              height: 53.h,
+              top: isKeyboardOpen ? 532.h : 615.h,
+              left: 22.w,
+              right: 22.w,
+              height: 68.h,
               child: BlocConsumer<LoginCubit, LoginState>(
                 builder: (ctx, holat) {
                   return ElevatedButton(

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pechat_pay/logon/tasks/tasks_cubit.dart';
 
+import '../../../../data/repository/auth.dart';
 import '../../../../data/style/text_form_style.dart';
 import '../../../../data/style/text_style.dart';
 import '../../../../data/theme/theme_class.dart';
@@ -23,7 +24,8 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
       builder: (context, state) {
         return Container(
           margin: .symmetric(vertical: 14.h),
-          decoration: AppTextFormStyle.container(shadow: true,
+          decoration: AppTextFormStyle.container(
+            shadow: true,
             color: myTheme.cardColor,
             borderColor: myTheme.globalColor,
           ),
@@ -38,14 +40,25 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                   mainAxisAlignment: .start,
                   children: [
                     Text(
-                      "1 ta muhr",
+                      state
+                                  .driverHistoryResponse!
+                                  .data[state.selectedIndex!]
+                                  .action ==
+                              "pay"
+                          ? "${state.driverHistoryResponse!.data[state.selectedIndex!].count} muhr"
+                          : "1 ta muhr",
+
                       style: AppTextStyles.style14.copyWith(
                         color: myTheme.text,
                         fontWeight: .bold,
                       ),
                     ),
                     Text(
-                      "50000",
+                      state
+                          .driverHistoryResponse!
+                          .data[state.selectedIndex!]
+                          .summa
+                          .toString(),
                       style: AppTextStyles.style14.copyWith(
                         color: myTheme.globalColor,
                       ),
@@ -54,7 +67,13 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                 ),
                 selected: Text(
                   textAlign: .start,
-                  "Muhr berildi",
+                  state
+                              .driverHistoryResponse!
+                              .data[state.selectedIndex!]
+                              .action ==
+                          "pechat"
+                      ? "Muhr berildi"
+                      : "Naqdlashtirish",
                   style: AppTextStyles.style14.copyWith(
                     fontWeight: .bold,
                     color: myTheme.text,
@@ -62,7 +81,12 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                 ),
                 unselected: Text(
                   textAlign: .start,
-                  "Kecha, 17:30 • Chilonzor (Kunduzgi)",
+                  AuthRepository.formatDate(
+                    state
+                        .driverHistoryResponse!
+                        .data[state.selectedIndex!]
+                        .createdAt!,
+                  ),
                   style: AppTextStyles.style13.copyWith(
                     fontWeight: .w500,
                     color: myTheme.text.withValues(alpha: 0.8),
@@ -71,12 +95,33 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                 leading: ContainerWidget(
                   vertical: 46.h,
                   horizontal: 44.w,
-                  assets: "assets/img_24.png",
+                  assets:
+                      state
+                              .driverHistoryResponse!
+                              .data[state.selectedIndex!]
+                              .action ==
+                          "pechat"
+                      ? "assets/money.png"
+                      : "assets/img_22.png",
                   assetsHorizontal: 16.75,
                   assetsVertical: 17.5,
-                  assetsColor: myTheme.globalColor.withValues(alpha: 0.8),
+                  assetsColor:
+                      state
+                              .driverHistoryResponse!
+                              .data[state.selectedIndex!]
+                              .action ==
+                          "pechat"
+                      ? myTheme.phonColor.withValues(alpha: 0.8)
+                      : myTheme.globalColor.withValues(alpha: 0.8),
                   boxDecoration: AppTextFormStyle.container(
-                    color: myTheme.globalColor.withValues(alpha: 0.1),
+                    color:
+                        state
+                                .driverHistoryResponse!
+                                .data[state.selectedIndex!]
+                                .action ==
+                            "pechat"
+                        ? myTheme.phonColor.withValues(alpha: 0.1)
+                        : myTheme.globalColor.withValues(alpha: 0.1),
                   ),
                 ),
               ),
@@ -99,7 +144,10 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                     ),
                     SizedBox(height: 5.h),
                     Text(
-                      "PechatPay — Chilonzor",
+                      state
+                          .driverHistoryResponse!
+                          .data[state.selectedIndex!]
+                          .filialName,
                       style: AppTextStyles.style12.copyWith(
                         color: myTheme.text,
                         fontWeight: .bold,
@@ -108,24 +156,51 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                   ],
                 ),
               ),
-              Padding(
-                padding: .symmetric(horizontal: 14.w,vertical: 5.h),
-                child: Row(
-                  mainAxisAlignment: .spaceBetween,
-                  children: [
-                    Text(
-                      "TO'LANGAN MUHRLAR RO'YXATI",
-                      style: AppTextStyles.style12.copyWith(
-                        fontWeight: .bold,
-                        color: myTheme.text,
+              state
+                          .driverHistoryResponse!
+                          .data[state.selectedIndex!]
+                          .pechats
+                          .isNotEmpty ||
+                      state
+                              .driverHistoryResponse!
+                              .data[state.selectedIndex!]
+                              .pay !=
+                          null
+                  ? Padding(
+                      padding: .symmetric(horizontal: 14.w, vertical: 5.h),
+                      child: Row(
+                        mainAxisAlignment: .spaceBetween,
+                        children: [
+                          Text(
+                            "TO'LANGAN MUHRLAR RO'YXATI",
+                            style: AppTextStyles.style12.copyWith(
+                              fontWeight: .bold,
+                              color: myTheme.text,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-
-                  ],
-                ),
-              ),
+                    )
+                  : SizedBox(),
               ListView.separated(
-                itemCount: 2,
+                itemCount:
+                    state
+                        .driverHistoryResponse!
+                        .data[state.selectedIndex!]
+                        .pechats
+                        .isEmpty
+                    ? state
+                                  .driverHistoryResponse!
+                                  .data[state.selectedIndex!]
+                                  .pay !=
+                              null
+                          ? 1
+                          : 0
+                    : state
+                          .driverHistoryResponse!
+                          .data[state.selectedIndex!]
+                          .pechats
+                          .length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, indedx) {
@@ -133,20 +208,26 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                     width: MediaQuery.of(context).size.width,
                     margin: .symmetric(horizontal: 14.w),
                     decoration: AppTextFormStyle.container(
-                      color:  myTheme.unselctedColor.withValues(alpha: 0.09),
+                      color: myTheme.unselctedColor.withValues(alpha: 0.09),
                     ),
                     child: ListTileWidget(
                       peding: true,
                       color: myTheme.unselctedColor,
                       trailing: Text(
-                        "50000 so'm",
+                        state
+                                    .driverHistoryResponse!
+                                    .data[state.selectedIndex!]
+                                    .action ==
+                                "pay"
+                            ? "${AuthRepository.formatSum(state.driverHistoryResponse!.data[state.selectedIndex!].pechats[indedx].summa.toString())} so'm"
+                            : "${AuthRepository.formatSum(state.driverHistoryResponse!.data[state.selectedIndex!].pay?.summa.toString() ?? "0")} so'm",
                         style: AppTextStyles.style14.copyWith(
                           color: myTheme.text,
                         ),
                       ),
                       selected: Text(
                         textAlign: .start,
-                        "Muhr #0128",
+                        "Muhr #${state.driverHistoryResponse!.data[state.selectedIndex!].action == "pay" ? state.driverHistoryResponse!.data[state.selectedIndex!].pechats[indedx].id.toString() : state.driverHistoryResponse!.data[state.selectedIndex!].pay?.id.toString()}",
                         style: AppTextStyles.style14.copyWith(
                           fontWeight: .bold,
                           color: myTheme.text,
@@ -154,7 +235,7 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                       ),
                       unselected: Text(
                         textAlign: .start,
-                        "14-mart, 09:15 da olingan (Chilonzor)",
+                        "${state.driverHistoryResponse!.data[state.selectedIndex!].action == "pay" ? AuthRepository.formatDate(state.driverHistoryResponse!.data[state.selectedIndex!].pechats[indedx].createdAt!) : AuthRepository.formatDate(state.driverHistoryResponse!.data[state.selectedIndex!].pay!.createdAt!)}  ",
                         style: AppTextStyles.style13.copyWith(
                           fontWeight: .w500,
                           color: myTheme.text.withValues(alpha: 0.8),
@@ -163,7 +244,7 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                       leading: ContainerWidget(
                         vertical: 46.h,
                         horizontal: 44.w,
-                        assets: "assets/img_22.png",
+                        assets: "assets/rubber-stamp.png",
                         assetsHorizontal: 16.75,
                         assetsVertical: 17.5,
                         assetsColor: myTheme.globalColor.withValues(alpha: 0.8),
@@ -178,55 +259,61 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                   return SizedBox(height: 10.h);
                 },
               ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                padding: .symmetric(vertical: 10.h, horizontal: 10.w),
-                margin: .symmetric(vertical: 14.h, horizontal: 14.w),
-                decoration: AppTextFormStyle.container(
-                  color:  myTheme.globalColor.withValues(alpha: 0.06),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: .spaceBetween,
-                      children: [
-                        Text(
-                          "BALANS O'ZGARISHI",
-                          style: AppTextStyles.style10.copyWith(
-                            color: myTheme.text,
-                          ),
-                        ),
-                        Text(
-                          "JAMI TO'LANGAN NAQD SUMMA",
-                          style: AppTextStyles.style10.copyWith(
-                            color: myTheme.text,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 5.h),
-                    Row(
-                      mainAxisAlignment: .spaceBetween,
-                      children: [
-                        Text(
-                          "6 ta - 4ta muhir",
-                          style: AppTextStyles.style14.copyWith(
-                            fontWeight: .bold,
-                            color: myTheme.text,
-                          ),
-                        ),
-                        Text(
-                          "100 000 so'm (Naqd)",
-                          style: AppTextStyles.style14.copyWith(
-                            color: myTheme.globalColor,
-                            fontWeight: .bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+              // state
+              //         .driverHistoryResponse!
+              //         .data[state.selectedIndex!]
+              //         .pechats
+              //         .isNotEmpty
+              //     ? Container(
+              //         width: MediaQuery.of(context).size.width,
+              //         padding: .symmetric(vertical: 10.h, horizontal: 10.w),
+              //         margin: .symmetric(vertical: 14.h, horizontal: 14.w),
+              //         decoration: AppTextFormStyle.container(
+              //           color: myTheme.globalColor.withValues(alpha: 0.06),
+              //         ),
+              //         child: Column(
+              //           children: [
+              //             Row(
+              //               mainAxisAlignment: .spaceBetween,
+              //               children: [
+              //                 Text(
+              //                   "BALANS O'ZGARISHI",
+              //                   style: AppTextStyles.style10.copyWith(
+              //                     color: myTheme.text,
+              //                   ),
+              //                 ),
+              //                 Text(
+              //                   "JAMI TO'LANGAN NAQD SUMMA",
+              //                   style: AppTextStyles.style10.copyWith(
+              //                     color: myTheme.text,
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),
+              //             SizedBox(height: 5.h),
+              //             Row(
+              //               mainAxisAlignment: .spaceBetween,
+              //               children: [
+              //                 Text(
+              //                   "6 ta - 4ta muhir",
+              //                   style: AppTextStyles.style14.copyWith(
+              //                     fontWeight: .bold,
+              //                     color: myTheme.text,
+              //                   ),
+              //                 ),
+              //                 Text(
+              //                   "100 000 so'm (Naqd)",
+              //                   style: AppTextStyles.style14.copyWith(
+              //                     color: myTheme.globalColor,
+              //                     fontWeight: .bold,
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),
+              //           ],
+              //         ),
+              //       )
+              //     : SizedBox(),
               Padding(
                 padding: .symmetric(horizontal: 14.w),
                 child: SizedBox(
@@ -236,7 +323,9 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                     style: AppTextFormStyle.buttonStyleBorder(
                       button: false,
                       padding: true,
-                      background:  myTheme.unselctedColor.withValues(alpha: 0.09),
+                      background: myTheme.unselctedColor.withValues(
+                        alpha: 0.09,
+                      ),
                       foreground: myTheme.text,
                     ),
                     onPressed: () {
@@ -246,6 +335,7 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                         state.hidingData,
                         state.rapidOperations,
                         null,
+                          state.type
                       );
                     },
                     child: Row(

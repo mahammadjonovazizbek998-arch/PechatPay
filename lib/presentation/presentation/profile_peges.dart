@@ -6,6 +6,7 @@ import 'package:pechat_pay/data/style/text_style.dart';
 import 'package:pechat_pay/logon/bottom_navigation_bar/bottom_navigation_bar_cubit.dart';
 import '../../data/theme/theme_class.dart';
 import '../../logon/login/login_cubit.dart';
+import 'componets/app_bar_widget.dart';
 import 'componets/profil/branch_componets.dart';
 
 import 'componets/dialog/logout_dialog.dart';
@@ -27,46 +28,7 @@ class _ProfilePegesState extends State<ProfilePeges> {
         return BlocBuilder<BottomNavigationBarCubit, BottomNavigationBarState>(
           builder: (context, holat) {
             return Scaffold(
-              appBar: AppBar(
-                backgroundColor: myTheme.globalBackgroundColor,
-                title: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      "assets/icons/logo_p_p.png",
-                      height: 45.h,
-                      width: 45.w,
-                    ),
-                    SizedBox(width: 5.w),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          textAlign: TextAlign.start,
-                          "PechatPay",
-                          style: AppTextStyles.style18.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: myTheme.text,
-                          ),
-                        ),
-                        Text(
-                          textAlign: TextAlign.start,
-                          "Chilonzor filiali",
-                          style: AppTextStyles.style10.copyWith(
-                            fontWeight: FontWeight.w400,
-                            color: myTheme.text.withValues(alpha: 0.9),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                toolbarHeight: 64.h,
-              ),
+              appBar: AppBarWidget(),
               body: CustomScrollView(
                 slivers: [
                   SliverPadding(
@@ -91,7 +53,8 @@ class _ProfilePegesState extends State<ProfilePeges> {
                             padding: EdgeInsets.symmetric(vertical: 10.h),
                             width: 358.w,
 
-                            decoration: AppTextFormStyle.container(shadow: true,
+                            decoration: AppTextFormStyle.container(
+                              shadow: true,
                               color: myTheme.cardColor,
                             ),
                             child: Padding(
