@@ -330,7 +330,7 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                     ),
                     onPressed: () {
                       context.read<TasksCubit>().onTap(
-                        state.index,
+
                         state.value,
                         state.hidingData,
                         state.rapidOperations,

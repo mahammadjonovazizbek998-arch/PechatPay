@@ -20,6 +20,14 @@ import 'api_service.dart';
 class AuthRepository {
   final ApiService _apiService = ApiService();
 
+  static String formatPlate(String? plate) {
+    final raw = (plate ?? '')
+        .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')
+        .toUpperCase();
+    if (raw.length <= 2) return raw;
+    return '${raw.substring(0, 2)} ${raw.substring(2)}';
+  }
+
   static String formatDate(DateTime date) {
     const months = [
       'yanvar',
@@ -45,8 +53,8 @@ class AuthRepository {
     final day = DateTime(date.year, date.month, date.day);
     final diff = today.difference(day).inDays;
 
-    if (diff == 0) return 'bugun $time';
-    if (diff == 1) return 'kecha $time';
+    if (diff == 0) return '$time Bugun';
+    if (diff == 1) return '$time Kecha';
 
     final monthName = months[date.month - 1];
 
@@ -508,10 +516,10 @@ class AuthRepository {
         return PechatCreateResponse(message: model.message, data: model.data);
       });
     } catch (e) {
-
       return TokenErorrModel(message: e.toString(), data: null);
     }
   }
+
   Future<dynamic> pay(int id, int count) async {
     try {
       final response = await _apiService.pay(id, count);
@@ -520,7 +528,59 @@ class AuthRepository {
         return PechatCreateResponse(message: model.message, data: model.data);
       });
     } catch (e) {
+      return TokenErorrModel(message: e.toString(), data: null);
+    }
+  }
 
+  Future<dynamic> driversPage(
+    String? search,
+    String sort,
+    List<String> filters,
+    int page,
+  ) async {
+    try {
+      final response = await _apiService.driverPage(
+        search,
+        sort,
+        filters,
+        page,
+      );
+      return httpResponse(response, (data) {
+        final model = DriverNoactiveResponse.fromJson(data);
+        return DriverNoactiveResponse(data: model.data, meta: model.meta);
+      });
+    } catch (e) {
+      return TokenErorrModel(message: e.toString(), data: null);
+    }
+  }
+
+  Future<dynamic> createUpdateDriver(
+    String name,
+    String phone,
+    String carNumer,
+    int? id,
+  ) async {
+    try {
+      final response = await _apiService.createUpdateDriver(
+        name,
+       await phoneData(phone),
+        carNumer,
+        id,
+      );
+      return httpResponse(response, (data) {
+        final model = Driver.fromJson(data["data"]);
+        return Driver(
+          id: model.id,
+          name: model.name,
+          phone: model.phone,
+          carNumber: model.carNumber,
+          unpaidPechatsCount: model.unpaidPechatsCount,
+          unpaidPechatsSum: model.unpaidPechatsSum,
+          createdAt: model.createdAt,
+          updatedAt: model.updatedAt,
+        );
+      });
+    } catch (e) {
       return TokenErorrModel(message: e.toString(), data: null);
     }
   }

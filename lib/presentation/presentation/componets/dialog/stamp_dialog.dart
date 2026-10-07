@@ -11,8 +11,8 @@ import '../../../../data/theme/theme_class.dart';
 
 class StampDialog extends StatelessWidget {
   final PechatCreateResponse response;
-
-  const StampDialog({super.key, required this.response});
+final bool isActiv;
+  const StampDialog({super.key, required this.response,required this.isActiv});
 
   @override
   Widget build(BuildContext context) {
@@ -275,18 +275,19 @@ class StampDialog extends StatelessWidget {
           ),
         ),
         SizedBox(height: 10.h),
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: 44.h,
-          child: ElevatedButton(
-            onPressed: () => Navigator.pop(context),
-            style: AppTextFormStyle.buttonStyle(
-              background: myTheme.unselctedColor.withValues(alpha: 0.5),
-              foreground: myTheme.text,
+        if(isActiv)
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: 44.h,
+            child: ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              style: AppTextFormStyle.buttonStyle(
+                background: myTheme.unselctedColor.withValues(alpha: 0.5),
+                foreground: myTheme.text,
+              ),
+              child: Text("Bosh sahifa", style: AppTextStyles.style14),
             ),
-            child: Text("Bosh sahifa", style: AppTextStyles.style14),
           ),
-        ),
       ],
     );
   }

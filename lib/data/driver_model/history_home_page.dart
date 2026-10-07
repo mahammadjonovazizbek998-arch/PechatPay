@@ -23,8 +23,8 @@ class Driver {
   final String carNumber;
   final int unpaidPechatsCount;
   final int unpaidPechatsSum;
-  final String createdAt;
-  final String updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   final String? action;
   final ActionData? actionData;
 
@@ -49,9 +49,13 @@ class Driver {
       carNumber: json['car_number']?.toString() ?? '',
       unpaidPechatsCount: (json['unpaid_pechats_count'] as num?)?.toInt() ?? 0,
       unpaidPechatsSum: (json['unpaid_pechats_sum'] as num?)?.toInt() ?? 0,
-      createdAt: json['created_at']??"",
+      createdAt: json['created_at'] != null
+          ? DateTime.tryParse(json['created_at'].toString())
+          : null,
 
-      updatedAt: json['updated_at'] ??"",
+      updatedAt: json['updated_at'] != null
+          ? DateTime.tryParse(json['updated_at'].toString())
+          : null,
       action: json['action']?.toString(),
       actionData: json['action_data'] != null
           ? ActionData.fromJson(json['action_data'] as Map<String, dynamic>)

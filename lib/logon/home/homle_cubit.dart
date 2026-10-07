@@ -27,7 +27,7 @@ class HomleCubit extends Cubit<HomleState> {
       emit(
         HomeLoding(
           currentIndex: state.currentIndex,
-          historyHomePage: state.historyHomePage,
+          historyHomePage: null,
           driverNoactiveResponse: state.driverNoactiveResponse,
           pechatCreateResponse: state.pechatCreateResponse,
         ),
@@ -68,7 +68,7 @@ class HomleCubit extends Cubit<HomleState> {
         HomeLoding(
           currentIndex: state.currentIndex,
           historyHomePage: state.historyHomePage,
-          driverNoactiveResponse: state.driverNoactiveResponse,
+          driverNoactiveResponse: null,
           pechatCreateResponse: state.pechatCreateResponse,
         ),
       );
@@ -111,7 +111,7 @@ class HomleCubit extends Cubit<HomleState> {
         currentIndex: state.currentIndex,
         historyHomePage: state.historyHomePage,
         driverNoactiveResponse: state.driverNoactiveResponse,
-        pechatCreateResponse: null,
+        pechatCreateResponse: state.pechatCreateResponse,
       ),
     );
     final response = await authRepository.pechat(id, type);
@@ -144,7 +144,7 @@ class HomleCubit extends Cubit<HomleState> {
         currentIndex: state.currentIndex,
         historyHomePage: state.historyHomePage,
         driverNoactiveResponse: state.driverNoactiveResponse,
-        pechatCreateResponse: null,
+        pechatCreateResponse: state.pechatCreateResponse,
       ),
     );
   }
@@ -155,7 +155,7 @@ class HomleCubit extends Cubit<HomleState> {
         currentIndex: state.currentIndex,
         historyHomePage: state.historyHomePage,
         driverNoactiveResponse: state.driverNoactiveResponse,
-        pechatCreateResponse: null,
+        pechatCreateResponse: state.pechatCreateResponse,
       ),
     );
     final response = await authRepository.pay(id, count);

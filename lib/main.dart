@@ -35,8 +35,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final shortestSide = MediaQuery.of(context).size.shortestSide;
+    final isTablet = shortestSide >= 600;
     return ScreenUtilInit(
-      designSize: const Size(390, 884),
+      designSize:  isTablet ? const Size(768, 1024) : const Size(390, 884),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {

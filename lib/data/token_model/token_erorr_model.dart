@@ -27,6 +27,7 @@ class TokenErrorModelData {
   List<String> shift1End;
   List<String> shift2Start;
   List<String> shift2End;
+  List<String> carNumber;
 
   TokenErrorModelData({
     required this.phone,
@@ -41,6 +42,7 @@ class TokenErrorModelData {
     required this.shift1End,
     required this.shift2Start,
     required this.shift2End,
+    required this.carNumber,
   });
 
   factory TokenErrorModelData.formJson(Map<String, dynamic> json) {
@@ -59,6 +61,7 @@ class TokenErrorModelData {
       shift1End: List<String>.from(json["shift_1_end"] ?? []),
       shift2Start: List<String>.from(json["shift_2_start"] ?? []),
       shift2End: List<String>.from(json["shift_2_end"] ?? []),
+      carNumber: List<String>.from(json["car_number"] ?? []),
     );
   }
 }

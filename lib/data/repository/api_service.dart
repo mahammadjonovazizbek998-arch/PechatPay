@@ -178,4 +178,43 @@ class ApiService {
       body: jsonEncode({"count": count.toString()}),
     );
   }
+
+  Future<http.Response> driverPage(
+    String? search,
+    String sort,
+    List<String> filters,
+    int page,
+  ) async {
+    final Uri uri = Uri.parse("$url/drivers/filters?page=$page");
+    return await http.post(
+      uri,
+      headers: await _headers(withAuth: true),
+      body: jsonEncode({
+        "search": ?search,
+        "sort": sort,
+        "filters": filters,
+      }),
+    );
+  }
+
+  Future<http.Response> createUpdateDriver(
+    String name,
+    String phone,
+    String carNumer,
+    int? id,
+  ) async {
+    print("salom $name");
+    print("salom $phone");
+    print("salom $carNumer");
+    print("salom $id");
+    final Uri uri = Uri.parse(
+      id != null ? "$url/drivers/$id" : "$url/drivers/store",
+    );
+    return await http.post(
+      uri,
+      headers: await _headers(withAuth: true),
+      body: jsonEncode({"name": name, "phone": phone, "car_number": carNumer.replaceAll(RegExp(r'[^A-Za-z0-9]'), '')
+          .toUpperCase()}),
+    );
+  }
 }

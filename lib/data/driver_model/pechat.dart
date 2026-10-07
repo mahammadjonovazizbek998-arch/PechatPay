@@ -24,7 +24,7 @@ class PechatCreateData {
   final int unpaidPechatsCount;
   final int unpaidPechatsSum;
   final DateTime? createdAt;
-  final String count;
+  final int  count;
   final int summa;
 
   const PechatCreateData({
@@ -56,7 +56,7 @@ class PechatCreateData {
       unpaidPechatsCount: (json['unpaid_pechats_count'] as num?)?.toInt() ?? 0,
       unpaidPechatsSum: (json['unpaid_pechats_sum'] as num?)?.toInt() ?? 0,
       summa: (json["summa"] ?? 0),
-      count: (json["count"] ?? "0"),
+      count: (json["count"] ?? 0),
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'].toString())
           : null,

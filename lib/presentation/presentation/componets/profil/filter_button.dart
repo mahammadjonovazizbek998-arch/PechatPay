@@ -36,14 +36,7 @@ class _FilterButtonState extends State<FilterButton> {
       builder: (ctx, state) {
         return PopupMenuButton<String>(
           color: myTheme.cardColor,
-          onSelected: (value) => context.read<TasksCubit>().onTap(
-            state.index,
-            value,
-            state.hidingData,
-            state.rapidOperations,
-            state.selectedIndex,
-            state.type,
-          ),
+          onSelected: (value) => widget.onFilterSelected(value),
           itemBuilder: (ctx) => filters.entries
               .map(
                 (e) => PopupMenuItem(
@@ -76,13 +69,15 @@ class _FilterButtonState extends State<FilterButton> {
                   color: myTheme.text,
                 ),
                 SizedBox(width: 3.w),
-                Text(
-                  maxLines: 1,
-                  overflow: .ellipsis,
-                  filters[state.value] ?? "Ism bo‘yicha",
-                  style: AppTextStyles.style13.copyWith(
-                    color: myTheme.text.withValues(alpha: 0.9),
-                    fontWeight: .w500,
+                Flexible(
+                  child: Text(
+                    maxLines: 1,
+                    overflow: .ellipsis,
+                    filters[state.value] ?? "Ism bo‘yicha",
+                    style: AppTextStyles.style13.copyWith(
+                      color: myTheme.text.withValues(alpha: 0.9),
+                      fontWeight: .w500,
+                    ),
                   ),
                 ),
               ],

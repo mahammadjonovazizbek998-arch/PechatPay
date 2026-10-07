@@ -23,8 +23,8 @@ class DriverNoactiveModel {
   final int unpaidPechatsSum;
   final int totalPechatsCount;
   final int paidPechatsCount;
-  final String createdAt;
-  final String updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   DriverNoactiveModel({
     required this.id,
@@ -47,8 +47,12 @@ class DriverNoactiveModel {
       carNumber: json["car_number"] ?? "",
       unpaidPechatsCount: (json["unpaid_pechats_count"] ?? 0) as int,
       unpaidPechatsSum: (json["unpaid_pechats_sum"] ?? 0) as int,
-      createdAt: json["created_at"] ?? "",
-      updatedAt: json["updated_at"] ?? "",
+      createdAt: json['created_at'] != null
+          ? DateTime.tryParse(json['created_at'].toString())
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.tryParse(json['updated_at'].toString())
+          : null,
       paidPechatsCount: json["paid_pechats_count"] ?? 0,
       totalPechatsCount: json["total_pechats_count"] ?? 0,
     );

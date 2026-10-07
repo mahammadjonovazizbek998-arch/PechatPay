@@ -31,15 +31,13 @@ class _RepidoperationsState extends State<Repidoperations> {
         return Column(
           children: [
             GestureDetector(
-              onTap: () =>
-                  context.read<TasksCubit>().onTap(
-                    tasksState.index,
-                    tasksState.value,
-                    tasksState.hidingData,
-                    tasksState.rapidOperations,
-                    tasksState.selectedIndex,
-                    true,
-                  ),
+              onTap: () => context.read<TasksCubit>().onTap(
+                tasksState.value,
+                tasksState.hidingData,
+                tasksState.rapidOperations,
+                tasksState.selectedIndex,
+                true,
+              ),
               child: Container(
                 decoration: AppTextFormStyle.container(
                   borderColor: tasksState.type
@@ -100,15 +98,13 @@ class _RepidoperationsState extends State<Repidoperations> {
             ),
             SizedBox(height: 12.h),
             GestureDetector(
-              onTap: () =>
-                  context.read<TasksCubit>().onTap(
-                    tasksState.index,
-                    tasksState.value,
-                    tasksState.hidingData,
-                    tasksState.rapidOperations,
-                    tasksState.selectedIndex,
-                    false,
-                  ),
+              onTap: () => context.read<TasksCubit>().onTap(
+                tasksState.value,
+                tasksState.hidingData,
+                tasksState.rapidOperations,
+                tasksState.selectedIndex,
+                false,
+              ),
               child: Container(
                 decoration: AppTextFormStyle.container(
                   borderColor: tasksState.type
@@ -139,7 +135,9 @@ class _RepidoperationsState extends State<Repidoperations> {
                       borderColor: !tasksState.type
                           ? Colors.transparent
                           : myTheme.text,
-                      color: tasksState.type ? myTheme.textColor : myTheme.phonColor,
+                      color: tasksState.type
+                          ? myTheme.textColor
+                          : myTheme.phonColor,
                     ),
                     child: CircleAvatar(
                       radius: 8.r,
@@ -171,13 +169,18 @@ class _RepidoperationsState extends State<Repidoperations> {
               width: MediaQuery.of(context).size.width,
               child: BlocConsumer<HomleCubit, HomleState>(
                 listener: (context, homeState) {
-                  if (_isRequesting && homeState is HomleFinish && homeState.pechatCreateResponse != null) {
+                  if (_isRequesting &&
+                      homeState is HomleFinish &&
+                      homeState.pechatCreateResponse != null) {
                     setState(() {
                       _isRequesting = false;
                     });
                     showDialog(
                       context: context,
-                      builder: (_) => StampDialog(response: homeState.pechatCreateResponse!),
+                      builder: (_) => StampDialog(
+                        response: homeState.pechatCreateResponse!,
+                        isActiv: true,
+                      ),
                       barrierDismissible: false,
                     ).then((_) {
                       if (context.mounted) {
@@ -206,34 +209,22 @@ class _RepidoperationsState extends State<Repidoperations> {
                         _isRequesting = true;
                       });
                       context.read<HomleCubit>().pechat(
-                            widget.id,
-                            tasksState.type ? "nasiya" : "naqt",
-                          );
+                        widget.id,
+                        tasksState.type ? "nasiya" : "naqt",
+                      );
                     },
-                    child: (homeState is HomeLoding && _isRequesting)
-                        ? SizedBox(
-                            width: 20.w,
-                            height: 20.w,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: myTheme.textColor,
-                            ),
-                          )
-                        : Row(
-                            mainAxisSize: .min,
-                            children: [
-                              Image.asset(
-                                "assets/img_26.png",
-                                width: 16.75.w,
-                                height: 17.5.h,
-                                color: myTheme.textColor,
-                              ),
-                              Text(
-                                " Muhr berish",
-                                style: AppTextStyles.style14,
-                              ),
-                            ],
-                          ),
+                    child: Row(
+                      mainAxisSize: .min,
+                      children: [
+                        Image.asset(
+                          "assets/img_26.png",
+                          width: 16.75.w,
+                          height: 17.5.h,
+                          color: myTheme.textColor,
+                        ),
+                        Text(" Muhr berish", style: AppTextStyles.style14),
+                      ],
+                    ),
                   );
                 },
               ),

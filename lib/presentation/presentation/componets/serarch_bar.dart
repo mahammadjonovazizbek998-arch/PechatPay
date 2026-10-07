@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pechat_pay/data/style/text_style.dart';
 import 'package:pechat_pay/logon/home/homle_cubit.dart';
+import 'package:pechat_pay/presentation/presentation/componets/smart_refresher_widget.dart';
 import 'package:pechat_pay/presentation/presentation/componets/taxis/taxis_widget.dart';
 
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
 
 import '../../../data/style/text_form_style.dart';
 import '../../../data/theme/theme_class.dart';
@@ -65,95 +65,65 @@ class SerarchBar extends SearchDelegate {
     initialRefresh: false,
   );
 
+  Future<void> _onRefresh(BuildContext context) async {
+    try {
+      await context.read<HomleCubit>().searchHome(1, query);
+      _refreshController.refreshCompleted();
+      _refreshController.resetNoData();
+    } catch (_) {
+      _refreshController.refreshFailed();
+    }
+  }
+
+  Future<void> _onLoading(BuildContext context) async {
+    final cubit = context.read<HomleCubit>();
+    final model = cubit.state.driverNoactiveResponse;
+
+    if (model == null || model.meta.lastPage <= model.meta.currentPage) {
+      _refreshController.loadNoData();
+      return;
+    }
+
+    try {
+      await cubit.searchHome(model.meta.currentPage + 1, query);
+      _refreshController.loadComplete();
+    } catch (_) {
+      _refreshController.loadFailed();
+    }
+  }
+
   @override
   Widget buildResults(BuildContext context) {
     final myTheme = Theme.of(context).extension<ThemeClass>()!;
     return BlocBuilder<HomleCubit, HomleState>(
       builder: (context, state) {
-        if (state is HomeLoding) {
-          return Center(
-            child: CircularProgressIndicator(color: myTheme.globalColor),
-          );
+        if (state is HomeLoding && state.driverNoactiveResponse == null) {
+          return SizedBox();
+        } else if (state is HomleFinish &&
+            (state.driverNoactiveResponse == null ||
+                state.driverNoactiveResponse!.data.isEmpty)) {
+          return Center(child: Text("Ma'lumot topilmadi"));
         } else {
-          return SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: true,
+          return AppSmartRefresher(
+            onRefresh: () => _onRefresh(context),
             controller: _refreshController,
-            footer: CustomFooter(
-              height: 60,
-              builder: (context, mode) {
-                Widget body;
-                if (mode == LoadStatus.idle) {
-                  body = Text(
-                    "Yana yuklash uchun tepaga torting",
-                    style: AppTextStyles.style12.copyWith(
-                      color: myTheme.text.withValues(alpha: 0.9),
-                      fontWeight: .w500,
-                    ),
-                  );
-                } else if (mode == LoadStatus.loading) {
-                  body = CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: myTheme.globalColor,
-                  );
-                } else if (mode == LoadStatus.failed) {
-                  body = Text(
-                    "Xatolik, qayta urinib ko'ring",
-                    style: AppTextStyles.style12.copyWith(
-                      color: myTheme.text.withValues(alpha: 0.9),
-                      fontWeight: .w500,
-                    ),
-                  );
-                } else if (mode == LoadStatus.canLoading) {
-                  body = Text(
-                    "Qo'yib yuboring",
-                    style: AppTextStyles.style12.copyWith(
-                      color: myTheme.text.withValues(alpha: 0.9),
-                      fontWeight: .w500,
-                    ),
-                  );
-                } else {
-                  body = const Text("Ma'lumot tugadi");
-                }
-                return SizedBox(height: 60, child: Center(child: body));
-              },
-            ),
-            onRefresh: () async {
-              final cubit = context.read<HomleCubit>();
-              await cubit.searchHome(1, query);
-              _refreshController.refreshCompleted();
-              _refreshController.resetNoData();
-            },
-
-            onLoading: () async {
-              final cubit = context.read<HomleCubit>();
-              final model = cubit.state.driverNoactiveResponse;
-
-              if (model != null) {
-                if (model.meta.lastPage > model.meta.currentPage) {
-                  await cubit.searchHome(model.meta.currentPage + 1, query);
-                  _refreshController.loadComplete();
-                }
-              } else {
-                _refreshController.loadNoData();
-              }
-            },
+            onLoading: () => _onLoading(context),
             child: CustomScrollView(
               slivers: [
                 SliverPadding(
-                  padding: .symmetric(horizontal: 16.w),
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
                   sliver: SliverMainAxisGroup(
                     slivers: [
                       SliverToBoxAdapter(child: SizedBox(height: 14.h)),
                       SliverToBoxAdapter(
                         child: Row(
-                          mainAxisAlignment: .spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               "HAYDOVCHILAR RO'YXATI",
                               style: AppTextStyles.style12.copyWith(
                                 color: myTheme.text.withValues(alpha: 0.9),
-                                fontWeight: .w500,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
 
@@ -163,7 +133,7 @@ class SerarchBar extends SearchDelegate {
                                   alpha: 0.1,
                                 ),
                               ),
-                              padding: .symmetric(
+                              padding: EdgeInsets.symmetric(
                                 vertical: 5.h,
                                 horizontal: 6.w,
                               ),
@@ -171,7 +141,7 @@ class SerarchBar extends SearchDelegate {
                                 "${state.driverNoactiveResponse!.meta.total} ta topildi",
                                 style: AppTextStyles.style12.copyWith(
                                   color: myTheme.globalColor,
-                                  fontWeight: .bold,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
@@ -196,10 +166,6 @@ class SerarchBar extends SearchDelegate {
                               : 0,
                           separatorBuilder: (ctx, index) =>
                               SizedBox(height: 12.h, key: ValueKey(index)),
-                        ),
-                      if (state.driverNoactiveResponse != null)
-                        SliverFillRemaining(
-                          child: Center(child: Text("Ma'lumot topilmadi")),
                         ),
                     ],
                   ),
@@ -230,7 +196,9 @@ class SerarchBar extends SearchDelegate {
 
   @override
   void showResults(BuildContext context) {
-    context.read<HomleCubit>().searchHome(1, query);
-    super.showResults(context);
+    if (query.isNotEmpty) {
+      context.read<HomleCubit>().searchHome(1, query);
+      super.showResults(context);
+    }
   }
 }

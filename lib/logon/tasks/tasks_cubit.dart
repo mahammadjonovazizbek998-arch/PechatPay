@@ -1,8 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pechat_pay/data/repository/auth.dart';
+import 'package:pechat_pay/logon/home/homle_cubit.dart';
+import '../../data/driver_model/chip_model.dart';
+import '../../data/driver_model/driver_noactive_model.dart';
 import '../../data/driver_model/show_history.dart';
 import '../../data/driver_model/show_model.dart';
+import '../../data/get_it/get_it.dart';
 import '../../data/token_model/token_erorr_model.dart';
 
 part 'tasks_state.dart';
@@ -13,8 +17,7 @@ class TasksCubit extends Cubit<TasksState> {
   TasksCubit()
     : super(
         TasksInitial(
-          index: 0,
-          value: "all",
+          value: "name",
           hidingData: false,
           rapidOperations: false,
           number: 0,
@@ -23,21 +26,42 @@ class TasksCubit extends Cubit<TasksState> {
           unpaidPechatsSum: 0,
           driverHistoryResponse: null,
           type: true,
+          chip: [
+            ChipModel(name: "Barchasi", key: "all", selected: true),
+            ChipModel(
+              name: "7 kun faol emas",
+              key: "inactive_7",
+              selected: false,
+            ),
+            ChipModel(
+              name: "15 kun faol emas",
+              key: "inactive_15",
+              selected: false,
+            ),
+            ChipModel(
+              name: "30 kun faol emas",
+              key: "inactive_30",
+              selected: false,
+            ),
+            ChipModel(name: "Naqd puli bor", key: "has_cash", selected: false),
+            ChipModel(name: "Qarzdor", key: "has_debt", selected: false),
+            ChipModel(name: "Pechati bor", key: "has_pechat", selected: false),
+            ChipModel(name: "Pechati yo‘q", key: "no_pechat", selected: false),
+          ],
+          driversPage: null,
         ),
       );
 
-  void onTap(
-    int index,
+  Future<void> onTap(
     String value,
     bool hidingData,
     bool rapidOperations,
     int? selectedIndex,
     bool type,
-  ) {
+  ) async {
     emit(
       TasksFinish(
         unpaidPechatsSum: state.unpaidPechatsSum,
-        index: index,
         value: value,
         rapidOperations: rapidOperations,
         hidingData: hidingData,
@@ -46,10 +70,46 @@ class TasksCubit extends Cubit<TasksState> {
         driverDetailData: state.driverDetailData,
         driverHistoryResponse: state.driverHistoryResponse,
         type: type,
+        chip: state.chip,
+        driversPage: state.driversPage,
       ),
     );
   }
 
+  Future<void> chip(int index) async {
+    List<ChipModel> newchip = [...state.chip];
+    if (index == 0 && newchip[0].selected == false) {
+      for (final item in newchip) {
+        item.selected = false;
+      }
+      newchip[0].selected = true;
+    } else if (index == 0 && newchip[0].selected == true) {
+      newchip;
+    } else {
+      newchip[0].selected = false;
+      newchip[index].selected = !newchip[index].selected;
+      if (!newchip.any((e) => e.selected)) {
+        newchip[0].selected = true;
+      }
+      debugPrint('index: $index');
+      debugPrint(newchip.map((e) => e.selected).toList().toString());
+    }
+    emit(
+      TasksFinish(
+        unpaidPechatsSum: state.unpaidPechatsSum,
+        value: state.value,
+        rapidOperations: state.rapidOperations,
+        hidingData: state.hidingData,
+        number: state.number,
+        selectedIndex: state.selectedIndex,
+        driverDetailData: state.driverDetailData,
+        driverHistoryResponse: state.driverHistoryResponse,
+        type: state.type,
+        chip: newchip,
+        driversPage: state.driversPage,
+      ),
+    );
+  }
 
   void number(int value) {
     final list = state.driverDetailData!.unpaidPechat.reversed.toList();
@@ -60,7 +120,6 @@ class TasksCubit extends Cubit<TasksState> {
       emit(
         TasksFinish(
           unpaidPechatsSum: state.unpaidPechatsSum - list[current - 1].summa,
-          index: state.index,
           value: state.value,
           hidingData: state.hidingData,
           rapidOperations: state.rapidOperations,
@@ -69,6 +128,8 @@ class TasksCubit extends Cubit<TasksState> {
           driverDetailData: state.driverDetailData,
           driverHistoryResponse: state.driverHistoryResponse,
           type: state.type,
+          chip: state.chip,
+          driversPage: state.driversPage,
         ),
       );
     } else {
@@ -76,7 +137,6 @@ class TasksCubit extends Cubit<TasksState> {
       emit(
         TasksFinish(
           unpaidPechatsSum: state.unpaidPechatsSum + list[current].summa,
-          index: state.index,
           value: state.value,
           hidingData: state.hidingData,
           rapidOperations: state.rapidOperations,
@@ -85,6 +145,8 @@ class TasksCubit extends Cubit<TasksState> {
           driverDetailData: state.driverDetailData,
           driverHistoryResponse: state.driverHistoryResponse,
           type: state.type,
+          chip: state.chip,
+          driversPage: state.driversPage,
         ),
       );
     }
@@ -94,7 +156,6 @@ class TasksCubit extends Cubit<TasksState> {
     emit(
       TasksLoding(
         unpaidPechatsSum: 0,
-        index: state.index,
         value: state.value,
         hidingData: state.hidingData,
         rapidOperations: state.rapidOperations,
@@ -103,6 +164,8 @@ class TasksCubit extends Cubit<TasksState> {
         driverDetailData: null,
         driverHistoryResponse: state.driverHistoryResponse,
         type: state.type,
+        chip: state.chip,
+        driversPage: state.driversPage,
       ),
     );
     final response = await Future.wait([
@@ -114,7 +177,6 @@ class TasksCubit extends Cubit<TasksState> {
       emit(
         TasksError(
           unpaidPechatsSum: state.unpaidPechatsSum,
-          index: state.index,
           value: state.value,
           hidingData: state.hidingData,
           rapidOperations: state.rapidOperations,
@@ -126,6 +188,8 @@ class TasksCubit extends Cubit<TasksState> {
               : response[1],
           driverHistoryResponse: state.driverHistoryResponse,
           type: state.type,
+          chip: state.chip,
+          driversPage: state.driversPage,
         ),
       );
     } else if (response[0] is DriverDetailData &&
@@ -133,7 +197,6 @@ class TasksCubit extends Cubit<TasksState> {
       emit(
         TasksFinish(
           unpaidPechatsSum: state.unpaidPechatsSum,
-          index: state.index,
           value: state.value,
           hidingData: state.hidingData,
           rapidOperations: state.rapidOperations,
@@ -142,6 +205,8 @@ class TasksCubit extends Cubit<TasksState> {
           driverDetailData: response[0],
           driverHistoryResponse: response[1],
           type: state.type,
+          chip: state.chip,
+          driversPage: state.driversPage,
         ),
       );
     }
@@ -152,7 +217,6 @@ class TasksCubit extends Cubit<TasksState> {
       emit(
         TasksLoding(
           unpaidPechatsSum: state.unpaidPechatsSum,
-          index: state.index,
           value: state.value,
           hidingData: state.hidingData,
           rapidOperations: state.rapidOperations,
@@ -161,6 +225,8 @@ class TasksCubit extends Cubit<TasksState> {
           driverDetailData: state.driverDetailData,
           driverHistoryResponse: null,
           type: state.type,
+          chip: state.chip,
+          driversPage: state.driversPage,
         ),
       );
     }
@@ -169,7 +235,6 @@ class TasksCubit extends Cubit<TasksState> {
       emit(
         TasksError(
           unpaidPechatsSum: state.unpaidPechatsSum,
-          index: state.index,
           value: state.value,
           hidingData: state.hidingData,
           rapidOperations: state.rapidOperations,
@@ -179,13 +244,14 @@ class TasksCubit extends Cubit<TasksState> {
           tokenErorrModel: response,
           driverHistoryResponse: state.driverHistoryResponse,
           type: state.type,
+          chip: state.chip,
+          driversPage: state.driversPage,
         ),
       );
     } else if (response is DriverHistoryResponse) {
       emit(
         TasksFinish(
           unpaidPechatsSum: state.unpaidPechatsSum,
-          index: state.index,
           value: state.value,
           hidingData: state.hidingData,
           rapidOperations: state.rapidOperations,
@@ -202,8 +268,144 @@ class TasksCubit extends Cubit<TasksState> {
                   meta: response.meta,
                 ),
           type: state.type,
+          chip: state.chip,
+          driversPage: state.driversPage,
         ),
       );
     }
+  }
+
+  Future<void> driversPage(String? search, int page) async {
+    final List<String> key = state.chip
+        .where((e) => e.selected)
+        .map((m) => m.key)
+        .toList();
+    if (page == 1) {
+      emit(
+        TasksLoding(
+          unpaidPechatsSum: state.unpaidPechatsSum,
+          value: state.value,
+          hidingData: state.hidingData,
+          rapidOperations: state.rapidOperations,
+          number: state.number,
+          selectedIndex: state.selectedIndex,
+          driverDetailData: state.driverDetailData,
+          driverHistoryResponse: state.driverHistoryResponse,
+          type: state.type,
+          chip: state.chip,
+          driversPage: null,
+        ),
+      );
+    }
+    final response = await authRepository.driversPage(
+      search,
+      state.value,
+      key,
+      page,
+    );
+    if (response is TokenErorrModel) {
+      emit(
+        TasksError(
+          unpaidPechatsSum: state.unpaidPechatsSum,
+          value: state.value,
+          hidingData: state.hidingData,
+          rapidOperations: state.rapidOperations,
+          number: state.number,
+          selectedIndex: state.selectedIndex,
+          driverDetailData: state.driverDetailData,
+          tokenErorrModel: response,
+          driverHistoryResponse: state.driverHistoryResponse,
+          type: state.type,
+          chip: state.chip,
+          driversPage: null,
+        ),
+      );
+    } else if (response is DriverNoactiveResponse) {
+      emit(
+        TasksFinish(
+          unpaidPechatsSum: state.unpaidPechatsSum,
+          value: state.value,
+          hidingData: state.hidingData,
+          rapidOperations: state.rapidOperations,
+          number: state.number,
+          selectedIndex: state.selectedIndex,
+          driverDetailData: state.driverDetailData,
+          driverHistoryResponse: state.driverHistoryResponse,
+          type: state.type,
+          chip: state.chip,
+          driversPage: page == 1
+              ? response
+              : DriverNoactiveResponse(
+                  data: [...state.driversPage!.data, ...response.data],
+                  meta: response.meta,
+                ),
+        ),
+      );
+    }
+  }
+
+  Future<bool> createUpdateDriver(
+      String name,
+      String phone,
+      String carNumer,
+      int? id,
+      ) async {
+    emit(
+      TasksLoding(
+        unpaidPechatsSum: state.unpaidPechatsSum,
+        value: state.value,
+        hidingData: state.hidingData,
+        rapidOperations: state.rapidOperations,
+        number: state.number,
+        selectedIndex: state.selectedIndex,
+        driverDetailData: state.driverDetailData,
+        driverHistoryResponse: state.driverHistoryResponse,
+        type: state.type,
+        chip: state.chip,
+        driversPage: state.driversPage,
+      ),
+    );
+
+    final response = await authRepository.createUpdateDriver(
+      name, phone, carNumer, id,
+    );
+
+    if (response is TokenErorrModel) {
+
+      emit(
+        TasksError(
+          unpaidPechatsSum: state.unpaidPechatsSum,
+          value: state.value,
+          hidingData: state.hidingData,
+          rapidOperations: state.rapidOperations,
+          number: state.number,
+          selectedIndex: state.selectedIndex,
+          driverDetailData: state.driverDetailData,
+          tokenErorrModel: response,
+          driverHistoryResponse: state.driverHistoryResponse,
+          type: state.type,
+          chip: state.chip,
+          driversPage: state.driversPage,
+        ),
+      );
+      return false;
+    }
+    emit(
+      TasksFinish(
+        unpaidPechatsSum: state.unpaidPechatsSum,
+        value: state.value,
+        hidingData: state.hidingData,
+        rapidOperations: state.rapidOperations,
+        number: state.number,
+        selectedIndex: state.selectedIndex,
+        driverDetailData: state.driverDetailData,
+        driverHistoryResponse: state.driverHistoryResponse,
+        type: state.type,
+        chip: state.chip,
+        driversPage: state.driversPage,
+      ),
+    );
+    await sl<HomleCubit>().historyHomePage(1);
+    return true;
   }
 }

@@ -6,14 +6,13 @@ import '../../../../data/theme/theme_class.dart';
 
 class ChipWidget extends StatefulWidget {
   final String name;
-  final String? url;
   final bool isSelected;
   final VoidCallback onTap;
 
   const ChipWidget({
     super.key,
     required this.name,
-    required this.url,
+
     required this.isSelected,
     required this.onTap,
   });
@@ -53,7 +52,9 @@ class _ChipWidgetState extends State<ChipWidget> {
           elevation: 0,
           surfaceTintColor: Colors.transparent,
           padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 5.w),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
           label: Text(
             textAlign: TextAlign.center,
             widget.name,
@@ -62,11 +63,9 @@ class _ChipWidgetState extends State<ChipWidget> {
               color: widget.isSelected ? myTheme.textColor : myTheme.text,
             ),
           ),
-          avatar: widget.url != null
-              ? CircleAvatar(child: Image.asset(widget.url!))
-              : null,
-          backgroundColor:
-          widget.isSelected ? myTheme.globalColor : myTheme.textColor,
+          backgroundColor: widget.isSelected
+              ? myTheme.globalColor
+              : myTheme.textColor,
           onPressed: widget.onTap,
         ),
       ),

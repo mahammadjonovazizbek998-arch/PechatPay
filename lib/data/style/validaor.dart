@@ -32,7 +32,25 @@ class AppValidator {
       }
     }
   }
+  static String? licensePlate({
+    String? value,
+  }) {
+    final raw = (value ?? '').replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toUpperCase();
 
+    if (value == null || raw.isEmpty) {
+      return "Avtomobil davlat raqmi maydoni bo'sh qolishi mumkin emas";
+    } else if (raw.length < 8) {
+      return "Avtomobil davlat raqmi to'liq kiritilmagan (masalan: 40 A777AA)";
+    } else if (raw.length > 8) {
+      return "Avtomobil davlat raqmi 8 ta belgidan oshmasligi kerak";
+    } else if (!RegExp(r'^\d{2}').hasMatch(raw)) {
+      return "Avtomobil davlat raqmi dastlabki 2 ta belgi raqam bo'lishi kerak";
+    } else if (!RegExp(r'^\d{2}[A-Z]\d{3}[A-Z]{2}$').hasMatch(raw)) {
+      return "Avtomobil davlat raqmi formati noto'g'ri (masalan: 40 A777AA)";
+    } else {
+      return null;
+    }
+  }
   static String? branchName({String? value}) {
     if (value == null || value.isEmpty) {
       return "Filial nomi maydoni bo'sh qolishi mumkin emas";

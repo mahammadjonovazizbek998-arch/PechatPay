@@ -9,6 +9,7 @@ import '../../data/style/text_style.dart';
 import '../../data/theme/theme_class.dart';
 import 'componets/app_bar_widget.dart';
 import 'componets/serarch_bar.dart';
+import 'componets/smart_refresher_widget.dart';
 import 'componets/taxis/taxis_widget.dart';
 
 class HomePeges extends StatefulWidget {
@@ -37,86 +38,51 @@ class _HomePegesState extends State<HomePeges> {
     showSearch(context: context, delegate: SerarchBar());
   }
 
+  Future<void> _onRefresh() async {
+    try {
+      await context.read<HomleCubit>().historyHomePage(1);
+      _refreshController.refreshCompleted();
+      _refreshController.resetNoData();
+    } catch (_) {
+      _refreshController.refreshFailed();
+    }
+  }
+
+  bool isLoadingShown = false;
+
+  Future<void> _onLoading() async {
+    final cubit = context.read<HomleCubit>();
+    final model = cubit.state.historyHomePage;
+
+    if (model == null || model.meta.lastPage <= model.meta.currentPage) {
+      _refreshController.loadNoData();
+      return;
+    }
+
+    try {
+      await cubit.historyHomePage(model.meta.currentPage + 1);
+      _refreshController.loadComplete();
+    } catch (_) {
+      _refreshController.loadFailed();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final myTheme = Theme.of(context).extension<ThemeClass>()!;
     return Scaffold(
       appBar: AppBarWidget(),
-      body: BlocBuilder<HomleCubit, HomleState>(
+      body: BlocConsumer<HomleCubit, HomleState>(
         builder: (context, state) {
-          // FAQAT ma'lumot hali umuman yo'q bo'lsa loader chiqaramiz
           if (state is HomeLoding && state.historyHomePage == null) {
             return Center(
               child: CircularProgressIndicator(color: myTheme.globalColor),
             );
-          }
-          
-          // Agar ma'lumot bo'lsa (yoki yuklash tugagan bo'lsa), ro'yxatni ko'rsatamiz
-          if (state.historyHomePage != null) {
-            return SmartRefresher(
-              enablePullDown: true,
-              enablePullUp: true,
+          } else if (state.historyHomePage != null) {
+            return AppSmartRefresher(
+              onRefresh: _onRefresh,
+              onLoading: _onLoading,
               controller: _refreshController,
-              footer: CustomFooter(
-                height: 60,
-                builder: (context, mode) {
-                  Widget body;
-                  if (mode == LoadStatus.idle) {
-                    body = Text(
-                      "Yana yuklash uchun tepaga torting",
-                      style: AppTextStyles.style12.copyWith(
-                        color: myTheme.text.withValues(alpha: 0.9),
-                        fontWeight: .w500,
-                      ),
-                    );
-                  } else if (mode == LoadStatus.loading) {
-                    body = CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: myTheme.globalColor,
-                    );
-                  } else if (mode == LoadStatus.failed) {
-                    body = Text(
-                      "Xatolik, qayta urinib ko'ring",
-                      style: AppTextStyles.style12.copyWith(
-                        color: myTheme.text.withValues(alpha: 0.9),
-                        fontWeight: .w500,
-                      ),
-                    );
-                  } else if (mode == LoadStatus.canLoading) {
-                    body = Text(
-                      "Qo'yib yuboring",
-                      style: AppTextStyles.style12.copyWith(
-                        color: myTheme.text.withValues(alpha: 0.9),
-                        fontWeight: .w500,
-                      ),
-                    );
-                  } else {
-                    body = const Text("Ma'lumot tugadi");
-                  }
-                  return SizedBox(height: 60, child: Center(child: body));
-                },
-              ),
-              onRefresh: () async {
-                final cubit = context.read<HomleCubit>();
-                await cubit.historyHomePage(1);
-                _refreshController.refreshCompleted();
-                _refreshController.resetNoData();
-              },
-              onLoading: () async {
-                final cubit = context.read<HomleCubit>();
-                final model = cubit.state.historyHomePage;
-
-                if (model != null) {
-                  if (model.meta.lastPage > model.meta.currentPage) {
-                    await cubit.historyHomePage(model.meta.currentPage + 1);
-                    _refreshController.loadComplete();
-                  } else {
-                    _refreshController.loadNoData();
-                  }
-                } else {
-                  _refreshController.loadNoData();
-                }
-              },
               child: CustomScrollView(
                 slivers: [
                   SliverPadding(
@@ -134,7 +100,8 @@ class _HomePegesState extends State<HomePeges> {
                                 enableInteractiveSelection: false,
                                 decoration: AppTextFormStyle.sorchText(
                                   color: myTheme.text.withValues(alpha: 0.9),
-                                  text: "Haydovchi qidirish (ism, tel, davlat raqam)...",
+                                  text:
+                                      "Haydovchi qidirish (ism, tel, davlat raqam)...",
                                   icon: Icon(Icons.search, size: 19.w),
                                 ),
                                 onTap: () => openSerachBar(context),
@@ -156,9 +123,14 @@ class _HomePegesState extends State<HomePeges> {
                               ),
                               Container(
                                 decoration: AppTextFormStyle.container(
-                                  color: myTheme.globalColor.withValues(alpha: 0.1),
+                                  color: myTheme.globalColor.withValues(
+                                    alpha: 0.1,
+                                  ),
                                 ),
-                                padding: .symmetric(vertical: 5.h, horizontal: 6.w),
+                                padding: .symmetric(
+                                  vertical: 5.h,
+                                  horizontal: 6.w,
+                                ),
                                 child: Text(
                                   "${state.historyHomePage!.meta.total} ta topildi",
                                   style: AppTextStyles.style12.copyWith(
@@ -174,14 +146,19 @@ class _HomePegesState extends State<HomePeges> {
                         SliverList.separated(
                           itemBuilder: (ctx, index) {
                             return TaxisWidget(
-                              key: ValueKey(state.historyHomePage!.data[index].id), // ID dan foydalanamiz
+                              key: ValueKey(
+                                state.historyHomePage!.data[index].id,
+                              ),
+                              // ID dan foydalanamiz
                               driverNoactiveModel: null,
                               driver: state.historyHomePage!.data[index],
                             );
                           },
                           itemCount: state.historyHomePage!.data.length,
-                          separatorBuilder: (ctx, index) =>
-                              SizedBox(height: 12.h, key: ValueKey("sep_$index")),
+                          separatorBuilder: (ctx, index) => SizedBox(
+                            height: 12.h,
+                            key: ValueKey("sep_$index"),
+                          ),
                         ),
                       ],
                     ),
@@ -189,15 +166,36 @@ class _HomePegesState extends State<HomePeges> {
                 ],
               ),
             );
+          } else {
+            return Center(
+              child: Text(
+                "Ma'lumot topilmadi",
+                style: AppTextStyles.style14.copyWith(color: myTheme.text),
+              ),
+            );
           }
-          
-          // Hech qanday ma'lumot yo'q bo'lsa
-          return Center(
-            child: Text(
-              "Ma'lumot topilmadi",
-              style: AppTextStyles.style14.copyWith(color: myTheme.text),
-            ),
-          );
+        },
+        listener: (context, state) {
+          if (state is HomeLoding && state.historyHomePage != null) {
+            if (!isLoadingShown) {
+              isLoadingShown = true;
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                barrierColor: Colors.black54,
+                useRootNavigator: true,
+                builder: (_) => const PopScope(
+                  canPop: false,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              ).then((_) => isLoadingShown = false);
+            }
+          } else {
+            if (isLoadingShown) {
+              Navigator.of(context, rootNavigator: true).pop();
+              isLoadingShown = false;
+            }
+          }
         },
       ),
     );

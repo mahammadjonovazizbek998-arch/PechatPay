@@ -169,6 +169,7 @@ class _CashState extends State<Cash> {
                       context: context,
                       builder: (_) => StampDialog(
                         response: homeState.pechatCreateResponse!,
+                        isActiv: true,
                       ),
                       barrierDismissible: false,
                     ).then((_) {
@@ -196,21 +197,14 @@ class _CashState extends State<Cash> {
                       foreground: myTheme.textColor,
                     ),
                     onPressed: () {
-                      setState(() {
-                        _isRequesting = true;
-                      });
-                      context.read<HomleCubit>().pay(widget.id, state.number);
+                      if (state.number > 0) {
+                        setState(() {
+                          _isRequesting = true;
+                        });
+                        context.read<HomleCubit>().pay(widget.id, state.number);
+                      }
                     },
-                    child: (homeState is HomeLoding && _isRequesting)
-                        ? SizedBox(
-                            width: 20.w,
-                            height: 20.w,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: myTheme.textColor,
-                            ),
-                          )
-                        : Row(
+                    child:  Row(
                             mainAxisSize: .min,
                             children: [
                               Icon(

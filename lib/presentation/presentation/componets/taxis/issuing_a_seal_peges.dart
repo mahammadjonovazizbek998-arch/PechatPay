@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pechat_pay/logon/tasks/tasks_cubit.dart';
+import 'package:pechat_pay/presentation/presentation/componets/smart_refresher_widget.dart';
 import 'package:pechat_pay/presentation/presentation/componets/taxis/repid_operations.dart';
 
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -45,6 +46,36 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
     _refreshController = RefreshController(initialRefresh: false);
   }
 
+  Future<void> _onRefresh() async {
+    try {
+      final cubit = context.read<TasksCubit>();
+      await cubit.showHistory(widget.id, 1);
+      _refreshController.refreshCompleted();
+      _refreshController.resetNoData();
+    } catch (_) {
+      _refreshController.refreshFailed();
+    }
+  }
+
+  bool isLoadingShown = false;
+
+  Future<void> _onLoading() async {
+    final cubit = context.read<TasksCubit>();
+    final model = cubit.state.driverHistoryResponse;
+
+    if (model == null || model.meta.lastPage <= model.meta.currentPage) {
+      _refreshController.loadNoData();
+      return;
+    }
+
+    try {
+      await cubit.showHistory(widget.id, model.meta.currentPage + 1);
+      _refreshController.loadComplete();
+    } catch (_) {
+      _refreshController.loadFailed();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final myTheme = Theme.of(context).extension<ThemeClass>()!;
@@ -66,75 +97,11 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
             return Center(
               child: CircularProgressIndicator(color: myTheme.globalColor),
             );
-          } else if (state is TasksFinish) {
-            return SmartRefresher(
-              enablePullDown: true,
-              enablePullUp: true,
+          } else if (state is TasksFinish && state.driverDetailData != null) {
+            return AppSmartRefresher(
+              onLoading: () => _onLoading(),
+              onRefresh: () => _onRefresh(),
               controller: _refreshController,
-              footer: CustomFooter(
-                height: 60,
-                builder: (context, mode) {
-                  Widget body;
-                  if (mode == LoadStatus.idle) {
-                    body = Text(
-                      "Yana yuklash uchun tepaga torting",
-                      style: AppTextStyles.style12.copyWith(
-                        color: myTheme.text.withValues(alpha: 0.9),
-                        fontWeight: .w500,
-                      ),
-                    );
-                  } else if (mode == LoadStatus.loading) {
-                    body = CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: myTheme.globalColor,
-                    );
-                  } else if (mode == LoadStatus.failed) {
-                    body = Text(
-                      "Xatolik, qayta urinib ko'ring",
-                      style: AppTextStyles.style12.copyWith(
-                        color: myTheme.text.withValues(alpha: 0.9),
-                        fontWeight: .w500,
-                      ),
-                    );
-                  } else if (mode == LoadStatus.canLoading) {
-                    body = Text(
-                      "Qo'yib yuboring",
-                      style: AppTextStyles.style12.copyWith(
-                        color: myTheme.text.withValues(alpha: 0.9),
-                        fontWeight: .w500,
-                      ),
-                    );
-                  } else {
-                    body = const Text("Ma'lumot tugadi");
-                  }
-                  return SizedBox(height: 60, child: Center(child: body));
-                },
-              ),
-              onRefresh: () async {
-                final cubit = context.read<TasksCubit>();
-                await cubit.showHistory(widget.id, 1);
-                _refreshController.refreshCompleted();
-                _refreshController.resetNoData();
-              },
-
-              onLoading: () async {
-                final cubit = context.read<TasksCubit>();
-                final model = cubit.state.driverHistoryResponse;
-
-                if (model != null) {
-                  if (model.meta.lastPage > model.meta.currentPage) {
-                    await cubit.showHistory(
-                      widget.id,
-                      model.meta.currentPage + 1,
-                    );
-                    _refreshController.loadComplete();
-                  } else {
-                    _refreshController.loadNoData();
-                  }
-                } else {
-                  _refreshController.loadNoData();
-                }
-              },
               child: CustomScrollView(
                 slivers: [
                   SliverPadding(
@@ -258,7 +225,7 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
                                           ),
                                           SizedBox(width: 6.w),
                                           Text(
-                                            "Ro'yxatdan o'tgan:\n ${state.driverDetailData!.driver.createdAt.substring(0, 10)}",
+                                            "Ro'yxatdan o'tgan:\n ${AuthRepository.formatDate(state.driverDetailData!.driver.createdAt!)}",
                                             style: AppTextStyles.style13
                                                 .copyWith(color: myTheme.text),
                                           ),
@@ -365,6 +332,17 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
                                                   .driverDetailData!
                                                   .driver
                                                   .carNumber,
+                                              id: widget.id,
+                                              unpaidPechatsCount: state
+                                                  .driverDetailData!
+                                                  .driver
+                                                  .unpaidPechatsCount
+                                                  .toString(),
+                                              unpaidPechatsSum: state
+                                                  .driverDetailData!
+                                                  .driver
+                                                  .unpaidPechatsSum
+                                                  .toString(),
                                             ),
                                           ),
                                         ).then((_) {
@@ -633,7 +611,6 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
                                                   context
                                                       .read<TasksCubit>()
                                                       .onTap(
-                                                        state.index,
                                                         state.value,
                                                         state.hidingData,
                                                         false,
@@ -682,7 +659,6 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
                                                   context
                                                       .read<TasksCubit>()
                                                       .onTap(
-                                                        state.index,
                                                         state.value,
                                                         state.hidingData,
                                                         true,
@@ -767,7 +743,6 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
 
                                   onTap: () {
                                     context.read<TasksCubit>().onTap(
-                                      state.index,
                                       state.value,
                                       state.hidingData,
                                       state.rapidOperations,

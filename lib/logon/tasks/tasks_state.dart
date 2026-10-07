@@ -2,7 +2,6 @@ part of 'tasks_cubit.dart';
 
 @immutable
 sealed class TasksState {
-  final int index;
   final String value;
   final bool rapidOperations;
   final bool hidingData;
@@ -12,10 +11,11 @@ sealed class TasksState {
   final int unpaidPechatsSum;
   final DriverHistoryResponse? driverHistoryResponse;
   final bool type;
+  final List<ChipModel> chip;
+  final DriverNoactiveResponse? driversPage;
 
 
   const TasksState({
-    required this.index,
     required this.value,
     required this.rapidOperations,
     required this.hidingData,
@@ -25,12 +25,13 @@ sealed class TasksState {
     required this.unpaidPechatsSum,
     required this.driverHistoryResponse,
     required this.type,
+    required this.chip,
+    required this.driversPage,
   });
 }
 
 final class TasksInitial extends TasksState {
   const TasksInitial({
-    required super.index,
     required super.value,
     required super.rapidOperations,
     required super.hidingData,
@@ -40,13 +41,13 @@ final class TasksInitial extends TasksState {
     required super.unpaidPechatsSum,
     required super.driverHistoryResponse,
     required super.type,
-
+    required super.chip,
+    required super.driversPage,
   });
 }
 
 final class TasksFinish extends TasksState {
   const TasksFinish({
-    required super.index,
     required super.value,
     required super.hidingData,
     required super.rapidOperations,
@@ -56,13 +57,13 @@ final class TasksFinish extends TasksState {
     required super.unpaidPechatsSum,
     required super.driverHistoryResponse,
     required super.type,
-
+    required super.chip,
+    required super.driversPage,
   });
 }
 
 final class TasksLoding extends TasksState {
   const TasksLoding({
-    required super.index,
     required super.value,
     required super.hidingData,
     required super.rapidOperations,
@@ -72,7 +73,8 @@ final class TasksLoding extends TasksState {
     required super.driverHistoryResponse,
     required super.unpaidPechatsSum,
     required super.type,
-
+    required super.chip,
+    required super.driversPage,
   });
 }
 
@@ -80,7 +82,6 @@ final class TasksError extends TasksState {
   final TokenErorrModel tokenErorrModel;
 
   const TasksError({
-    required super.index,
     required super.value,
     required super.hidingData,
     required super.rapidOperations,
@@ -90,7 +91,8 @@ final class TasksError extends TasksState {
     required super.unpaidPechatsSum,
     required super.driverHistoryResponse,
     required super.type,
-
+    required super.chip,
+    required super.driversPage,
     required this.tokenErorrModel,
   });
 }

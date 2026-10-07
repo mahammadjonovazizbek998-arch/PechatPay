@@ -228,11 +228,8 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                     Text(
                       widget.driver != null &&
                               widget.driverNoactiveModel == null
-                          ? widget.driver!.updatedAt.substring(0, 10)
-                          : widget.driverNoactiveModel!.updatedAt.substring(
-                              0,
-                              10,
-                            ),
+                          ? AuthRepository.formatDate(widget.driver!.updatedAt!)
+                          : AuthRepository.formatDate(widget.driverNoactiveModel!.updatedAt!),
                       style: AppTextStyles.style12.copyWith(
                         color: myTheme.text.withValues(alpha: 0.9),
                       ),
@@ -324,12 +321,10 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                             
                             showDialog(
                               context: context,
-                              builder: (dialogCtx) => StampDialog(response: state.pechatCreateResponse!),
+                              builder: (dialogCtx) => StampDialog(response: state.pechatCreateResponse!,isActiv: false,),
                               barrierDismissible: false,
                             ).then((_) {
                               if (mounted) {
-                                // ignore: use_build_context_synchronously
-                                context.read<HomleCubit>().historyHomePage(1);
                                 // ignore: use_build_context_synchronously
                                 context.read<HomleCubit>().resetPechatResponse();
                               }
@@ -382,8 +377,8 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                               Image.asset(
                                 widget.phone
                                     ? "assets/img_23.png"
-                                    : "assets/img_22.png",
-                                width: 17.w,
+                                    : "assets/stamp.png",
+                                width: 16.w,
                                 color: myTheme.globalColor,
                               ),
                               Text(
@@ -409,8 +404,7 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                         button: true,
                       ),
                       onPressed: () {
-                        // Cubitni saqlab qolamiz (Async gap bo'lgani uchun)
-                        final homleCubit = context.read<HomleCubit>();
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -421,10 +415,7 @@ class _TaxisWidgetState extends State<TaxisWidget> {
                                   : widget.driver!.id,
                             ),
                           ),
-                        ).then((_) {
-                          // Profil sahifasi yopilganda Home ma'lumotlarini yangilaymiz
-                          homleCubit.historyHomePage(1);
-                        });
+                        );
                       },
                       child: Row(
                         mainAxisSize: .min,

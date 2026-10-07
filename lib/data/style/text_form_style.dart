@@ -31,7 +31,7 @@ class AppTextFormStyle {
                   )
                 : null
           : null,
-      errorStyle: AppTextStyles.style12.copyWith(color: color),
+      errorStyle: AppTextStyles.style12.copyWith(color: Colors.red),
       hintStyle: AppTextStyles.style16.copyWith(color: color),
       hintText: text,
       errorText: errorText,
@@ -42,7 +42,36 @@ class AppTextFormStyle {
       focusedBorder: border,
     );
   }
+  static InputDecoration licensePlate({
+    required Color color,
+    required String text,
+    String? errorText,
+  }) {
+    final border = OutlineInputBorder(
+      borderSide: BorderSide(color: color, width: 0.5.w),
+      borderRadius: BorderRadius.circular(15.r),
+    );
 
+    return InputDecoration(
+      isDense: true,
+      // suffix/prefix yo'q, shuning uchun matn aniq markazda turadi
+      contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
+      constraints: BoxConstraints(minHeight: 40.h),
+      filled: true,
+      fillColor: Colors.white,
+      hintText: text,
+      hintStyle: AppTextStyles.style16.copyWith(color: color),
+      errorText: errorText,
+      errorStyle: AppTextStyles.style12.copyWith(color: Colors.red),
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+      counterText: "",
+      border: border,
+      enabledBorder: border,
+      focusedBorder: border,
+      errorBorder: border,
+      focusedErrorBorder: border,
+    );
+  }
   static InputDecoration textFormFild({
     required Color color,
     required String text,
@@ -68,7 +97,7 @@ class AppTextFormStyle {
       filled: true,
       fillColor: Colors.white,
       constraints: BoxConstraints(minHeight: 40.h,),
-      errorStyle: AppTextStyles.style12.copyWith(color: color),
+      errorStyle: AppTextStyles.style12.copyWith(color: Colors.red),
       hintStyle: licensePlate
           ? AppTextStyles.style16.copyWith(color: color)
           : AppTextStyles.style14.copyWith(color: color),
