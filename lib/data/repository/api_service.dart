@@ -203,10 +203,7 @@ class ApiService {
     String carNumer,
     int? id,
   ) async {
-    print("salom $name");
-    print("salom $phone");
-    print("salom $carNumer");
-    print("salom $id");
+
     final Uri uri = Uri.parse(
       id != null ? "$url/drivers/$id" : "$url/drivers/store",
     );

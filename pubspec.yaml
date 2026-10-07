@@ -25,6 +25,7 @@ dependencies:
   url_launcher: ^6.3.2
   pull_to_refresh: ^2.0.0
   table_calendar: ^3.3.0
+  logger: ^2.8.0
 
 dev_dependencies:
   flutter_test:

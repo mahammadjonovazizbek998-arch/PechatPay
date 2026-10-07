@@ -7,7 +7,6 @@ import 'package:pechat_pay/presentation/presentation/componets/smart_refresher_w
 import 'package:pechat_pay/presentation/presentation/componets/taxis/repid_operations.dart';
 
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import '../../../../data/get_it/get_it.dart';
 import '../../../../data/repository/auth.dart';
 
 import '../../../../data/style/text_form_style.dart';
@@ -42,7 +41,9 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
   @override
   void initState() {
     super.initState();
-    sl<TasksCubit>().show(widget.id, 1);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TasksCubit>().show(widget.id, 1);
+    });
     _refreshController = RefreshController(initialRefresh: false);
   }
 
@@ -91,12 +92,17 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
         ),
       ),
 
-      body: BlocBuilder<TasksCubit, TasksState>(
+      body: BlocConsumer<TasksCubit, TasksState>(
         builder: (context, state) {
           if (state is TasksLoding) {
-            return Center(
-              child: CircularProgressIndicator(color: myTheme.globalColor),
-            );
+            if (state.driverDetailData != null &&
+                state.driverHistoryResponse == null) {
+              return Center(
+                child: CircularProgressIndicator(color: myTheme.globalColor),
+              );
+            } else {
+              return SizedBox();
+            }
           } else if (state is TasksFinish && state.driverDetailData != null) {
             return AppSmartRefresher(
               onLoading: () => _onLoading(),
@@ -858,7 +864,38 @@ class _IssuingASealPegesState extends State<IssuingASealPeges> {
               ),
             );
           } else {
-            return const SizedBox();
+            return Center(
+              child: Text(
+                "Ma'lumot topilmadi",
+                style: AppTextStyles.style14.copyWith(color: myTheme.text),
+              ),
+            );
+          }
+        },
+        listener: (BuildContext context, TasksState state) {
+          if (state is TasksLoding && state.driverDetailData == null) {
+            if (!isLoadingShown) {
+              isLoadingShown = true;
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                barrierColor: Colors.black54,
+                useRootNavigator: true,
+                builder: (_) => PopScope(
+                  canPop: false,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: myTheme.globalColor,
+                    ),
+                  ),
+                ),
+              ).then((_) => isLoadingShown = false);
+            }
+          } else {
+            if (isLoadingShown) {
+              Navigator.of(context, rootNavigator: true).pop();
+              isLoadingShown = false;
+            }
           }
         },
       ),

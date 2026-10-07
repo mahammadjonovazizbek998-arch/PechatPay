@@ -42,18 +42,24 @@ class _DriverAddEditState extends State<DriverAddEdit> {
   Future<void> onTap() async {
     if (!formKey.currentState!.validate()) return;
     formKey.currentState!.save();
-
-    setState(() => isLoadingShown = true);
-    final ok = await context.read<TasksCubit>().createUpdateDriver(
-      name!,
-      phone!,
-      carNumber!,
-      widget.id,
-    );
-    if (!mounted) return;
-    setState(() => isLoadingShown = false);
-    if (!mounted) return;
-    if (ok) Navigator.pop(context);
+    if (widget.licensePlate != carNumber ||
+        widget.driverName != name ||
+        widget.driverPhoneNumber != phone ||
+        (widget.driverName == null &&
+            widget.driverPhoneNumber == null &&
+            widget.licensePlate == null)) {
+      setState(() => isLoadingShown = true);
+      final ok = await context.read<TasksCubit>().createUpdateDriver(
+        name!,
+        phone!,
+        carNumber!,
+        widget.id,
+      );
+      if (!mounted) return;
+      setState(() => isLoadingShown = false);
+      if (!mounted) return;
+      if (ok) Navigator.pop(context);
+    }
   }
 
   bool isLoadingShown = false;
@@ -347,11 +353,25 @@ class _DriverAddEditState extends State<DriverAddEdit> {
                                           style: AppTextStyles.style14.copyWith(
                                             color: myTheme.text,
                                           ),
-                                          decoration:
-                                              AppTextFormStyle.licensePlate(
-                                                color: myTheme.unselctedColor,
-                                                text: '40 A777AA',
-                                              ),
+                                          decoration: AppTextFormStyle.licensePlate(
+                                            color: myTheme.unselctedColor,
+                                            text: '40 A777AA',
+                                            errorText: state is TasksError
+                                                ? state.tokenErorrModel.data !=
+                                                          null
+                                                      ? state
+                                                                .tokenErorrModel
+                                                                .data!
+                                                                .carNumber
+                                                                .isNotEmpty
+                                                            ? state
+                                                                  .tokenErorrModel
+                                                                  .data!
+                                                                  .carNumber[0]
+                                                            : null
+                                                      : null
+                                                : null,
+                                          ),
                                           validator: (e) =>
                                               AppValidator.licensePlate(
                                                 value: e,
@@ -522,7 +542,9 @@ class _DriverAddEditState extends State<DriverAddEdit> {
                               background: Colors.transparent,
                               foreground: myTheme.text,
                             ),
-                            onPressed: () {Navigator.pop(context);},
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
                             child: Row(
                               mainAxisSize: .min,
                               children: [

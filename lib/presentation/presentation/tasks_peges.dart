@@ -92,9 +92,9 @@ class _TasksPegesState extends State<TasksPeges> {
           barrierDismissible: false,
           barrierColor: Colors.black54,
           useRootNavigator: true,
-          builder: (_) => const PopScope(
+          builder: (_) => PopScope(
             canPop: false,
-            child: Center(child: CircularProgressIndicator()),
+            child: Center(child: CircularProgressIndicator(color: myTheme.globalColor,)),
           ),
         ).then((_) => isLoadingShown = false);
       }
@@ -286,6 +286,7 @@ class _TasksPegesState extends State<TasksPeges> {
                         ),
                       ),
                       SliverToBoxAdapter(child: SizedBox(height: 10.h)),
+                      if(state.driversPage!=null && state.driversPage!.data.isNotEmpty)
                       SliverList.separated(
                         itemBuilder: (ctx, index) {
                           return TaxisWidget(
@@ -296,6 +297,12 @@ class _TasksPegesState extends State<TasksPeges> {
                         itemCount: state.driversPage?.data.length ?? 0,
                         separatorBuilder: (ctx, index) =>
                             SizedBox(height: 12.h, key: ValueKey(index)),
+                      ),
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(
+                          child: Text("Haydochi topilmadi"),
+                        ),
                       ),
                     ],
                   ),

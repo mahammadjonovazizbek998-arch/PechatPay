@@ -184,9 +184,13 @@ class _HomePegesState extends State<HomePeges> {
                 barrierDismissible: false,
                 barrierColor: Colors.black54,
                 useRootNavigator: true,
-                builder: (_) => const PopScope(
+                builder: (_) => PopScope(
                   canPop: false,
-                  child: Center(child: CircularProgressIndicator()),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: myTheme.globalColor,
+                    ),
+                  ),
                 ),
               ).then((_) => isLoadingShown = false);
             }
