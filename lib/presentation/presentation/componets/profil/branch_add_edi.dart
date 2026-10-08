@@ -531,20 +531,19 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                               child: Row(
                                                 children: [
                                                   Text(
-                                                    widget.ediAdd
-                                                        ? (profilState.shift1End != null &&
-                                                                profilState.shift1Start != null &&
-                                                                profilState.shift1Start!.isNotEmpty &&
-                                                                profilState.shift1End!.isNotEmpty)
-                                                            ? "${profilState.shift1Start!.substring(0, 5)} - ${profilState.shift1End!.substring(0, 5)}"
-                                                            : "${widget.tokenModelApiUserModel?.shift1Start.substring(0, 5) ?? '00:00'} - ${widget.tokenModelApiUserModel?.shift1End.substring(0, 5) ?? '00:00'}"
-                                                        : (profilState.shift1Start != null &&
-                                                                profilState.shift1End != null &&
-                                                                profilState.shift1Start!.isNotEmpty &&
-                                                                profilState.shift1End!.isNotEmpty &&
-                                                                profilState.shift1Start != "00:00:00")
-                                                            ? "${profilState.shift1Start!.substring(0, 5)} - ${profilState.shift1End!.substring(0, 5)}"
-                                                            : "00:00 - 00:00",
+                                                    (() {
+                                                      final start = profilState.shift1Start?.isNotEmpty == true && profilState.shift1Start != "00:00:00"
+                                                          ? profilState.shift1Start
+                                                          : widget.tokenModelApiUserModel?.shift1Start;
+                                                      final end = profilState.shift1End?.isNotEmpty == true && profilState.shift1End != "00:00:00"
+                                                          ? profilState.shift1End
+                                                          : widget.tokenModelApiUserModel?.shift1End;
+
+                                                      if (start != null && end != null && start.isNotEmpty && end.isNotEmpty && start != "00:00:00") {
+                                                        return "${start.length >= 5 ? start.substring(0, 5) : start} - ${end.length >= 5 ? end.substring(0, 5) : end}";
+                                                      }
+                                                      return widget.ediAdd ? "06:00 - 18:00" : "00:00 - 00:00";
+                                                    })(),
                                                     style: AppTextStyles.style14.copyWith(
                                                       color: myTheme.text,
                                                     ),
@@ -682,20 +681,19 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                               child: Row(
                                                 children: [
                                                   Text(
-                                                    widget.ediAdd
-                                                        ? (profilState.shift2End != null &&
-                                                                profilState.shift2Start != null &&
-                                                                profilState.shift2Start!.isNotEmpty &&
-                                                                profilState.shift2End!.isNotEmpty)
-                                                            ? "${profilState.shift2Start!.substring(0, 5)} - ${profilState.shift2End!.substring(0, 5)}"
-                                                            : "${widget.tokenModelApiUserModel?.shift2Start.substring(0, 5) ?? '00:00'} - ${widget.tokenModelApiUserModel?.shift2End.substring(0, 5) ?? '00:00'}"
-                                                        : (profilState.shift2Start != null &&
-                                                                profilState.shift2End != null &&
-                                                                profilState.shift2Start!.isNotEmpty &&
-                                                                profilState.shift2End!.isNotEmpty &&
-                                                                profilState.shift2Start != "00:00:00")
-                                                            ? "${profilState.shift2Start!.substring(0, 5)} - ${profilState.shift2End!.substring(0, 5)}"
-                                                            : "00:00 - 00:00",
+                                                    (() {
+                                                      final start = profilState.shift2Start?.isNotEmpty == true && profilState.shift2Start != "00:00:00"
+                                                          ? profilState.shift2Start
+                                                          : widget.tokenModelApiUserModel?.shift2Start;
+                                                      final end = profilState.shift2End?.isNotEmpty == true && profilState.shift2End != "00:00:00"
+                                                          ? profilState.shift2End
+                                                          : widget.tokenModelApiUserModel?.shift2End;
+
+                                                      if (start != null && end != null && start.isNotEmpty && end.isNotEmpty && start != "00:00:00") {
+                                                        return "${start.length >= 5 ? start.substring(0, 5) : start} - ${end.length >= 5 ? end.substring(0, 5) : end}";
+                                                      }
+                                                      return widget.ediAdd ? "17:00 - 06:00" : "00:00 - 00:00";
+                                                    })(),
                                                     style: AppTextStyles.style14.copyWith(
                                                       color: myTheme.text,
                                                     ),
@@ -1098,15 +1096,16 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                   ),
                                   validator: (value) {
                                     if (widget.ediAdd) {
-                                      return AppValidator.password(
-                                        name: "Joriy parol",
-                                        value: value,
-                                      );
-                                    } else {
-                                      return null;
+                                      if (_anyPasswordEntered) {
+                                        if (value == null || value.isEmpty) {
+                                          return "Joriy parol bo'sh bo'lishi mumkin emas";
+                                        }
+                                        return AppValidator.password(name: "Joriy parol", value: value);
+                                      }
                                     }
+                                    return null;
                                   },
-                                  onChanged: (value) {},
+                                  onChanged: (value) => setState(() {}),
                                 );
                               },
                             ),
@@ -1178,10 +1177,17 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                         ),
                                   ),
                                 ),
-                                validator: (value) => AppValidator.password(
-                                  name: widget.ediAdd ? "Yangi parol" : "Parol",
-                                  value: value,
-                                ),
+                                validator: (value) {
+                                  if (widget.ediAdd) {
+                                    if (_anyPasswordEntered) {
+                                      return AppValidator.password(name: "Yangi parol", value: value);
+                                    }
+                                    return null;
+                                  } else {
+                                    return AppValidator.password(name: "Parol", value: value);
+                                  }
+                                },
+                                onChanged: (value) => setState(() {}),
                               );
                             },
                           ),
@@ -1252,13 +1258,25 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                         ),
                                   ),
                                 ),
-                                validator: (value) => AppValidator.password(
-                                  name: widget.ediAdd
-                                      ? "Yangi parolni tasdiqsh"
-                                      : "Parol tasdiqsh",
-                                  value: value,
-                                  newPassword: passwordController.text,
-                                ),
+                                validator: (value) {
+                                  if (widget.ediAdd) {
+                                    if (_anyPasswordEntered) {
+                                      return AppValidator.password(
+                                        name: "Yangi parolni tasdiqlash",
+                                        value: value,
+                                        newPassword: passwordController.text,
+                                      );
+                                    }
+                                    return null;
+                                  } else {
+                                    return AppValidator.password(
+                                      name: "Parol tasdiqlash",
+                                      value: value,
+                                      newPassword: passwordController.text,
+                                    );
+                                  }
+                                },
+                                onChanged: (value) => setState(() {}),
                                 controller: confirmPasswordController,
                               );
                             },
