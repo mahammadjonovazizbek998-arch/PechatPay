@@ -244,7 +244,7 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                           ),
                           SizedBox(height: 5.h),
                           BlocBuilder<ProfilCubit, ProfilState>(
-                            builder: (context, state) {
+                            builder: (context, profilState) {
                               return TextFormField(
                                 onSaved: (saved) {
                                   name = saved!;
@@ -258,14 +258,14 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                   color: myTheme.text,
                                 ),
                                 decoration: AppTextFormStyle.textFormFild(
-                                  errorText: state is ProfilError
-                                      ? state.tokenErorrModel.data != null
-                                            ? state
+                                  errorText: profilState is ProfilError
+                                      ? profilState.tokenErorrModel.data != null
+                                            ? profilState
                                                       .tokenErorrModel
                                                       .data!
                                                       .name
                                                       .isNotEmpty
-                                                  ? state
+                                                  ? profilState
                                                         .tokenErorrModel
                                                         .data!
                                                         .name[0]
@@ -304,7 +304,7 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                           ),
                           SizedBox(height: 5.h),
                           BlocBuilder<ProfilCubit, ProfilState>(
-                            builder: (context, state) {
+                            builder: (context, profilState) {
                               return TextFormField(
                                 onSaved: (saved) {
                                   phone = saved!;
@@ -330,14 +330,14 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                   color: myTheme.text,
                                 ),
                                 decoration: AppTextFormStyle.textFormFild(
-                                  errorText: state is ProfilError
-                                      ? state.tokenErorrModel.data != null
-                                            ? state
+                                  errorText: profilState is ProfilError
+                                      ? profilState.tokenErorrModel.data != null
+                                            ? profilState
                                                       .tokenErorrModel
                                                       .data!
                                                       .phone
                                                       .isNotEmpty
-                                                  ? state
+                                                  ? profilState
                                                         .tokenErorrModel
                                                         .data!
                                                         .phone[0]
@@ -433,7 +433,7 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                           ),
                           SizedBox(height: 5.h),
                           BlocBuilder<ProfilCubit, ProfilState>(
-                            builder: (context, state) {
+                            builder: (context, profilState) {
                               return TextFormField(
                                 onSaved: (saved) {
                                   stampPrice = saved!;
@@ -450,14 +450,14 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                   color: myTheme.text,
                                 ),
                                 decoration: AppTextFormStyle.textFormFild(
-                                  errorText: state is ProfilError
-                                      ? state.tokenErorrModel.data != null
-                                            ? state
+                                  errorText: profilState is ProfilError
+                                      ? profilState.tokenErorrModel.data != null
+                                            ? profilState
                                                       .tokenErorrModel
                                                       .data!
                                                       .stampPrice
                                                       .isNotEmpty
-                                                  ? state
+                                                  ? profilState
                                                         .tokenErorrModel
                                                         .data!
                                                         .stampPrice[0]
@@ -680,12 +680,12 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                             ),
                                           ),
                                         ),
-                                        {
-                                          final apiError = state is ProfilError && state.tokenErorrModel.data != null
-                                              ? (state.tokenErorrModel.data!.shift1Start.isNotEmpty
-                                                  ? state.tokenErorrModel.data!.shift1Start[0]
-                                                  : state.tokenErorrModel.data!.shift1End.isNotEmpty
-                                                      ? state.tokenErorrModel.data!.shift1End[0]
+                                        (() {
+                                          final apiError = profilState is ProfilError && profilState.tokenErorrModel.data != null
+                                              ? (profilState.tokenErorrModel.data!.shift1Start.isNotEmpty
+                                                  ? profilState.tokenErorrModel.data!.shift1Start[0]
+                                                  : profilState.tokenErorrModel.data!.shift1End.isNotEmpty
+                                                      ? profilState.tokenErorrModel.data!.shift1End[0]
                                                       : null)
                                               : null;
                                           final displayError = formState.errorText ?? apiError;
@@ -704,7 +704,7 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                             );
                                           }
                                           return const SizedBox.shrink();
-                                        }
+                                        })(),
                                       ],
                                     );
                                   },
@@ -838,12 +838,12 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                             ),
                                           ),
                                         ),
-                                        {
-                                          final apiError2 = state is ProfilError && state.tokenErorrModel.data != null
-                                              ? (state.tokenErorrModel.data!.shift2Start.isNotEmpty
-                                                  ? state.tokenErorrModel.data!.shift2Start[0]
-                                                  : state.tokenErorrModel.data!.shift2End.isNotEmpty
-                                                      ? state.tokenErorrModel.data!.shift2End[0]
+                                        (() {
+                                          final apiError2 = profilState is ProfilError && profilState.tokenErorrModel.data != null
+                                              ? (profilState.tokenErorrModel.data!.shift2Start.isNotEmpty
+                                                  ? profilState.tokenErorrModel.data!.shift2Start[0]
+                                                  : profilState.tokenErorrModel.data!.shift2End.isNotEmpty
+                                                      ? profilState.tokenErorrModel.data!.shift2End[0]
                                                       : null)
                                               : null;
                                           final displayError2 = formState.errorText ?? apiError2;
@@ -862,7 +862,7 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                             );
                                           }
                                           return const SizedBox.shrink();
-                                        }
+                                        })(),
                                       ],
                                     );
                                   },
@@ -929,7 +929,7 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                               color: myTheme.text.withValues(alpha: 0.1),
                             ),
                             child: BlocBuilder<ProfilCubit, ProfilState>(
-                              builder: (context, state) {
+                              builder: (context, profilState) {
                                 return Row(
                                   mainAxisAlignment: .spaceBetween,
                                   children: [
@@ -952,7 +952,7 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                         SizedBox(width: 14.w),
                                         Text(
                                           textAlign: .start,
-                                          state.stampPauseHours.toString(),
+                                          profilState.stampPauseHours.toString(),
                                           style: AppTextStyles.style14.copyWith(
                                             fontWeight: .bold,
                                             color: myTheme.text,
@@ -974,14 +974,14 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                                 context
                                                     .read<ProfilCubit>()
                                                     .itmeOfDay(
-                                                      state.shift2Start,
-                                                      state.shift2End,
-                                                      state.shift1Start,
-                                                      state.shift1End,
-                                                      state.stampPauseHours < 24
-                                                          ? state.stampPauseHours +
+                                                      profilState.shift2Start,
+                                                      profilState.shift2End,
+                                                      profilState.shift1Start,
+                                                      profilState.shift1End,
+                                                      profilState.stampPauseHours < 24
+                                                          ? profilState.stampPauseHours +
                                                                 1
-                                                          : state
+                                                          : profilState
                                                                 .stampPauseHours,
                                                     );
                                               },
@@ -996,14 +996,14 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                                 context
                                                     .read<ProfilCubit>()
                                                     .itmeOfDay(
-                                                      state.shift2Start,
-                                                      state.shift2End,
-                                                      state.shift1Start,
-                                                      state.shift1End,
-                                                      state.stampPauseHours > 0
-                                                          ? state.stampPauseHours -
+                                                      profilState.shift2Start,
+                                                      profilState.shift2End,
+                                                      profilState.shift1Start,
+                                                      profilState.shift1End,
+                                                      profilState.stampPauseHours > 0
+                                                          ? profilState.stampPauseHours -
                                                                 1
-                                                          : state
+                                                          : profilState
                                                                 .stampPauseHours,
                                                     );
                                               },
@@ -1128,22 +1128,22 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                           if (widget.ediAdd) SizedBox(height: 5.h),
                           if (widget.ediAdd)
                             BlocBuilder<ProfilCubit, ProfilState>(
-                              builder: (context, state) {
+                              builder: (context, profilState) {
                                 return TextFormField(
                                   controller: currentPasswordController,
-                                  obscureText: state.password1,
+                                  obscureText: profilState.password1,
                                   style: AppTextStyles.style14.copyWith(
                                     color: myTheme.text,
                                   ),
                                   decoration: AppTextFormStyle.textFormFild(
-                                    errorText: state is ProfilError
-                                        ? state.tokenErorrModel.data != null
-                                              ? state
+                                    errorText: profilState is ProfilError
+                                        ? profilState.tokenErorrModel.data != null
+                                              ? profilState
                                                         .tokenErorrModel
                                                         .data!
                                                         .currentPassword
                                                         .isNotEmpty
-                                                    ? state
+                                                    ? profilState
                                                           .tokenErorrModel
                                                           .data!
                                                           .currentPassword[0]
@@ -1165,7 +1165,7 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                     ),
                                     suffix: GestureDetector(
                                       child: Icon(
-                                        !state.password1
+                                        !profilState.password1
                                             ? Icons.visibility_outlined
                                             : Icons.visibility_off_outlined,
                                         size: 22.w,
@@ -1173,9 +1173,9 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                       ),
                                       onTap: () =>
                                           context.read<ProfilCubit>().onTap(
-                                            !state.password1,
-                                            state.password2,
-                                            state.password3,
+                                            !profilState.password1,
+                                            profilState.password2,
+                                            profilState.password3,
                                           ),
                                     ),
                                   ),
@@ -1207,22 +1207,22 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                           ),
                           SizedBox(height: 5.h),
                           BlocBuilder<ProfilCubit, ProfilState>(
-                            builder: (context, state) {
+                            builder: (context, profilState) {
                               return TextFormField(
-                                obscureText: state.password2,
+                                obscureText: profilState.password2,
                                 controller: passwordController,
                                 style: AppTextStyles.style14.copyWith(
                                   color: myTheme.text,
                                 ),
                                 decoration: AppTextFormStyle.textFormFild(
-                                  errorText: state is ProfilError
-                                      ? state.tokenErorrModel.data != null
-                                            ? state
+                                  errorText: profilState is ProfilError
+                                      ? profilState.tokenErorrModel.data != null
+                                            ? profilState
                                                       .tokenErorrModel
                                                       .data!
                                                       .password
                                                       .isNotEmpty
-                                                  ? state
+                                                  ? profilState
                                                         .tokenErorrModel
                                                         .data!
                                                         .password[0]
@@ -1248,7 +1248,7 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                   ),
                                   suffix: GestureDetector(
                                     child: Icon(
-                                      !state.password2
+                                      !profilState.password2
                                           ? Icons.visibility_outlined
                                           : Icons.visibility_off_outlined,
                                       size: 22.w,
@@ -1256,9 +1256,9 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                     ),
                                     onTap: () =>
                                         context.read<ProfilCubit>().onTap(
-                                          state.password1,
-                                          !state.password2,
-                                          state.password3,
+                                          profilState.password1,
+                                          !profilState.password2,
+                                          profilState.password3,
                                         ),
                                   ),
                                 ),
@@ -1289,21 +1289,21 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                           ),
                           SizedBox(height: 5.h),
                           BlocBuilder<ProfilCubit, ProfilState>(
-                            builder: (context, state) {
+                            builder: (context, profilState) {
                               return TextFormField(
-                                obscureText: state.password3,
+                                obscureText: profilState.password3,
                                 style: AppTextStyles.style14.copyWith(
                                   color: myTheme.text,
                                 ),
                                 decoration: AppTextFormStyle.textFormFild(
-                                  errorText: state is ProfilError
-                                      ? state.tokenErorrModel.data != null
-                                            ? state
+                                  errorText: profilState is ProfilError
+                                      ? profilState.tokenErorrModel.data != null
+                                            ? profilState
                                                       .tokenErorrModel
                                                       .data!
                                                       .passwordConfirmation
                                                       .isNotEmpty
-                                                  ? state
+                                                  ? profilState
                                                         .tokenErorrModel
                                                         .data!
                                                         .passwordConfirmation[0]
@@ -1329,7 +1329,7 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                   ),
                                   suffix: GestureDetector(
                                     child: Icon(
-                                      !state.password3
+                                      !profilState.password3
                                           ? Icons.visibility_outlined
                                           : Icons.visibility_off_outlined,
                                       size: 22.w,
@@ -1337,9 +1337,9 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                     ),
                                     onTap: () =>
                                         context.read<ProfilCubit>().onTap(
-                                          state.password1,
-                                          state.password2,
-                                          !state.password3,
+                                          profilState.password1,
+                                          profilState.password2,
+                                          !profilState.password3,
                                         ),
                                   ),
                                 ),
@@ -1410,14 +1410,14 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                       height: 48.h,
                       width: MediaQuery.of(context).size.width,
                       child: BlocConsumer<ProfilCubit, ProfilState>(
-                        builder: (context, state) {
+                        builder: (context, profilState) {
                           return ElevatedButton(
                             style: AppTextFormStyle.buttonStyleBorder(
                               background: myTheme.globalColor,
                               foreground: myTheme.textColor,
                             ),
                             onPressed: onTap,
-                            child: state is ProfilLoding
+                            child: profilState is ProfilLoding
                                 ? SizedBox(
                                     width: 20.w,
                                     height: 20.h,
@@ -1445,8 +1445,8 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                   ),
                           );
                         },
-                        listener: (context, state) {
-                          if (state is ProfilFinish) {
+                        listener: (context, profilState) {
+                          if (profilState is ProfilFinish) {
                             Navigator.pop(context);
                           }
                         },
