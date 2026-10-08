@@ -556,34 +556,39 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                               TimeOfDay? tanlanganVaqt = await showTimePicker(
                                                 context: context,
                                                 initialTime: const TimeOfDay(hour: 8, minute: 0),
-                                                helpText: "Kunduzgi smenani boshlanish vaqtini tanlang",
-                                                barrierColor: myTheme.globalBackgroundColor,
-                                              );
-                                              if (!context.mounted) return;
-                                              TimeOfDay? tanlanganVaqt1 = await showTimePicker(
-                                                context: context,
-                                                initialTime: const TimeOfDay(hour: 20, minute: 0),
-                                                helpText: "Kunduzgi smenani tugash vaqtini tanlang",
+                                                helpText: "Kunduzgi smenaning boshlanish vaqtini tanlang",
                                                 barrierColor: myTheme.globalBackgroundColor,
                                               );
                                               if (!context.mounted) return;
 
-                                              if (tanlanganVaqt != null && tanlanganVaqt1 != null) {
+                                              if (tanlanganVaqt != null) {
                                                 String vaqtFormat(TimeOfDay vaqt) =>
                                                     "${vaqt.hour.toString().padLeft(2, '0')}:${vaqt.minute.toString().padLeft(2, '0')}:00";
 
-                                                String sStart = vaqtFormat(tanlanganVaqt);
-                                                String sEnd = vaqtFormat(tanlanganVaqt1);
+                                                String s1Start = vaqtFormat(tanlanganVaqt);
+
+                                                // Shift 1 End (+12 hours)
+                                                int s1EndHour = (tanlanganVaqt.hour + 12) % 24;
+                                                TimeOfDay s1EndTime = TimeOfDay(hour: s1EndHour, minute: tanlanganVaqt.minute);
+                                                String s1End = vaqtFormat(s1EndTime);
+
+                                                // Shift 2 Start = Shift 1 End
+                                                String s2Start = s1End;
+
+                                                // Shift 2 End (+12 hours from Shift 2 Start)
+                                                int s2EndHour = (s1EndTime.hour + 12) % 24;
+                                                TimeOfDay s2EndTime = TimeOfDay(hour: s2EndHour, minute: s1EndTime.minute);
+                                                String s2End = vaqtFormat(s2EndTime);
 
                                                 context.read<ProfilCubit>().itmeOfDay(
-                                                      profilState.shift2Start,
-                                                      profilState.shift2End,
-                                                      sStart,
-                                                      sEnd,
+                                                      s2Start,
+                                                      s2End,
+                                                      s1Start,
+                                                      s1End,
                                                       profilState.stampPauseHours,
                                                     );
 
-                                                formState.didChange(sStart);
+                                                formState.didChange(s1Start);
                                               }
                                             },
                                           ),
