@@ -64,9 +64,40 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
       passwordController.text.isNotEmpty ||
       confirmPasswordController.text.isNotEmpty;
 
+  bool _hasChanges() {
+    if (!widget.ediAdd || widget.tokenModelApiUserModel == null) return true;
+
+    final oldUser = widget.tokenModelApiUserModel!;
+
+    if (_anyPasswordEntered) return true;
+
+    if (name.trim() != oldUser.name.trim()) return true;
+    if (phone.trim() != oldUser.phone.trim()) return true;
+    if (stampPrice.replaceAll(RegExp(r'[\s,]'), '') != oldUser.stampPrice.toString()) return true;
+
+    final profilState = context.read<ProfilCubit>().state;
+    final currentShift1Start = profilState.shift1Start?.isNotEmpty == true ? profilState.shift1Start : oldUser.shift1Start;
+    final currentShift1End = profilState.shift1End?.isNotEmpty == true ? profilState.shift1End : oldUser.shift1End;
+    final currentShift2Start = profilState.shift2Start?.isNotEmpty == true ? profilState.shift2Start : oldUser.shift2Start;
+    final currentShift2End = profilState.shift2End?.isNotEmpty == true ? profilState.shift2End : oldUser.shift2End;
+
+    if (currentShift1Start != oldUser.shift1Start) return true;
+    if (currentShift1End != oldUser.shift1End) return true;
+    if (currentShift2Start != oldUser.shift2Start) return true;
+    if (currentShift2End != oldUser.shift2End) return true;
+
+    return false;
+  }
+
   Future<void> onTap() async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
+
+      if (widget.ediAdd && !_hasChanges()) {
+        Navigator.pop(context);
+        return;
+      }
+
       if (widget.ediAdd && widget.tokenModelApiUserModel == null) {
         await context.read<ProfilCubit>().meUpdate(
           name,
