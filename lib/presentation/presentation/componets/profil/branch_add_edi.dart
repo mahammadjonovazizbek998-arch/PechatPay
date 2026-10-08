@@ -680,18 +680,31 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                             ),
                                           ),
                                         ),
-                                        if (formState.hasError)
-                                          Padding(
-                                            padding: EdgeInsets.only(top: 6.h, left: 16.w),
-                                            child: Text(
-                                              formState.errorText!,
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 12.sp,
-                                                fontWeight: FontWeight.w500,
+                                        {
+                                          final apiError = state is ProfilError && state.tokenErorrModel.data != null
+                                              ? (state.tokenErorrModel.data!.shift1Start.isNotEmpty
+                                                  ? state.tokenErorrModel.data!.shift1Start[0]
+                                                  : state.tokenErorrModel.data!.shift1End.isNotEmpty
+                                                      ? state.tokenErorrModel.data!.shift1End[0]
+                                                      : null)
+                                              : null;
+                                          final displayError = formState.errorText ?? apiError;
+
+                                          if (formState.hasError || apiError != null) {
+                                            return Padding(
+                                              padding: EdgeInsets.only(top: 6.h, left: 16.w),
+                                              child: Text(
+                                                displayError ?? "",
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 12.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
                                               ),
-                                            ),
-                                          ),
+                                            );
+                                          }
+                                          return const SizedBox.shrink();
+                                        }
                                       ],
                                     );
                                   },
@@ -825,18 +838,31 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                             ),
                                           ),
                                         ),
-                                        if (formState.hasError)
-                                          Padding(
-                                            padding: EdgeInsets.only(top: 6.h, left: 16.w),
-                                            child: Text(
-                                              formState.errorText!,
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 12.sp,
-                                                fontWeight: FontWeight.w500,
+                                        {
+                                          final apiError2 = state is ProfilError && state.tokenErorrModel.data != null
+                                              ? (state.tokenErorrModel.data!.shift2Start.isNotEmpty
+                                                  ? state.tokenErorrModel.data!.shift2Start[0]
+                                                  : state.tokenErorrModel.data!.shift2End.isNotEmpty
+                                                      ? state.tokenErorrModel.data!.shift2End[0]
+                                                      : null)
+                                              : null;
+                                          final displayError2 = formState.errorText ?? apiError2;
+
+                                          if (formState.hasError || apiError2 != null) {
+                                            return Padding(
+                                              padding: EdgeInsets.only(top: 6.h, left: 16.w),
+                                              child: Text(
+                                                displayError2 ?? "",
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 12.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
                                               ),
-                                            ),
-                                          ),
+                                            );
+                                          }
+                                          return const SizedBox.shrink();
+                                        }
                                       ],
                                     );
                                   },
