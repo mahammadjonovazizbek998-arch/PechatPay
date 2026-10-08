@@ -37,6 +37,18 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
     currentPasswordController = TextEditingController();
     passwordController = TextEditingController();
     confirmPasswordController = TextEditingController();
+
+    if (widget.ediAdd && widget.tokenModelApiUserModel != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<ProfilCubit>().itmeOfDay(
+          widget.tokenModelApiUserModel!.shift2Start,
+          widget.tokenModelApiUserModel!.shift2End,
+          widget.tokenModelApiUserModel!.shift1Start,
+          widget.tokenModelApiUserModel!.shift1End,
+          widget.tokenModelApiUserModel!.stampPauseHours ?? 0,
+        );
+      });
+    }
   }
 
   @override
