@@ -140,22 +140,25 @@ class ApiService {
     String shift2End,
   ) async {
     final Uri uri = Uri.parse("$url/auth/me");
-    return _post(
-      uri,
-      withAuth: true,
-      body: jsonEncode({
-        "name": name,
-        "phone": phone,
+    final Map<String, dynamic> body = {
+      "name": name,
+      "phone": phone,
+      "stamp_price": stampPrice,
+      "stamp_pause_hours": stampPauseHurs,
+      "shift_1_start": shift1Start,
+      "shift_1_end": shift1End,
+      "shift_2_start": shift2Start,
+      "shift_2_end": shift2End,
+      if (password.isNotEmpty) ...{
         "current_password": currentPassword,
         "password": password,
         "password_confirmation": passwordConfirmation,
-        "stamp_price": stampPrice,
-        "stamp_pause_hours": stampPauseHurs,
-        "shift_1_start": shift1Start,
-        "shift_1_end": shift1End,
-        "shift_2_start": shift2Start,
-        "shift_2_end": shift2End,
-      }),
+      },
+    };
+    return _post(
+      uri,
+      withAuth: true,
+      body: jsonEncode(body),
     );
   }
 
@@ -179,22 +182,26 @@ class ApiService {
     int? id,
   ) async {
     final Uri uri = Uri.parse(id != null ? "$url/store/$id" : "$url/store");
+    final Map<String, dynamic> body = {
+      "name": name,
+      "phone": phone,
+      "stamp_price": stampPrice,
+      "stamp_pause_hours": stampPauseHurs,
+      "shift_1_start": shift1Start,
+      "shift_1_end": shift1End,
+      "shift_2_start": shift2Start,
+      "shift_2_end": shift2End,
+      if (password.isNotEmpty) ...{
+        if (currentPassword != null && currentPassword.isNotEmpty)
+          "current_password": currentPassword,
+        "password": password,
+        "password_confirmation": passwordConfirmation,
+      },
+    };
     return _post(
       uri,
       withAuth: true,
-      body: jsonEncode({
-        "name": name,
-        "phone": phone,
-        if (id != null) "current_password": currentPassword,
-        "password": password,
-        "password_confirmation": passwordConfirmation,
-        "stamp_price": stampPrice,
-        "stamp_pause_hours": stampPauseHurs,
-        "shift_1_start": shift1Start,
-        "shift_1_end": shift1End,
-        "shift_2_start": shift2Start,
-        "shift_2_end": shift2End,
-      }),
+      body: jsonEncode(body),
     );
   }
 
