@@ -38,25 +38,23 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
     passwordController = TextEditingController();
     confirmPasswordController = TextEditingController();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.ediAdd && widget.tokenModelApiUserModel != null) {
-        context.read<ProfilCubit>().itmeOfDay(
-          widget.tokenModelApiUserModel!.shift2Start,
-          widget.tokenModelApiUserModel!.shift2End,
-          widget.tokenModelApiUserModel!.shift1Start,
-          widget.tokenModelApiUserModel!.shift1End,
-          widget.tokenModelApiUserModel!.stampPauseHours ?? 0,
-        );
-      } else if (!widget.ediAdd) {
-        context.read<ProfilCubit>().itmeOfDay(
-          "20:00",
-          "08:00",
-          "08:00",
-          "20:00",
-          0,
-        );
-      }
-    });
+    if (widget.ediAdd && widget.tokenModelApiUserModel != null) {
+      context.read<ProfilCubit>().itmeOfDay(
+        widget.tokenModelApiUserModel!.shift2Start,
+        widget.tokenModelApiUserModel!.shift2End,
+        widget.tokenModelApiUserModel!.shift1Start,
+        widget.tokenModelApiUserModel!.shift1End,
+        widget.tokenModelApiUserModel!.stampPauseHours,
+      );
+    } else if (!widget.ediAdd) {
+      context.read<ProfilCubit>().itmeOfDay(
+        "20:00",
+        "08:00",
+        "08:00",
+        "20:00",
+        0,
+      );
+    }
   }
 
   @override
