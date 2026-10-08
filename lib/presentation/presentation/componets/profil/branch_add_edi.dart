@@ -43,10 +43,15 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
       final userModel = widget.tokenModelApiUserModel;
       final tokenModel = sl<LoginCubit>().state.token;
 
-      final s1Start = userModel?.shift1Start ?? tokenModel?.shift1Start ?? "08:00";
-      final s1End = userModel?.shift1End ?? tokenModel?.shift1End ?? "20:00";
-      final s2Start = userModel?.shift2Start ?? tokenModel?.shift2Start ?? "20:00";
-      final s2End = userModel?.shift2End ?? tokenModel?.shift2End ?? "08:00";
+      String cleanTime(String? t, String defaultVal) {
+        if (t == null || t.isEmpty || t == "00:00:00" || t == "00:00") return defaultVal;
+        return t.length >= 5 ? t.substring(0, 5) : t;
+      }
+
+      final s1Start = cleanTime(userModel?.shift1Start ?? tokenModel?.shift1Start, "08:00");
+      final s1End = cleanTime(userModel?.shift1End ?? tokenModel?.shift1End, "20:00");
+      final s2Start = cleanTime(userModel?.shift2Start ?? tokenModel?.shift2Start, "20:00");
+      final s2End = cleanTime(userModel?.shift2End ?? tokenModel?.shift2End, "08:00");
       final pauseHours = userModel?.stampPauseHours ?? tokenModel?.stampPauseHours ?? 0;
 
       context.read<ProfilCubit>().itmeOfDay(
@@ -91,16 +96,21 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
     if (phone.trim() != oldUser.phone.trim()) return true;
     if (stampPrice.replaceAll(RegExp(r'[\s,]'), '') != oldUser.stampPrice.toString()) return true;
 
-    final profilState = context.read<ProfilCubit>().state;
-    final currentShift1Start = profilState.shift1Start?.isNotEmpty == true ? profilState.shift1Start : oldUser.shift1Start;
-    final currentShift1End = profilState.shift1End?.isNotEmpty == true ? profilState.shift1End : oldUser.shift1End;
-    final currentShift2Start = profilState.shift2Start?.isNotEmpty == true ? profilState.shift2Start : oldUser.shift2Start;
-    final currentShift2End = profilState.shift2End?.isNotEmpty == true ? profilState.shift2End : oldUser.shift2End;
+    String cleanTime(String? t) {
+      if (t == null || t.isEmpty) return "";
+      return t.length >= 5 ? t.substring(0, 5) : t;
+    }
 
-    if (currentShift1Start != oldUser.shift1Start) return true;
-    if (currentShift1End != oldUser.shift1End) return true;
-    if (currentShift2Start != oldUser.shift2Start) return true;
-    if (currentShift2End != oldUser.shift2End) return true;
+    final profilState = context.read<ProfilCubit>().state;
+    final currentShift1Start = cleanTime(profilState.shift1Start);
+    final currentShift1End = cleanTime(profilState.shift1End);
+    final currentShift2Start = cleanTime(profilState.shift2Start);
+    final currentShift2End = cleanTime(profilState.shift2End);
+
+    if (currentShift1Start != cleanTime(oldUser.shift1Start)) return true;
+    if (currentShift1End != cleanTime(oldUser.shift1End)) return true;
+    if (currentShift2Start != cleanTime(oldUser.shift2Start)) return true;
+    if (currentShift2End != cleanTime(oldUser.shift2End)) return true;
 
     return false;
   }
