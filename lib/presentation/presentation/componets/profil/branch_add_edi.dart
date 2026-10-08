@@ -593,7 +593,7 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
 
                                               if (tanlanganVaqt != null) {
                                                 String vaqtFormat(TimeOfDay vaqt) =>
-                                                    "${vaqt.hour.toString().padLeft(2, '0')}:${vaqt.minute.toString().padLeft(2, '0')}:00";
+                                                    "${vaqt.hour.toString().padLeft(2, '0')}:${vaqt.minute.toString().padLeft(2, '0')}";
 
                                                 String s1Start = vaqtFormat(tanlanganVaqt);
 
@@ -750,7 +750,7 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
 
                                               if (tanlanganVaqt != null && tanlanganVaqt1 != null) {
                                                 String vaqtFormat(TimeOfDay vaqt) =>
-                                                    "${vaqt.hour.toString().padLeft(2, '0')}:${vaqt.minute.toString().padLeft(2, '0')}:00";
+                                                    "${vaqt.hour.toString().padLeft(2, '0')}:${vaqt.minute.toString().padLeft(2, '0')}";
 
                                                 String sStart = vaqtFormat(tanlanganVaqt);
                                                 String sEnd = vaqtFormat(tanlanganVaqt1);
