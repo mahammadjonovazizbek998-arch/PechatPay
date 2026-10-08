@@ -26,53 +26,61 @@ class BranchAddEdi extends StatefulWidget {
 }
 
 class _BranchAddEdiState extends State<BranchAddEdi> {
+  late final TextEditingController currentPasswordController;
   late final TextEditingController passwordController;
+  late final TextEditingController confirmPasswordController;
   final formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    currentPasswordController = TextEditingController();
     passwordController = TextEditingController();
+    confirmPasswordController = TextEditingController();
   }
 
   @override
   void dispose() {
+    currentPasswordController.dispose();
     passwordController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
   }
+
+  bool get _anyPasswordEntered =>
+      currentPasswordController.text.isNotEmpty ||
+      passwordController.text.isNotEmpty ||
+      confirmPasswordController.text.isNotEmpty;
 
   Future<void> onTap() async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
-      if (widget.ediAdd && widget.tokenModelApiUserModel==null) {
+      if (widget.ediAdd && widget.tokenModelApiUserModel == null) {
         await context.read<ProfilCubit>().meUpdate(
           name,
           phone,
-          currentPassword!,
-          passwordConfirmation,
+          currentPasswordController.text,
+          confirmPasswordController.text,
           stampPrice,
           passwordController.text,
         );
-      }else{
+      } else {
         await context.read<ProfilCubit>().filiallUpdate(
           name,
           phone,
-          currentPassword,
-          passwordConfirmation,
+          currentPasswordController.text.isEmpty ? null : currentPasswordController.text,
+          confirmPasswordController.text,
           stampPrice,
           passwordController.text,
-          widget.tokenModelApiUserModel?.id
+          widget.tokenModelApiUserModel?.id,
         );
       }
     }
   }
 
-   String name="";
-   String phone="";
-   String? currentPassword;
-   String passwordConfirmation="";
-   String stampPrice="";
+  String name = "";
+  String phone = "";
+  String stampPrice = "";
 
   @override
   Widget build(BuildContext context) {
@@ -355,59 +363,77 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                             ),
                           ),
                           SizedBox(height: 5.h),
-                          TextFormField(
-                            onSaved: (saved) {
-                              stampPrice = saved!;
-                            },
-                            initialValue: widget.ediAdd
-                                ? widget.tokenModelApiUserModel != null
-                                      ? widget
-                                            .tokenModelApiUserModel!
-                                            .stampPrice
-                                            .toString()
-                                      : holat.token?.stampPrice.toString()
-                                : null,
-                            style: AppTextStyles.style14.copyWith(
-                              color: myTheme.text,
-                            ),
-                            decoration: AppTextFormStyle.textFormFild(
-                              suffix: Container(
-                                width: 90.w,
-                                height: 38.h,
-                                alignment: .center,
-                                margin: .symmetric(
-                                  horizontal: 5.w,
-                                  vertical: 5.h,
-                                ),
-                                decoration: AppTextFormStyle.container(
-                                  color: myTheme.unselctedColor.withValues(
-                                    alpha: 0.1,
-                                  ),
-                                ),
-                                child: Text(
-                                  "UZS / MUHR",
-                                  style: AppTextStyles.style12.copyWith(
-                                    color: myTheme.globalColor,
-                                  ),
-                                ),
-                              ),
-                              color: myTheme.unselctedColor,
-                              text: "Masalan, 50 000",
-                              prefix: Padding(
-                                padding: EdgeInsets.only(
-                                  left: 12.w,
-                                  right: 8.w,
-                                ),
-                                child: Image.asset(
-                                  "assets/img_15.png",
-                                  width: 16.w,
+                          BlocBuilder<ProfilCubit, ProfilState>(
+                            builder: (context, state) {
+                              return TextFormField(
+                                onSaved: (saved) {
+                                  stampPrice = saved!;
+                                },
+                                initialValue: widget.ediAdd
+                                    ? widget.tokenModelApiUserModel != null
+                                          ? widget
+                                                .tokenModelApiUserModel!
+                                                .stampPrice
+                                                .toString()
+                                          : holat.token?.stampPrice.toString()
+                                    : null,
+                                style: AppTextStyles.style14.copyWith(
                                   color: myTheme.text,
                                 ),
-                              ),
-                            ),
-                            validator: (value) =>
-                                AppValidator.summa(value: value),
-                            onChanged: (value) {},
+                                decoration: AppTextFormStyle.textFormFild(
+                                  errorText: state is ProfilError
+                                      ? state.tokenErorrModel.data != null
+                                            ? state
+                                                      .tokenErorrModel
+                                                      .data!
+                                                      .stampPrice
+                                                      .isNotEmpty
+                                                  ? state
+                                                        .tokenErorrModel
+                                                        .data!
+                                                        .stampPrice[0]
+                                                  : null
+                                            : null
+                                      : null,
+                                  suffix: Container(
+                                    width: 90.w,
+                                    height: 38.h,
+                                    alignment: .center,
+                                    margin: .symmetric(
+                                      horizontal: 5.w,
+                                      vertical: 5.h,
+                                    ),
+                                    decoration: AppTextFormStyle.container(
+                                      color: myTheme.unselctedColor.withValues(
+                                        alpha: 0.1,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      "UZS / MUHR",
+                                      style: AppTextStyles.style12.copyWith(
+                                        color: myTheme.globalColor,
+                                      ),
+                                    ),
+                                  ),
+                                  color: myTheme.unselctedColor,
+                                  text: "Masalan, 50 000",
+                                  prefix: Padding(
+                                    padding: EdgeInsets.only(
+                                      left: 12.w,
+                                      right: 8.w,
+                                    ),
+                                    child: Image.asset(
+                                      "assets/img_15.png",
+                                      width: 16.w,
+                                      color: myTheme.text,
+                                    ),
+                                  ),
+                                ),
+                                validator: (value) =>
+                                    AppValidator.summa(value: value),
+                                onChanged: (value) {},
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -458,96 +484,145 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                             decoration: AppTextFormStyle.container(
                               color: myTheme.text.withValues(alpha: 0.09),
                             ),
-                            child: ListTileWidget(
-                              icoBool: false,
-                              peding: true,
-                              color: myTheme.unselctedColor,
-                              trailing: BlocBuilder<ProfilCubit, ProfilState>(
-                                builder: (context, state) {
-                                  return GestureDetector(
-                                    child: Container(
-                                      width: 90.w,
-                                      decoration: AppTextFormStyle.container(
-                                        color: myTheme.textColor,
-                                      ),
-                                      padding: .symmetric(
-                                        vertical: 8.h,
-                                        horizontal: 6.w,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            widget.ediAdd
-                                                ? state.shift1End != null &&
-                                                          state.shift1Start !=
-                                                              null
-                                                      ? "${state.shift1Start!.substring(0, 5)} - ${state.shift1End!.substring(0, 5)}"
-                                                      : "${holat.token!.shift1Start.substring(0, 5)} - ${holat.token!.shift1End.substring(0, 5)}"
-                                                : "08:00 - 20:00",
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    onTap: () async {
-                                      TimeOfDay? tanlanganVaqt = await showTimePicker(
-                                        context: context,
-                                        initialTime: TimeOfDay.now(),
-                                        helpText: "Kunduzgi smenani boshlanish vaqtni tanlang",
-                                        barrierColor: myTheme.globalBackgroundColor,
-                                      );
-                                      if (!context.mounted) return;
-                                      TimeOfDay? tanlanganVaqt1 = await showTimePicker(
-                                        context: context,
-                                        initialTime: TimeOfDay.now(),
-                                        helpText: "Kunduzgi smenani tugash vaqtni tanlang",
-                                        barrierColor: myTheme.globalBackgroundColor,
-                                      );
-                                      if (!context.mounted) return;
-                                      if (tanlanganVaqt != null && tanlanganVaqt1 != null) {
-                                        String vaqtFormat(TimeOfDay vaqt) =>
-                                            "${vaqt.hour.toString().padLeft(2, '0')}:${vaqt.minute.toString().padLeft(2, '0')}:00";
+                            child: BlocBuilder<ProfilCubit, ProfilState>(
+                              builder: (context, profilState) {
+                                return FormField<String>(
+                                  initialValue: profilState.shift1Start,
+                                  validator: (value) {
+                                    if (profilState.shift1Start == null ||
+                                        profilState.shift1Start!.isEmpty ||
+                                        profilState.shift1End == null ||
+                                        profilState.shift1End!.isEmpty ||
+                                        profilState.shift1Start == "00:00:00") {
+                                      return "Iltimos, kunduzgi smena vaqtini tanlang!";
+                                    }
+                                    return null;
+                                  },
+                                  builder: (FormFieldState<String> formState) {
+                                    return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        ListTileWidget(
+                                          icoBool: false,
+                                          peding: true,
+                                          color: myTheme.unselctedColor,
+                                          trailing: GestureDetector(
+                                            child: Container(
+                                              width: 120.w,
+                                              decoration: AppTextFormStyle.container(
+                                                color: myTheme.textColor,
+                                              ),
+                                              padding: .symmetric(
+                                                vertical: 8.h,
+                                                horizontal: 6.w,
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    widget.ediAdd
+                                                        ? (profilState.shift1End != null &&
+                                                                profilState.shift1Start != null &&
+                                                                profilState.shift1Start!.isNotEmpty &&
+                                                                profilState.shift1End!.isNotEmpty)
+                                                            ? "${profilState.shift1Start!.substring(0, 5)} - ${profilState.shift1End!.substring(0, 5)}"
+                                                            : "${widget.tokenModelApiUserModel?.shift1Start.substring(0, 5) ?? '00:00'} - ${widget.tokenModelApiUserModel?.shift1End.substring(0, 5) ?? '00:00'}"
+                                                        : (profilState.shift1Start != null &&
+                                                                profilState.shift1End != null &&
+                                                                profilState.shift1Start!.isNotEmpty &&
+                                                                profilState.shift1End!.isNotEmpty &&
+                                                                profilState.shift1Start != "00:00:00")
+                                                            ? "${profilState.shift1Start!.substring(0, 5)} - ${profilState.shift1End!.substring(0, 5)}"
+                                                            : "00:00 - 00:00",
+                                                    style: AppTextStyles.style14.copyWith(
+                                                      color: myTheme.text,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            onTap: () async {
+                                              TimeOfDay? tanlanganVaqt = await showTimePicker(
+                                                context: context,
+                                                initialTime: const TimeOfDay(hour: 8, minute: 0),
+                                                helpText: "Kunduzgi smenani boshlanish vaqtini tanlang",
+                                                barrierColor: myTheme.globalBackgroundColor,
+                                              );
+                                              if (!context.mounted) return;
+                                              TimeOfDay? tanlanganVaqt1 = await showTimePicker(
+                                                context: context,
+                                                initialTime: const TimeOfDay(hour: 20, minute: 0),
+                                                helpText: "Kunduzgi smenani tugash vaqtini tanlang",
+                                                barrierColor: myTheme.globalBackgroundColor,
+                                              );
+                                              if (!context.mounted) return;
 
-                                        context.read<ProfilCubit>().itmeOfDay(
-                                          state.shift2Start,
-                                          state.shift2End,
-                                          vaqtFormat(tanlanganVaqt),
-                                          vaqtFormat(tanlanganVaqt1),
-                                          state.stampPauseHours,
-                                        );
-                                      }
-                                    },
-                                  );
-                                },
-                              ),
-                              selected: Text(
-                                textAlign: .start,
-                                "Kunduzgi smena",
-                                style: AppTextStyles.style14.copyWith(
-                                  fontWeight: .bold,
-                                  color: myTheme.text,
-                                ),
-                              ),
-                              unselected: Text(
-                                textAlign: .start,
-                                "1-navbatchi guruhi",
-                                style: AppTextStyles.style12.copyWith(
-                                  fontWeight: .w500,
-                                  color: myTheme.text.withValues(alpha: 0.8),
-                                ),
-                              ),
-                              leading: ContainerWidget(
-                                vertical: 46.h,
-                                horizontal: 44.w,
-                                assets: "assets/img_33.png",
-                                assetsHorizontal: 16.75,
-                                assetsVertical: 17.5,
-                                assetsColor: myTheme.shiftColor,
-                                boxDecoration: AppTextFormStyle.container(
-                                  color: myTheme.shiftColor.withValues(
-                                    alpha: 0.1,
-                                  ),
-                                ),
-                              ),
+                                              if (tanlanganVaqt != null && tanlanganVaqt1 != null) {
+                                                String vaqtFormat(TimeOfDay vaqt) =>
+                                                    "${vaqt.hour.toString().padLeft(2, '0')}:${vaqt.minute.toString().padLeft(2, '0')}:00";
+
+                                                String sStart = vaqtFormat(tanlanganVaqt);
+                                                String sEnd = vaqtFormat(tanlanganVaqt1);
+
+                                                context.read<ProfilCubit>().itmeOfDay(
+                                                      profilState.shift2Start,
+                                                      profilState.shift2End,
+                                                      sStart,
+                                                      sEnd,
+                                                      profilState.stampPauseHours,
+                                                    );
+
+                                                formState.didChange(sStart);
+                                              }
+                                            },
+                                          ),
+                                          selected: Text(
+                                            textAlign: .start,
+                                            "Kunduzgi smena",
+                                            style: AppTextStyles.style14.copyWith(
+                                              fontWeight: .bold,
+                                              color: myTheme.text,
+                                            ),
+                                          ),
+                                          unselected: Text(
+                                            textAlign: .start,
+                                            "1-navbatchi guruhi",
+                                            style: AppTextStyles.style12.copyWith(
+                                              fontWeight: .w500,
+                                              color: myTheme.text.withValues(
+                                                alpha: 0.8,
+                                              ),
+                                            ),
+                                          ),
+                                          leading: ContainerWidget(
+                                            vertical: 46.h,
+                                            horizontal: 44.w,
+                                            assets: "assets/img_33.png",
+                                            assetsHorizontal: 16.75,
+                                            assetsVertical: 17.5,
+                                            assetsColor: myTheme.shiftColor,
+                                            boxDecoration: AppTextFormStyle.container(
+                                              color: myTheme.shiftColor
+                                                  .withValues(alpha: 0.1),
+                                            ),
+                                          ),
+                                        ),
+                                        if (formState.hasError)
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 6.h, left: 16.w),
+                                            child: Text(
+                                              formState.errorText!,
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 12.sp,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
                             ),
                           ),
                           SizedBox(height: 10.h),
@@ -555,97 +630,144 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                             decoration: AppTextFormStyle.container(
                               color: myTheme.text.withValues(alpha: 0.09),
                             ),
-                            child: ListTileWidget(
-                              icoBool: false,
-                              peding: true,
-                              color: myTheme.unselctedColor,
-                              trailing: BlocBuilder<ProfilCubit, ProfilState>(
-                                builder: (context, state) {
-                                  return GestureDetector(
-                                    child: Container(
-                                      width: 90.w,
-                                      decoration: AppTextFormStyle.container(
-                                        color: myTheme.textColor,
-                                      ),
-                                      padding: .symmetric(
-                                        vertical: 8.h,
-                                        horizontal: 6.w,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            widget.ediAdd
-                                                ? state.shift2End != null &&
-                                                          state.shift2Start !=
-                                                              null
-                                                      ? "${state.shift2Start!.substring(0, 5)} - ${state.shift2End!.substring(0, 5)}"
-                                                      : "${holat.token!.shift2Start.substring(0, 5)} - ${holat.token!.shift2End.substring(0, 5)}"
-                                                : "20:00 - 08:00",
+                            child: BlocBuilder<ProfilCubit, ProfilState>(
+                              builder: (context, profilState) {
+                                return FormField<String>(
+                                  initialValue: profilState.shift2Start,
+                                  validator: (value) {
+                                    if (profilState.shift2Start == null ||
+                                        profilState.shift2Start!.isEmpty ||
+                                        profilState.shift2End == null ||
+                                        profilState.shift2End!.isEmpty ||
+                                        profilState.shift2Start == "00:00:00") {
+                                      return "Iltimos, kechki smena vaqtini tanlang!";
+                                    }
+                                    return null;
+                                  },
+                                  builder: (FormFieldState<String> formState) {
+                                    return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        ListTileWidget(
+                                          icoBool: false,
+                                          peding: true,
+                                          color: myTheme.unselctedColor,
+                                          trailing: GestureDetector(
+                                            child: Container(
+                                              width: 120.w,
+                                              decoration: AppTextFormStyle.container(
+                                                color: myTheme.textColor,
+                                              ),
+                                              padding: .symmetric(
+                                                vertical: 8.h,
+                                                horizontal: 6.w,
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    widget.ediAdd
+                                                        ? (profilState.shift2End != null &&
+                                                                profilState.shift2Start != null &&
+                                                                profilState.shift2Start!.isNotEmpty &&
+                                                                profilState.shift2End!.isNotEmpty)
+                                                            ? "${profilState.shift2Start!.substring(0, 5)} - ${profilState.shift2End!.substring(0, 5)}"
+                                                            : "${widget.tokenModelApiUserModel?.shift2Start.substring(0, 5) ?? '00:00'} - ${widget.tokenModelApiUserModel?.shift2End.substring(0, 5) ?? '00:00'}"
+                                                        : (profilState.shift2Start != null &&
+                                                                profilState.shift2End != null &&
+                                                                profilState.shift2Start!.isNotEmpty &&
+                                                                profilState.shift2End!.isNotEmpty &&
+                                                                profilState.shift2Start != "00:00:00")
+                                                            ? "${profilState.shift2Start!.substring(0, 5)} - ${profilState.shift2End!.substring(0, 5)}"
+                                                            : "00:00 - 00:00",
+                                                    style: AppTextStyles.style14.copyWith(
+                                                      color: myTheme.text,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            onTap: () async {
+                                              TimeOfDay? tanlanganVaqt = await showTimePicker(
+                                                context: context,
+                                                initialTime: const TimeOfDay(hour: 20, minute: 0),
+                                                helpText: "Kechki smenani boshlanish vaqtini tanlang",
+                                                barrierColor: myTheme.globalBackgroundColor,
+                                              );
+                                              if (!context.mounted) return;
+                                              TimeOfDay? tanlanganVaqt1 = await showTimePicker(
+                                                context: context,
+                                                initialTime: const TimeOfDay(hour: 8, minute: 0),
+                                                helpText: "Kechki smenani tugash vaqtini tanlang",
+                                                barrierColor: myTheme.globalBackgroundColor,
+                                              );
+                                              if (!context.mounted) return;
+
+                                              if (tanlanganVaqt != null && tanlanganVaqt1 != null) {
+                                                String vaqtFormat(TimeOfDay vaqt) =>
+                                                    "${vaqt.hour.toString().padLeft(2, '0')}:${vaqt.minute.toString().padLeft(2, '0')}:00";
+
+                                                String sStart = vaqtFormat(tanlanganVaqt);
+                                                String sEnd = vaqtFormat(tanlanganVaqt1);
+
+                                                context.read<ProfilCubit>().itmeOfDay(
+                                                      sStart,
+                                                      sEnd,
+                                                      profilState.shift1Start,
+                                                      profilState.shift1End,
+                                                      profilState.stampPauseHours,
+                                                    );
+
+                                                formState.didChange(sStart);
+                                              }
+                                            },
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                    onTap: () async {
-                                      {
-                                        TimeOfDay? tanlanganVaqt = await showTimePicker(
-                                          context: context,
-                                          initialTime: TimeOfDay.now(),
-                                          helpText: "Tungi smenani boshlanish vaqtni tanlang",
-                                          barrierColor: myTheme.globalBackgroundColor,
-                                        );
-                                        if (!context.mounted) return;
-                                        TimeOfDay? tanlanganVaqt1 = await showTimePicker(
-                                          context: context,
-                                          initialTime: TimeOfDay.now(),
-                                          helpText: "Tungi smenani tugash vaqtni tanlang",
-                                          barrierColor: myTheme.globalBackgroundColor,
-                                        );
-                                        if (!context.mounted) return;
-                                        if (tanlanganVaqt != null && tanlanganVaqt1 != null) {
-                                          String vaqtFormat(TimeOfDay vaqt) =>
-                                              "${vaqt.hour.toString().padLeft(2, '0')}:${vaqt.minute.toString().padLeft(2, '0')}";
-                                          context.read<ProfilCubit>().itmeOfDay(
-                                            vaqtFormat(tanlanganVaqt),
-                                            vaqtFormat(tanlanganVaqt1),
-                                            state.shift1Start,
-                                            state.shift1End,
-                                            state.stampPauseHours,
-                                          );
-                                        }
-                                      }
-                                    },
-                                  );
-                                },
-                              ),
-                              selected: Text(
-                                textAlign: .start,
-                                "Tungi smena",
-                                style: AppTextStyles.style14.copyWith(
-                                  fontWeight: .bold,
-                                  color: myTheme.text,
-                                ),
-                              ),
-                              unselected: Text(
-                                textAlign: .start,
-                                "2-navbatchi guruhi",
-                                style: AppTextStyles.style12.copyWith(
-                                  fontWeight: .w500,
-                                  color: myTheme.text.withValues(alpha: 0.8),
-                                ),
-                              ),
-                              leading: ContainerWidget(
-                                vertical: 46.h,
-                                horizontal: 44.w,
-                                assets: "assets/img_34.png",
-                                assetsHorizontal: 16.75,
-                                assetsVertical: 17.5,
-                                assetsColor: myTheme.globalColor,
-                                boxDecoration: AppTextFormStyle.container(
-                                  color: myTheme.globalColor.withValues(
-                                    alpha: 0.1,
-                                  ),
-                                ),
-                              ),
+                                          selected: Text(
+                                            textAlign: .start,
+                                            "Tungi smena",
+                                            style: AppTextStyles.style14.copyWith(
+                                              fontWeight: .bold,
+                                              color: myTheme.text,
+                                            ),
+                                          ),
+                                          unselected: Text(
+                                            textAlign: .start,
+                                            "2-navbatchi guruhi",
+                                            style: AppTextStyles.style12.copyWith(
+                                              fontWeight: .w500,
+                                              color: myTheme.text.withValues(alpha: 0.8),
+                                            ),
+                                          ),
+                                          leading: ContainerWidget(
+                                            vertical: 46.h,
+                                            horizontal: 44.w,
+                                            assets: "assets/img_34.png",
+                                            assetsHorizontal: 16.75,
+                                            assetsVertical: 17.5,
+                                            assetsColor: myTheme.globalColor,
+                                            boxDecoration: AppTextFormStyle.container(
+                                              color: myTheme.globalColor.withValues(
+                                                alpha: 0.1,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        if (formState.hasError)
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 6.h, left: 16.w),
+                                            child: Text(
+                                              formState.errorText!,
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 12.sp,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
                             ),
                           ),
                         ],
@@ -908,9 +1030,7 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                             BlocBuilder<ProfilCubit, ProfilState>(
                               builder: (context, state) {
                                 return TextFormField(
-                                  onSaved: (saved) {
-                                    currentPassword = saved;
-                                  },
+                                  controller: currentPasswordController,
                                   obscureText: state.password1,
                                   style: AppTextStyles.style14.copyWith(
                                     color: myTheme.text,
@@ -1122,9 +1242,7 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                   value: value,
                                   newPassword: passwordController.text,
                                 ),
-                                onSaved: (saved) {
-                                  passwordConfirmation = saved!;
-                                },
+                                controller: confirmPasswordController,
                               );
                             },
                           ),
@@ -1180,14 +1298,15 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                             ),
                             onPressed: onTap,
                             child: state is ProfilLoding
-                                ? SizedBox(width: 20.w,height: 20.h,
-                                  child: Center(
+                                ? SizedBox(
+                                    width: 20.w,
+                                    height: 20.h,
+                                    child: Center(
                                       child: CircularProgressIndicator(
                                         color: myTheme.textColor,
-
                                       ),
                                     ),
-                                )
+                                  )
                                 : Row(
                                     mainAxisSize: .min,
                                     children: [
@@ -1208,7 +1327,6 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                         },
                         listener: (context, state) {
                           if (state is ProfilFinish) {
-
                             Navigator.pop(context);
                           }
                         },
