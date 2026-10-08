@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pechat_pay/data/style/validaor.dart';
 import 'package:pechat_pay/logon/login/login_cubit.dart';
 import 'package:pechat_pay/logon/profil/profil_cubit.dart';
+import '../../../../data/get_it/get_it.dart';
 
 import '../../../../data/style/text_form_style.dart';
 import '../../../../data/style/text_style.dart';
