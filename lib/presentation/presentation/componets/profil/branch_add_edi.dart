@@ -38,22 +38,31 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
     passwordController = TextEditingController();
     confirmPasswordController = TextEditingController();
 
-    if (widget.ediAdd && widget.tokenModelApiUserModel != null) {
+    if (widget.ediAdd) {
+      final userModel = widget.tokenModelApiUserModel;
+      final tokenModel = sl<LoginCubit>().state.token;
+
+      final s1Start = userModel?.shift1Start ?? tokenModel?.shift1Start ?? "08:00";
+      final s1End = userModel?.shift1End ?? tokenModel?.shift1End ?? "20:00";
+      final s2Start = userModel?.shift2Start ?? tokenModel?.shift2Start ?? "20:00";
+      final s2End = userModel?.shift2End ?? tokenModel?.shift2End ?? "08:00";
+      final pauseHours = userModel?.stampPauseHours ?? tokenModel?.stampPauseHours ?? 0;
+
       context.read<ProfilCubit>().itmeOfDay(
-        widget.tokenModelApiUserModel!.shift2Start,
-        widget.tokenModelApiUserModel!.shift2End,
-        widget.tokenModelApiUserModel!.shift1Start,
-        widget.tokenModelApiUserModel!.shift1End,
-        widget.tokenModelApiUserModel!.stampPauseHours,
-      );
-    } else if (!widget.ediAdd) {
+            s2Start,
+            s2End,
+            s1Start,
+            s1End,
+            pauseHours,
+          );
+    } else {
       context.read<ProfilCubit>().itmeOfDay(
-        "20:00",
-        "08:00",
-        "08:00",
-        "20:00",
-        0,
-      );
+            "00:00",
+            "00:00",
+            "00:00",
+            "00:00",
+            0,
+          );
     }
   }
 
@@ -542,6 +551,7 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                         profilState.shift1Start!.isEmpty ||
                                         profilState.shift1End == null ||
                                         profilState.shift1End!.isEmpty ||
+                                        profilState.shift1Start == "00:00" ||
                                         profilState.shift1Start == "00:00:00") {
                                       return "Iltimos, kunduzgi smena vaqtini tanlang!";
                                     }
@@ -692,6 +702,7 @@ class _BranchAddEdiState extends State<BranchAddEdi> {
                                         profilState.shift2Start!.isEmpty ||
                                         profilState.shift2End == null ||
                                         profilState.shift2End!.isEmpty ||
+                                        profilState.shift2Start == "00:00" ||
                                         profilState.shift2Start == "00:00:00") {
                                       return "Iltimos, kechki smena vaqtini tanlang!";
                                     }
