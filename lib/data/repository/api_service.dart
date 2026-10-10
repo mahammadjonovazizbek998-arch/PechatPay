@@ -61,13 +61,19 @@ class ApiService {
       return response;
     } catch (e) {
       stopwatch.stop();
-      _logger.e("❌ [GET ERROR] ${uri.path} | ⏱ Vaqt: ${stopwatch.elapsedMilliseconds}ms\nError: $e");
+      _logger.e(
+        "❌ [GET ERROR] ${uri.path} | ⏱ Vaqt: ${stopwatch.elapsedMilliseconds}ms\nError: $e",
+      );
       rethrow;
     }
   }
 
   // Helper for POST requests with logging
-  Future<http.Response> _post(Uri uri, {Object? body, bool withAuth = true}) async {
+  Future<http.Response> _post(
+    Uri uri, {
+    Object? body,
+    bool withAuth = true,
+  }) async {
     final stopwatch = Stopwatch()..start();
     _logger.i("🌐 [POST REQUEST] ${uri.toString()}\nPayload: $body");
     try {
@@ -91,7 +97,9 @@ class ApiService {
       return response;
     } catch (e) {
       stopwatch.stop();
-      _logger.e("❌ [POST ERROR] ${uri.path} | ⏱ Vaqt: ${stopwatch.elapsedMilliseconds}ms\nError: $e");
+      _logger.e(
+        "❌ [POST ERROR] ${uri.path} | ⏱ Vaqt: ${stopwatch.elapsedMilliseconds}ms\nError: $e",
+      );
       rethrow;
     }
   }
@@ -155,11 +163,7 @@ class ApiService {
         "password_confirmation": passwordConfirmation,
       },
     };
-    return _post(
-      uri,
-      withAuth: true,
-      body: jsonEncode(body),
-    );
+    return _post(uri, withAuth: true, body: jsonEncode(body));
   }
 
   Future<http.Response> filiallPage() async {
@@ -198,20 +202,12 @@ class ApiService {
         "password_confirmation": passwordConfirmation,
       },
     };
-    return _post(
-      uri,
-      withAuth: true,
-      body: jsonEncode(body),
-    );
+    return _post(uri, withAuth: true, body: jsonEncode(body));
   }
 
   Future<http.Response> noActiveDriver(int day, int page) async {
     final Uri uri = Uri.parse("$url/drivers/noactive?page=$page");
-    return _post(
-      uri,
-      withAuth: true,
-      body: jsonEncode({"days": day}),
-    );
+    return _post(uri, withAuth: true, body: jsonEncode({"days": day}));
   }
 
   Future<http.Response> historyHomePage(int page) async {
@@ -221,11 +217,7 @@ class ApiService {
 
   Future<http.Response> searchHome(int page, String query) async {
     final Uri uri = Uri.parse("$url/drivers/search?page=$page");
-    return _post(
-      uri,
-      withAuth: true,
-      body: jsonEncode({"query": query}),
-    );
+    return _post(uri, withAuth: true, body: jsonEncode({"query": query}));
   }
 
   Future<http.Response> show(int id) async {
@@ -240,11 +232,7 @@ class ApiService {
 
   Future<http.Response> pechat(String type, int id) async {
     final Uri uri = Uri.parse("$url/pechat/$id");
-    return _post(
-      uri,
-      withAuth: true,
-      body: jsonEncode({"type": type}),
-    );
+    return _post(uri, withAuth: true, body: jsonEncode({"type": type}));
   }
 
   Future<http.Response> pay(int id, int count) async {
@@ -266,11 +254,7 @@ class ApiService {
     return _post(
       uri,
       withAuth: true,
-      body: jsonEncode({
-        if (search != null) "search": search,
-        "sort": sort,
-        "filters": filters,
-      }),
+      body: jsonEncode({"search": ?search, "sort": sort, "filters": filters}),
     );
   }
 
@@ -292,6 +276,31 @@ class ApiService {
         "car_number": carNumer
             .replaceAll(RegExp(r'[^A-Za-z0-9]'), '')
             .toUpperCase(),
+      }),
+    );
+  }
+
+  Future<http.Response> dashboard(
+    int? id,
+    String type,
+    String? date,
+    String? week_start,
+    String? week_end,
+    String? month,
+    String? year,
+  ) async {
+    final Uri uri = Uri.parse("$url/dashboard");
+    return _post(
+      uri,
+      withAuth: true,
+      body: jsonEncode({
+        "branch_id": id,
+        "type": type,
+        "date": date ?? "",
+        "week_start": week_start ?? "",
+        "week_end": week_end ?? "",
+        "month": month ?? "",
+        "year": year ?? "",
       }),
     );
   }
