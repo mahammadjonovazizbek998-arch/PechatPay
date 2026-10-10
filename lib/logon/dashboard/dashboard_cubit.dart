@@ -12,34 +12,34 @@ part 'dashboard_state.dart';
 
 class DashboardCubit extends Cubit<DashboardState> {
   DashboardCubit()
-      : super(
-    DashboardInitial(
-      index: 0,
-      filiallPagel: [
-        TokenModelApiUserModel(
-          id: 0,
-          name: "Barcha filiallar bo'yicha",
-          phone: "",
-          role: "",
-          shift1Start: "",
-          shift1End: "",
-          shift2Start: "",
-          shift2End: "",
-          stampPrice: 0,
-          stampPauseHours: 0,
+    : super(
+        DashboardInitial(
+          index: 0,
+          filiallPagel: [
+            TokenModelApiUserModel(
+              id: 0,
+              name: "Barcha filiallar bo'yicha",
+              phone: "",
+              role: "",
+              shift1Start: "",
+              shift1End: "",
+              shift2Start: "",
+              shift2End: "",
+              stampPrice: 0,
+              stampPauseHours: 0,
+            ),
+          ],
+          chip: [
+            ChipModel(name: "Barchasi", key: "all", selected: false),
+            ChipModel(name: "Yillik", key: "year", selected: false),
+            ChipModel(name: "Oylik", key: "month", selected: false),
+            ChipModel(name: "Haftalik", key: "week", selected: false),
+            ChipModel(name: "Kunlik", key: "day", selected: true),
+          ],
+          selectedDate: DateTime.now(),
+          selectedIndex: 0,
         ),
-      ],
-      chip: [
-        ChipModel(name: "Barchasi", key: "all", selected: false),
-        ChipModel(name: "Yillik", key: "year", selected: false),
-        ChipModel(name: "Oylik", key: "month", selected: false),
-        ChipModel(name: "Haftalik", key: "week", selected: false),
-        ChipModel(name: "Kunlik", key: "day", selected: true),
-      ],
-      selectedDate: DateTime.now(),
-      selectedIndex: 0,
-    ),
-  );
+      );
   AuthRepository authRepository = AuthRepository();
 
   Future<void> onTap(int? id, int? chipIndex) async {
@@ -67,43 +67,35 @@ class DashboardCubit extends Cubit<DashboardState> {
           filiallPagel: state.filiallPagel,
           index: state.index,
           chip: newChip,
-          selectedDate:DateTime.now(),
+          selectedDate: DateTime.now(),
           selectedIndex: 0,
         ),
       );
     }
   }
 
-  Future<void> selected(int index, DateTime? data) async {
-    DateTime newDate = state.selectedDate;
-    int newIndex = index;
-
+  Future<void> selected(int? index, DateTime? data) async {
     if (data != null) {
-      newDate = data;
-      newIndex = 0;
-    } else {
-      final now = DateTime.now();
-      if (state.chip[4].selected) {
-        newDate = DateTime(now.year, now.month, now.day - index);
-      } else if (state.chip[3].selected) {
-        final currentWeekStart = now.subtract(Duration(days: now.weekday - 1));
-        newDate = currentWeekStart.subtract(Duration(days: index * 7));
-      } else if (state.chip[2].selected) {
-        newDate = DateTime(now.year, now.month - index, 1);
-      } else if (state.chip[1].selected) {
-        newDate = DateTime(now.year - index, 1, 1);
-      }
+      emit(
+        DashboardFinish(
+          filiallPagel: state.filiallPagel,
+          index: state.index,
+          chip: state.chip,
+          selectedIndex: 0,
+          selectedDate: data,
+        ),
+      );
+    } else if (index != null) {
+      emit(
+        DashboardFinish(
+          filiallPagel: state.filiallPagel,
+          index: state.index,
+          chip: state.chip,
+          selectedIndex: index,
+          selectedDate: state.selectedDate,
+        ),
+      );
     }
-
-    emit(
-      DashboardFinish(
-        filiallPagel: state.filiallPagel,
-        index: state.index,
-        chip: state.chip,
-        selectedIndex: newIndex,
-        selectedDate: newDate,
-      ),
-    );
   }
 
   Future<void> filiallPage() async {
