@@ -48,19 +48,31 @@ class _DayPageState extends State<DayPage> {
                 shadowColor: myTheme.text,
               ),
               child: Column(
+                mainAxisAlignment: .start,
+                crossAxisAlignment: .start,
+                mainAxisSize: .min,
                 children: [
                   ListTile(
                     title: Text(
                       "Smenalar tahlili (Kunduzgi vs Tungi)",
+                      maxLines: 1,
                       style: AppTextStyles.style14.copyWith(
                         color: myTheme.text,
                       ),
                     ),
                     leading: Icon(
                       Icons.compare_arrows,
-                      color: myTheme.text,
-                      size: 18.w,
+                      color: myTheme.globalColor,
+                      size: 20.w,
+                      fontWeight: .bold,
                     ),
+                    trailing: Container(
+                      padding: .symmetric(horizontal: 10.w, vertical: 5.h),
+                       decoration: AppTextFormStyle.container( color: myTheme.unselctedColor.withValues(alpha: 0.1),),
+                      child: Text("24 soat",style: AppTextStyles.style10.copyWith(color: myTheme.text),),
+                    ),
+                    minLeadingWidth: 0,
+                    horizontalTitleGap: 4.w,
                     contentPadding: .zero,
                   ),
                 ],
