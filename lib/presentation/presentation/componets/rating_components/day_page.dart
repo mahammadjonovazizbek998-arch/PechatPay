@@ -5,6 +5,7 @@ import 'package:pechat_pay/data/style/text_form_style.dart';
 import 'package:pechat_pay/data/style/text_style.dart';
 
 import 'package:pechat_pay/logon/dashboard/dashboard_cubit.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../../../data/theme/theme_class.dart';
 
@@ -53,7 +54,7 @@ class _DayPageState extends State<DayPage> {
                 mainAxisSize: .min,
                 children: [
                   ListTile(
-                    title: Text(
+                    title: Text(overflow: .ellipsis,
                       "Smenalar tahlili (Kunduzgi vs Tungi)",
                       maxLines: 1,
                       style: AppTextStyles.style14.copyWith(
@@ -63,7 +64,7 @@ class _DayPageState extends State<DayPage> {
                     leading: Icon(
                       Icons.compare_arrows,
                       color: myTheme.globalColor,
-                      size: 20.w,
+                      size: 19.w,
                       fontWeight: .bold,
                     ),
                     trailing: Container(
@@ -72,8 +73,42 @@ class _DayPageState extends State<DayPage> {
                       child: Text("24 soat",style: AppTextStyles.style10.copyWith(color: myTheme.text),),
                     ),
                     minLeadingWidth: 0,
-                    horizontalTitleGap: 4.w,
+                    horizontalTitleGap: 10.w,
                     contentPadding: .zero,
+                  ),
+                  SizedBox(
+                    height: 35,
+                    child: (() {
+                      final double shift1Val = (state.statsResponse?.data.shift1?.count ?? 0).toDouble();
+                      final double shift2Val = (state.statsResponse?.data.shift2?.count ?? 0).toDouble();
+
+                      return SfCartesianChart(
+                        margin: EdgeInsets.zero,
+                        plotAreaBorderWidth: 0,
+                        primaryXAxis: const CategoryAxis(
+                          isVisible: false,
+                        ),
+                        primaryYAxis: const NumericAxis(
+                          isVisible: false,
+                        ),
+                        series: <CartesianSeries>[
+                          StackedBar100Series<_ChartData, String>(
+                            dataSource: [_ChartData('Jami', shift1Val, shift2Val)],
+                            xValueMapper: (data, _) => data.nomi,
+                            yValueMapper: (data, _) => data.kunduz,
+                            color: Colors.blue,
+                            width: 0.8,
+                          ),
+                          StackedBar100Series<_ChartData, String>(
+                            dataSource: [_ChartData('Jami', shift1Val, shift2Val)],
+                            xValueMapper: (data, _) => data.nomi,
+                            yValueMapper: (data, _) => data.tungi,
+                            color: Colors.indigoAccent,
+                            width: 0.8,
+                          ),
+                        ],
+                      );
+                    })(),
                   ),
                 ],
               ),
@@ -83,4 +118,11 @@ class _DayPageState extends State<DayPage> {
       },
     );
   }
+}
+class _ChartData {
+  final String nomi;
+  final double kunduz;
+  final double tungi;
+
+  _ChartData(this.nomi, this.kunduz, this.tungi);
 }
