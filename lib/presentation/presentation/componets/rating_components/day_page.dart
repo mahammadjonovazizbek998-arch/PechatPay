@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pechat_pay/data/style/text_form_style.dart';
 import 'package:pechat_pay/data/style/text_style.dart';
-
 import 'package:pechat_pay/logon/dashboard/dashboard_cubit.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -24,12 +23,28 @@ class _DayPageState extends State<DayPage> {
   @override
   Widget build(BuildContext context) {
     final myTheme = Theme.of(context).extension<ThemeClass>()!;
+
     return BlocBuilder<DashboardCubit, DashboardState>(
       builder: (context, state) {
+        final data = state.statsResponse?.data;
+
+        // API dan kelgan count qiymatlari
+        final double shift1Val = (data?.shift1?.count ?? 0).toDouble();
+
+        final double shift2Val = (data?.shift2?.count ?? 0).toDouble();
+
+        // Jami muhrlar
+        final double jami = shift1Val + shift2Val;
+
+        // Foizlar
+        final double shift1Foiz = jami == 0 ? 0 : shift1Val / jami * 100;
+
+        final double shift2Foiz = jami == 0 ? 0 : shift2Val / jami * 100;
+
         return Column(
-          mainAxisAlignment: .start,
-          mainAxisSize: .min,
-          crossAxisAlignment: .start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
@@ -38,24 +53,29 @@ class _DayPageState extends State<DayPage> {
                 PayConterinWidget(),
               ],
             ),
+
             SizedBox(height: 14.h),
+
             AllTimeUnpaidPechats(),
+
             SizedBox(height: 14.h),
+
             Container(
-              padding: .symmetric(horizontal: 14.w, vertical: 14.h),
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
               decoration: AppTextFormStyle.container(
                 color: myTheme.textColor,
                 shadow: true,
                 shadowColor: myTheme.text,
               ),
               child: Column(
-                mainAxisAlignment: .start,
-                crossAxisAlignment: .start,
-                mainAxisSize: .min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   ListTile(
-                    title: Text(overflow: .ellipsis,
-                      "Smenalar tahlili (Kunduzgi vs Tungi)",
+                    title: Text(
+                      'Smenalar tahlili (Kunduzgi vs Tungi)',
+                      overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: AppTextStyles.style14.copyWith(
                         color: myTheme.text,
@@ -65,50 +85,211 @@ class _DayPageState extends State<DayPage> {
                       Icons.compare_arrows,
                       color: myTheme.globalColor,
                       size: 19.w,
-                      fontWeight: .bold,
+                      fontWeight: FontWeight.bold,
                     ),
                     trailing: Container(
-                      padding: .symmetric(horizontal: 10.w, vertical: 5.h),
-                       decoration: AppTextFormStyle.container( color: myTheme.unselctedColor.withValues(alpha: 0.1),),
-                      child: Text("24 soat",style: AppTextStyles.style10.copyWith(color: myTheme.text),),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 5.h,
+                      ),
+                      decoration: AppTextFormStyle.container(
+                        color: myTheme.unselctedColor.withValues(alpha: 0.1),
+                      ),
+                      child: Text(
+                        '24 soat',
+                        style: AppTextStyles.style10.copyWith(
+                          color: myTheme.text,
+                        ),
+                      ),
                     ),
                     minLeadingWidth: 0,
                     horizontalTitleGap: 10.w,
-                    contentPadding: .zero,
+                    contentPadding: EdgeInsets.zero,
                   ),
-                  SizedBox(
-                    height: 35,
-                    child: (() {
-                      final double shift1Val = (state.statsResponse?.data.shift1?.count ?? 0).toDouble();
-                      final double shift2Val = (state.statsResponse?.data.shift2?.count ?? 0).toDouble();
 
-                      return SfCartesianChart(
-                        margin: EdgeInsets.zero,
-                        plotAreaBorderWidth: 0,
-                        primaryXAxis: const CategoryAxis(
-                          isVisible: false,
-                        ),
-                        primaryYAxis: const NumericAxis(
-                          isVisible: false,
-                        ),
-                        series: <CartesianSeries>[
-                          StackedBar100Series<_ChartData, String>(
-                            dataSource: [_ChartData('Jami', shift1Val, shift2Val)],
-                            xValueMapper: (data, _) => data.nomi,
-                            yValueMapper: (data, _) => data.kunduz,
-                            color: Colors.blue,
-                            width: 0.8,
+                  // Ikki rangli foizli grafik
+                  SizedBox(
+                    height: 30.h,
+                    child: jami == 0
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(12.r),
+                            child: Container(
+                              color: myTheme.unselctedColor.withValues(
+                                alpha: 0.15,
+                              ),
+                            ),
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(12.r),
+                            child: SfCartesianChart(
+                              margin: EdgeInsets.zero,
+                              plotAreaBorderWidth: 0,
+                              primaryXAxis: const CategoryAxis(
+                                isVisible: false,
+                              ),
+                              primaryYAxis: const NumericAxis(isVisible: false),
+                              series: <CartesianSeries>[
+                                StackedBar100Series<_ChartData, String>(
+                                  dataSource: [
+                                    _ChartData('Jami', shift1Val, shift2Val),
+                                  ],
+                                  xValueMapper: (d, _) => d.nomi,
+                                  yValueMapper: (d, _) => d.kunduz,
+                                  color: Colors.indigoAccent,
+                                  width: 0.8,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(12.r),
+                                    bottomLeft: Radius.circular(12.r),
+                                  ),
+                                ),
+                                StackedBar100Series<_ChartData, String>(
+                                  dataSource: [
+                                    _ChartData('Jami', shift1Val, shift2Val),
+                                  ],
+                                  xValueMapper: (d, _) => d.nomi,
+                                  yValueMapper: (d, _) => d.tungi,
+                                  color: Colors.blue,
+                                  width: 0.8,
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(12.r),
+                                    bottomRight: Radius.circular(12.r),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          StackedBar100Series<_ChartData, String>(
-                            dataSource: [_ChartData('Jami', shift1Val, shift2Val)],
-                            xValueMapper: (data, _) => data.nomi,
-                            yValueMapper: (data, _) => data.tungi,
-                            color: Colors.indigoAccent,
-                            width: 0.8,
+                  ),
+
+                  SizedBox(height: 8.h),
+
+                  // Foiz ko'rsatkichlari
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 10.w,
+                            height: 10.h,
+                            decoration: BoxDecoration(
+                              color: Colors.indigoAccent,
+                              borderRadius: BorderRadius.circular(5.r),
+                            ),
+                          ),
+                          SizedBox(width: 4.w),
+                          Text(
+                            'Kunduzgi '
+                            '${shift1Foiz.toStringAsFixed(0)}%',
+                            style: AppTextStyles.style10.copyWith(
+                              color: myTheme.text,
+                            ),
                           ),
                         ],
-                      );
-                    })(),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 10.w,
+                            height: 10.h,
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(5.r),
+                            ),
+                          ),
+                          SizedBox(width: 4.w),
+                          Text(
+                            'Tungi '
+                            '${shift2Foiz.toStringAsFixed(0)}%',
+                            style: AppTextStyles.style10.copyWith(
+                              color: myTheme.text,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                          decoration: AppTextFormStyle.container(
+                            color: myTheme.unselctedColor.withValues(alpha: 0.1),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.wb_sunny_outlined,
+                                    size: 15.sp,
+                                    color: myTheme.shiftColor,
+                                  ),
+                                  SizedBox(width: 4.w),
+                                  Text(
+                                    "1-smena",
+                                    style: AppTextStyles.style10.copyWith(
+                                      color: myTheme.text,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                "${state.filiallPagel[state.index].shift1Start.substring(0, 5)}-${state.filiallPagel[state.index].shift1End.substring(0, 5)}",
+                                style: AppTextStyles.style10.copyWith(
+                                  color: myTheme.text,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                          decoration: AppTextFormStyle.container(
+                            color: myTheme.unselctedColor.withValues(alpha: 0.1),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.nights_stay_outlined,
+                                    size: 15.sp,
+                                    color: myTheme.globalColor,
+                                  ),
+                                  SizedBox(width: 4.w),
+                                  Text(
+                                    "2-smena",
+                                    style: AppTextStyles.style10.copyWith(
+                                      color: myTheme.text,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                "${state.filiallPagel[state.index].shift2Start.substring(0, 5)}-${state.filiallPagel[state.index].shift2End.substring(0, 5)}",
+                                style: AppTextStyles.style10.copyWith(
+                                  color: myTheme.text,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -119,6 +300,7 @@ class _DayPageState extends State<DayPage> {
     );
   }
 }
+
 class _ChartData {
   final String nomi;
   final double kunduz;
