@@ -124,3 +124,42 @@ class ContainerWidget extends StatelessWidget {
     );
   }
 }
+
+class ListTileWidget2 extends StatefulWidget {
+ final Text title;
+ final Widget subtitle;
+ final ContainerWidget? leading;
+  const ListTileWidget2({super.key,required this.title,required this.subtitle,required this.leading});
+
+  @override
+  State<ListTileWidget2> createState() => _ListTileWidget2State();
+}
+
+class _ListTileWidget2State extends State<ListTileWidget2> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          if (widget.leading != null) ...[
+            widget.leading!,
+            SizedBox(width: 12.w),
+          ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                widget.title,
+                SizedBox(height: 2.h),
+                widget.subtitle,
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
