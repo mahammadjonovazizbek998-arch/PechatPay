@@ -26,6 +26,8 @@ dependencies:
   pull_to_refresh: ^2.0.0
   table_calendar: ^3.3.0
   logger: ^2.8.0
+  syncfusion_flutter_charts: ^35.1.39
+  syncfusion_flutter_datepicker: ^35.1.39
 
 dev_dependencies:
   flutter_test:

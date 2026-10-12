@@ -1,12 +1,14 @@
+
 import 'dart:convert';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:pechat_pay/data/token_model/token_model.dart';
-import 'package:pechat_pay/logon/login/login_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../logon/login/login_cubit.dart';
+import '../dashboar_model/all_dashboar_model.dart';
 import '../driver_model/driver_noactive_model.dart';
 import '../driver_model/history_home_page.dart';
 import '../driver_model/pechat.dart';
@@ -15,10 +17,38 @@ import '../driver_model/show_model.dart';
 import '../get_it/get_it.dart';
 import '../theme_model/theme_model.dart';
 import '../token_model/token_erorr_model.dart';
+import '../token_model/token_model.dart';
 import 'api_service.dart';
 
 class AuthRepository {
   final ApiService _apiService = ApiService();
+
+  static String c(String? t, [String d = '']) =>
+      (t == null || t.isEmpty) ? d : (t.length >= 5 ? t.substring(0, 5) : t);
+
+  static String fmt(TimeOfDay t) =>
+      '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
+
+  static TimeOfDay p12(TimeOfDay t) =>
+      TimeOfDay(hour: (t.hour + 12) % 24, minute: t.minute);
+
+  static TimeOfDay parse(String? t, TimeOfDay d) {
+    final p = c(t).split(':');
+    final h = p.length == 2 ? int.tryParse(p[0]) : null;
+    final m = p.length == 2 ? int.tryParse(p[1]) : null;
+    return (h == null || m == null) ? d : TimeOfDay(hour: h, minute: m);
+  }
+
+  static bool unset(String? s, String? e) =>
+      c(s).isEmpty || c(e).isEmpty || (c(s) == '00:00' && c(e) == '00:00');
+
+  static String range(String? s, String? e) =>
+      unset(s, e) ? '--:-- - --:--' : '${c(s)} - ${c(e)}';
+
+  static String? nophone(String? p) =>
+      p != null && p.length > 4 ? p.substring(4) : p;
+
+  static String digits(String v) => v.replaceAll(RegExp(r'[\s,]'), '');
 
   static String formatPlate(String? plate) {
     final raw = (plate ?? '')
@@ -86,11 +116,94 @@ class AuthRepository {
 
     return '+$code $op $p1 $p2 $p3';
   }
+  /// pechatTrend dagi pik elementning indexini list ko'rinishida qaytaradi.
+  /// Natija doim bitta element yoki bo'sh list.
+  static List<int> findPeakIndexes(
+      List<PechatTrendItem> pechat,
+      List<PaymentTrendItem> payment,
+      ) {
+    if (pechat.isEmpty) return [];
 
+    // 1) pechatTrend dagi eng katta summa
+    final maxSumma = pechat.map((e) => e.summa).reduce((a, b) => a > b ? a : b);
+
+    // 2) shu summaga teng bo'lgan indexlar (tartib bilan)
+    final topIndexes = <int>[
+      for (int i = 0; i < pechat.length; i++)
+        if (pechat[i].summa == maxSumma) i
+    ];
+
+    // Bitta bo'lsa, shuni qaytaramiz
+    if (topIndexes.length == 1) return topIndexes;
+
+    // 3) paymentTrend dagi shu label ning summasi (topilmasa 0)
+    int paymentSumma(int i) {
+      for (final p in payment) {
+        if (p.label == pechat[i].label) return p.summa;
+      }
+      return 0;
+    }
+
+    // 4) payment bo'yicha eng kattasi; teng bo'lsa birinchi kelgani qoladi
+    int bestIndex = topIndexes.first;
+    int bestPayment = paymentSumma(bestIndex);
+
+    for (final i in topIndexes.skip(1)) {
+      final p = paymentSumma(i);
+      if (p > bestPayment) {
+        bestPayment = p;
+        bestIndex = i;
+      }
+    }
+
+    return [bestIndex];
+  }
+  /// paymentTrend dagi pik elementning indexini list ko'rinishida qaytaradi.
+  /// Natija doim bitta element yoki bo'sh list.
+  static List<int> findPaymentPeakIndexes(
+      List<PaymentTrendItem> payment,
+      List<PechatTrendItem> pechat,
+      ) {
+    if (payment.isEmpty) return [];
+
+    // 1) paymentTrend dagi eng katta summa
+    final maxSumma = payment.map((e) => e.summa).reduce((a, b) => a > b ? a : b);
+
+    // 2) shu summaga teng bo'lgan indexlar (tartib bilan)
+    final topIndexes = <int>[
+      for (int i = 0; i < payment.length; i++)
+        if (payment[i].summa == maxSumma) i
+    ];
+
+    // Bitta bo'lsa, shuni qaytaramiz
+    if (topIndexes.length == 1) return topIndexes;
+
+    // 3) pechatTrend dagi shu label ning summasi (topilmasa 0)
+    int pechatSumma(int i) {
+      for (final p in pechat) {
+        if (p.label == payment[i].label) return p.summa;
+      }
+      return 0;
+    }
+
+    // 4) pechat bo'yicha eng kattasi; teng bo'lsa birinchi kelgani qoladi
+    int bestIndex = topIndexes.first;
+    int bestPechat = pechatSumma(bestIndex);
+
+    for (final i in topIndexes.skip(1)) {
+      final p = pechatSumma(i);
+      if (p > bestPechat) {
+        bestPechat = p;
+        bestIndex = i;
+      }
+    }
+
+    return [bestIndex];
+  }
   static String formatUzbekCarNumber(String input) {
     final op = input.substring(2, 3);
     final p1 = input.substring(3, 6);
-    final p2 = input.substring(6);
+    final p2 = input.substring(6, 8);
     return "$op $p1 $p2";
   }
 
@@ -269,18 +382,18 @@ class AuthRepository {
   }
 
   Future<dynamic> meUpdate(
-    String name,
-    String phone,
-    String currentPassword,
-    String password,
-    String passwordConfirmation,
-    String stampPrice,
-    String stampPauseHurs,
-    String shift1Start,
-    String shift1End,
-    String shift2Start,
-    String shift2End,
-  ) async {
+      String name,
+      String phone,
+      String currentPassword,
+      String password,
+      String passwordConfirmation,
+      String stampPrice,
+      String stampPauseHurs,
+      String shift1Start,
+      String shift1End,
+      String shift2Start,
+      String shift2End,
+      ) async {
     try {
       final response = await _apiService.meUpdate(
         name,
@@ -325,8 +438,8 @@ class AuthRepository {
         final List<TokenModelApiUserModel> list = rawList
             .map(
               (item) =>
-                  TokenModelApiUserModel.formJson(item as Map<String, dynamic>),
-            )
+              TokenModelApiUserModel.formJson(item as Map<String, dynamic>),
+        )
             .toList();
         return list;
       });
@@ -336,9 +449,9 @@ class AuthRepository {
   }
 
   Future<dynamic> httpResponse<T>(
-    http.Response response,
-    T Function(Map<String, dynamic> data) fromJson,
-  ) async {
+      http.Response response,
+      T Function(Map<String, dynamic> data) fromJson,
+      ) async {
     Map<String, dynamic> data = {};
     if (response.body.isNotEmpty) {
       try {
@@ -394,19 +507,19 @@ class AuthRepository {
   }
 
   Future<dynamic> filiallUpdate(
-    String name,
-    String phone,
-    String? currentPassword,
-    String password,
-    String passwordConfirmation,
-    String stampPrice,
-    String stampPauseHurs,
-    String shift1Start,
-    String shift1End,
-    String shift2Start,
-    String shift2End,
-    int? id,
-  ) async {
+      String name,
+      String phone,
+      String? currentPassword,
+      String password,
+      String passwordConfirmation,
+      String stampPrice,
+      String stampPauseHurs,
+      String shift1Start,
+      String shift1End,
+      String shift2Start,
+      String shift2End,
+      int? id,
+      ) async {
     try {
       final response = await _apiService.filiallUpdate(
         name,
@@ -533,11 +646,11 @@ class AuthRepository {
   }
 
   Future<dynamic> driversPage(
-    String? search,
-    String sort,
-    List<String> filters,
-    int page,
-  ) async {
+      String? search,
+      String sort,
+      List<String> filters,
+      int page,
+      ) async {
     try {
       final response = await _apiService.driverPage(
         search,
@@ -555,15 +668,15 @@ class AuthRepository {
   }
 
   Future<dynamic> createUpdateDriver(
-    String name,
-    String phone,
-    String carNumer,
-    int? id,
-  ) async {
+      String name,
+      String phone,
+      String carNumer,
+      int? id,
+      ) async {
     try {
       final response = await _apiService.createUpdateDriver(
         name,
-       await phoneData(phone),
+        await phoneData(phone),
         carNumer,
         id,
       );
@@ -579,6 +692,34 @@ class AuthRepository {
           createdAt: model.createdAt,
           updatedAt: model.updatedAt,
         );
+      });
+    } catch (e) {
+      return TokenErorrModel(message: e.toString(), data: null);
+    }
+  }
+
+  Future<dynamic> dashboard(
+      int? id,
+      String type,
+      String data,
+      String? weekStart,
+      String? weekEnd,
+      String? month,
+      String? year,
+      ) async {
+    try {
+      final response = await _apiService.dashboard(
+        id,
+        type,
+        data,
+        weekStart,
+        weekEnd,
+        month,
+        year,
+      );
+      return httpResponse(response, (data) {
+        final model = StatsResponse.fromJson(data);
+        return StatsResponse(message: model.message, data: model.data);
       });
     } catch (e) {
       return TokenErorrModel(message: e.toString(), data: null);

@@ -1,14 +1,13 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:pechat_pay/logon/login/login_cubit.dart';
 
+import '../../data/dashboar_model/all_dashboar_model.dart';
 import '../../data/driver_model/chip_model.dart';
 import '../../data/get_it/get_it.dart';
 import '../../data/repository/auth.dart';
 import '../../data/token_model/token_erorr_model.dart';
 import '../../data/token_model/token_model.dart';
-
-part 'dashboard_state.dart';
+import 'dashboard_state.dart';
 
 class DashboardCubit extends Cubit<DashboardState> {
   DashboardCubit()
@@ -38,6 +37,8 @@ class DashboardCubit extends Cubit<DashboardState> {
           ],
           selectedDate: DateTime.now(),
           selectedIndex: 0,
+          statsResponse: null,
+          statisticsBool: true,
         ),
       );
   AuthRepository authRepository = AuthRepository();
@@ -53,6 +54,8 @@ class DashboardCubit extends Cubit<DashboardState> {
           chip: state.chip,
           selectedDate: DateTime.now(),
           selectedIndex: 0,
+          statsResponse: state.statsResponse,
+          statisticsBool: false,
         ),
       );
     }
@@ -69,6 +72,8 @@ class DashboardCubit extends Cubit<DashboardState> {
           chip: newChip,
           selectedDate: DateTime.now(),
           selectedIndex: 0,
+          statsResponse: state.statsResponse,
+          statisticsBool: false,
         ),
       );
     }
@@ -83,6 +88,8 @@ class DashboardCubit extends Cubit<DashboardState> {
           chip: state.chip,
           selectedIndex: 0,
           selectedDate: data,
+          statsResponse: state.statsResponse,
+          statisticsBool: false,
         ),
       );
     } else if (index != null) {
@@ -93,6 +100,8 @@ class DashboardCubit extends Cubit<DashboardState> {
           chip: state.chip,
           selectedIndex: index,
           selectedDate: state.selectedDate,
+          statsResponse: state.statsResponse,
+          statisticsBool: false,
         ),
       );
     }
@@ -106,21 +115,41 @@ class DashboardCubit extends Cubit<DashboardState> {
         index: state.index,
         selectedDate: state.selectedDate,
         selectedIndex: state.selectedIndex,
+        statsResponse: state.statsResponse,
+
+        statisticsBool: state.statisticsBool,
       ),
     );
-    final response = await Future.wait([authRepository.filiallPage()]);
-    if (response[0] is TokenErorrModel) {
+    final response = await Future.wait([
+      authRepository.filiallPage(),
+      authRepository.dashboard(
+        sl<LoginCubit>().state.token!.id,
+        "day",
+        "2026-09-04",
+        //"${state.selectedDate.year}-${state.selectedDate.month}-${state.selectedDate.day}",
+        null,
+        null,
+        null,
+        null,
+      ),
+    ]);
+    if (response[0] is TokenErorrModel || response[1] is TokenErorrModel) {
       emit(
         DashboardError(
-          chip: state.chip,
           filiallPagel: state.filiallPagel,
-          tokenErorrModel: response[0],
+          tokenErorrModel: response[0] is TokenErorrModel
+              ? response[0]
+              : response[1],
+          statsResponse: state.statsResponse,
+          chip: state.chip,
           index: state.index,
           selectedDate: state.selectedDate,
           selectedIndex: state.selectedIndex,
+          statisticsBool: state.statisticsBool,
         ),
       );
-    } else if (response[0] is List<TokenModelApiUserModel>) {
+    } else if (response[0] is List<TokenModelApiUserModel> &&
+        response[1] is StatsResponse) {
       int id = sl<LoginCubit>().state.token!.id;
       final index = response[0].indexWhere((item) => item.id == id);
       emit(
@@ -130,18 +159,24 @@ class DashboardCubit extends Cubit<DashboardState> {
           filiallPagel: [...state.filiallPagel, ...response[0]],
           selectedDate: state.selectedDate,
           selectedIndex: state.selectedIndex,
+          statsResponse: response[1],
+          statisticsBool: state.statisticsBool,
         ),
       );
     }
-    // if (response[0] is TokenErorrModel || response[0] is TokenErorrModel) {
-    //   emit(
-    //     DashboardError(
-    //       filiallPagel: state.filiallPagel,
-    //       tokenErorrModel: response[0] is TokenErorrModel
-    //           ? response[0]
-    //           : response[1],
-    //     ),
-    //   );
-    // }
+  }
+
+  Future<void> statisticsPage(bool value) async {
+    emit(
+      DashboardFinish(
+        filiallPagel: state.filiallPagel,
+        index: state.index,
+        chip: state.chip,
+        selectedIndex: state.selectedIndex,
+        selectedDate: state.selectedDate,
+        statsResponse: state.statsResponse,
+        statisticsBool: value,
+      ),
+    );
   }
 }

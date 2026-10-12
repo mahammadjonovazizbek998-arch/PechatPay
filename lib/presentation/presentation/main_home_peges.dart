@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pechat_pay/data/style/text_style.dart';
 import 'package:pechat_pay/logon/bottom_navigation_bar/bottom_navigation_bar_cubit.dart';
+import 'package:pechat_pay/logon/dashboard/dashboard_cubit.dart';
 import 'package:pechat_pay/presentation/presentation/profile_peges.dart';
 import 'package:pechat_pay/presentation/presentation/rating_peges.dart';
 import 'package:pechat_pay/presentation/presentation/tasks_peges.dart';
@@ -26,6 +27,7 @@ class _HomePegesState extends State<MainHomePeges> {@override
     super.initState();
     sl<HomleCubit>().historyHomePage(1);
     sl<TasksCubit>().driversPage(null,1);
+    sl<DashboardCubit>().filiallPage();
   }
   final List<Widget> _pages = [
     HomePeges(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pechat_pay/logon/dashboard/dashboard_cubit.dart';
 import 'package:pechat_pay/logon/theme/theme_cubit.dart';
 import 'package:pechat_pay/presentation/presentation/main_home_peges.dart';
 import 'package:pechat_pay/presentation/sin_in/sin_in.dart';
@@ -24,6 +25,7 @@ void main() async {
         BlocProvider.value(value: sl<TasksCubit>()),
         BlocProvider.value(value: sl<HomleCubit>()),
         BlocProvider.value(value: sl<BottomNavigationBarCubit>()),
+        BlocProvider.value(value: sl<DashboardCubit>())
       ],
       child: const MyApp(),
     ),

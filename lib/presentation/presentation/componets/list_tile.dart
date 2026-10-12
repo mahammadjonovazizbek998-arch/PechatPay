@@ -124,12 +124,19 @@ class ContainerWidget extends StatelessWidget {
     );
   }
 }
-
 class ListTileWidget2 extends StatefulWidget {
- final Text title;
- final Widget subtitle;
- final ContainerWidget? leading;
-  const ListTileWidget2({super.key,required this.title,required this.subtitle,required this.leading});
+  final Text title;
+  final Widget subtitle;
+  final ContainerWidget? leading;
+  final Widget? trailing;
+
+  const ListTileWidget2({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.leading,
+    this.trailing,
+  });
 
   @override
   State<ListTileWidget2> createState() => _ListTileWidget2State();
@@ -158,6 +165,10 @@ class _ListTileWidget2State extends State<ListTileWidget2> {
               ],
             ),
           ),
+          if (widget.trailing != null) ...[
+            SizedBox(width: 8.w),
+            widget.trailing!,
+          ],
         ],
       ),
     );

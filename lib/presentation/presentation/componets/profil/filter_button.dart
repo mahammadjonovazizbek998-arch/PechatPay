@@ -7,6 +7,8 @@ import 'package:pechat_pay/logon/profil/profil_cubit.dart';
 import 'package:pechat_pay/logon/tasks/tasks_cubit.dart';
 
 import '../../../../data/theme/theme_class.dart';
+import '../../../../logon/dashboard/dashboard_cubit.dart';
+import '../../../../logon/dashboard/dashboard_state.dart';
 
 class FilterButton extends StatefulWidget {
   final Function(String) onFilterSelected;
@@ -153,6 +155,71 @@ class _NoActiveDriverFilterButtonState
                     fontWeight: .w500,
                   ),
                 ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class DashboardButton extends StatelessWidget {
+  final Function(String) onFilterSelected;
+
+  const DashboardButton({super.key, required this.onFilterSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    final myTheme = Theme.of(context).extension<ThemeClass>()!;
+    return BlocBuilder<DashboardCubit, DashboardState>(
+      builder: (context, state) {
+        final currentBranch = state.filiallPagel.isNotEmpty && state.index < state.filiallPagel.length
+            ? state.filiallPagel[state.index].name
+            : "Filialni tanlang";
+
+        return PopupMenuButton<String>(
+          color: myTheme.cardColor,
+          onSelected: (value) => onFilterSelected(value),
+          itemBuilder: (ctx) => state.filiallPagel
+              .map(
+                (e) => PopupMenuItem(
+              value: e.id.toString(),
+              child: Text(
+                e.name,
+                style: AppTextStyles.style14.copyWith(
+                  color: myTheme.text.withValues(alpha: 0.9),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          )
+              .toList(),
+          child: Container(
+            constraints: BoxConstraints(minWidth: 280.w, maxWidth: 300.w,minHeight: 44.h),
+            decoration: AppTextFormStyle.container(
+              color: myTheme.unselctedColor.withValues(alpha: 0.4),
+borderColor: myTheme.text
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.store, size: 16.w, color: myTheme.text),
+                SizedBox(width: 6.w),
+                Flexible(
+                  child: Text(
+                    currentBranch,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.style13.copyWith(
+                      color: myTheme.text.withValues(alpha: 0.9),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 4.w),
+                Icon(Icons.arrow_drop_down, size: 18.w, color: myTheme.text),
               ],
             ),
           ),

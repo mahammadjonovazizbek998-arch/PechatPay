@@ -4,13 +4,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pechat_pay/data/style/text_form_style.dart';
 import 'package:pechat_pay/data/style/text_style.dart';
 import 'package:pechat_pay/logon/dashboard/dashboard_cubit.dart';
+import 'package:pechat_pay/presentation/presentation/componets/rating_components/all_time_unpaid_pechats.dart';
+import 'package:pechat_pay/presentation/presentation/componets/rating_components/pay_conterin_widget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+import '../../../../data/repository/auth.dart';
 import '../../../../data/theme/theme_class.dart';
 
-import 'all_time_unpaid_pechats.dart';
+import '../../../../logon/dashboard/dashboard_state.dart';
 import 'conterin_widget.dart';
-import 'pay_conterin_widget.dart';
 
 class DayPage extends StatefulWidget {
   const DayPage({super.key});
@@ -211,79 +213,393 @@ class _DayPageState extends State<DayPage> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 3.h,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
+                      Flexible(
                         child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
-                          decoration: AppTextFormStyle.container(
-                            color: myTheme.unselctedColor.withValues(alpha: 0.1),
+                          padding: EdgeInsets.symmetric(
+                            vertical: 10.h,
+                            horizontal: 10.w,
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          decoration: AppTextFormStyle.container(
+                            color: myTheme.unselctedColor.withValues(
+                              alpha: 0.1,
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // 1-smena vaqti
                               Row(
-                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Icon(
-                                    Icons.wb_sunny_outlined,
-                                    size: 15.sp,
-                                    color: myTheme.shiftColor,
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.wb_sunny_outlined,
+                                        size: 15.sp,
+                                        color: myTheme.globalColor,
+                                      ),
+                                      SizedBox(width: 4.w),
+                                      Text(
+                                        "1-smena",
+                                        style: AppTextStyles.style10.copyWith(
+                                          color: myTheme.text,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(width: 4.w),
                                   Text(
-                                    "1-smena",
+                                    "${state.filiallPagel[state.index].shift1Start.substring(0, 5)}–"
+                                    "${state.filiallPagel[state.index].shift1End.substring(0, 5)}",
                                     style: AppTextStyles.style10.copyWith(
                                       color: myTheme.text,
-                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ],
                               ),
-                              Text(
-                                "${state.filiallPagel[state.index].shift1Start.substring(0, 5)}-${state.filiallPagel[state.index].shift1End.substring(0, 5)}",
-                                style: AppTextStyles.style10.copyWith(
-                                  color: myTheme.text,
-                                ),
+
+                              SizedBox(height: 8.h),
+
+                              // Berilgan muhrlar
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Berilgan:",
+                                    style: AppTextStyles.style10.copyWith(
+                                      color: myTheme.text,
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        "${state.statsResponse!.data.shift1!.count} ta",
+                                        style: AppTextStyles.style12.copyWith(
+                                          color: myTheme.text,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        "(${AuthRepository.formatSum(state.statsResponse!.data.shift1!.summa.toString())} so'm)",
+                                        style: AppTextStyles.style10.copyWith(
+                                          color: myTheme.globalColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 6.h),
+
+                              // Haydovchilar soni
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Haydovchilar:",
+                                    style: AppTextStyles.style10.copyWith(
+                                      color: myTheme.text,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${state.statsResponse!.data.shift1!.uniqueDriversCount} ta",
+                                    style: AppTextStyles.style12.copyWith(
+                                      color: myTheme.text,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              Divider(
+                                height: 16.h,
+                                color: myTheme.text.withValues(alpha: 0.1),
+                              ),
+
+                              // Naqdlashtirilgan muhrlar
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      "Naqdlashtirilgan:",
+                                      style: AppTextStyles.style10.copyWith(
+                                        color: myTheme.text,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 8.w),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        "${state.statsResponse!.data.shift1!.paymentPechatCount} ta",
+                                        style: AppTextStyles.style12.copyWith(
+                                          color: myTheme.logUot,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        "(${AuthRepository.formatSum(state.statsResponse!.data.shift1!.paymentSumma.toString())} so'm)",
+                                        style: AppTextStyles.style10.copyWith(
+                                          color: myTheme.logUot,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 6.h),
+
+                              // To'lovlar soni
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "To'lovlar soni:",
+                                    style: AppTextStyles.style10.copyWith(
+                                      color: myTheme.text,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${state.statsResponse!.data.shift1!.paymentCount} ta",
+                                    style: AppTextStyles.style12.copyWith(
+                                      color: myTheme.text,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 6.h),
+
+                              // To'lov qilgan noyob haydovchilar
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Noyob:",
+                                    style: AppTextStyles.style10.copyWith(
+                                      color: myTheme.text,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${state.statsResponse!.data.shift1!.paymentUniqueDriversCount} ta",
+                                    style: AppTextStyles.style12.copyWith(
+                                      color: myTheme.text,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
                         ),
                       ),
                       SizedBox(width: 8.w),
-                      Expanded(
+
+                      Flexible(
                         child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
-                          decoration: AppTextFormStyle.container(
-                            color: myTheme.unselctedColor.withValues(alpha: 0.1),
+                          padding: EdgeInsets.symmetric(
+                            vertical: 10.h,
+                            horizontal: 10.w,
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          decoration: AppTextFormStyle.container(
+                            color: myTheme.unselctedColor.withValues(
+                              alpha: 0.1,
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
+                              // 2-smena vaqti
                               Row(
-                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Icon(
-                                    Icons.nights_stay_outlined,
-                                    size: 15.sp,
-                                    color: myTheme.globalColor,
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.nights_stay_outlined,
+                                        size: 15.sp,
+                                        color: myTheme.globalColor,
+                                      ),
+                                      SizedBox(width: 4.w),
+                                      Text(
+                                        "2-smena",
+                                        style: AppTextStyles.style10.copyWith(
+                                          color: myTheme.text,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(width: 4.w),
                                   Text(
-                                    "2-smena",
+                                    "${state.filiallPagel[state.index].shift2Start.substring(0, 5)}-"
+                                    "${state.filiallPagel[state.index].shift2End.substring(0, 5)}",
                                     style: AppTextStyles.style10.copyWith(
                                       color: myTheme.text,
-                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ],
                               ),
-                              Text(
-                                "${state.filiallPagel[state.index].shift2Start.substring(0, 5)}-${state.filiallPagel[state.index].shift2End.substring(0, 5)}",
-                                style: AppTextStyles.style10.copyWith(
-                                  color: myTheme.text,
-                                ),
+
+                              SizedBox(height: 8.h),
+
+                              // Berilgan muhrlar
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Berilgan:",
+                                    style: AppTextStyles.style10.copyWith(
+                                      color: myTheme.text,
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        "${state.statsResponse!.data.shift2!.count} ta",
+                                        style: AppTextStyles.style12.copyWith(
+                                          color: myTheme.text,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        "(${AuthRepository.formatSum(state.statsResponse!.data.shift2!.summa.toString())} so'm)",
+                                        style: AppTextStyles.style10.copyWith(
+                                          color: myTheme.globalColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 6.h),
+
+                              // Haydovchilar
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Haydovchilar:",
+                                    style: AppTextStyles.style10.copyWith(
+                                      color: myTheme.text,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${state.statsResponse!.data.shift2!.uniqueDriversCount} ta",
+                                    style: AppTextStyles.style12.copyWith(
+                                      color: myTheme.text,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              Divider(
+                                height: 16.h,
+                                color: myTheme.text.withValues(alpha: 0.1),
+                              ),
+
+                              // Naqdlashtirilgan
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      "Naqdlashtirilgan:",
+                                      style: AppTextStyles.style10.copyWith(
+                                        color: myTheme.text,
+                                      ),
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        "${state.statsResponse!.data.shift2!.paymentPechatCount} ta",
+                                        style: AppTextStyles.style12.copyWith(
+                                          color: myTheme.logUot,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        "(${AuthRepository.formatSum(state.statsResponse!.data.shift2!.paymentSumma.toString())} so'm)",
+                                        style: AppTextStyles.style10.copyWith(
+                                          color: myTheme.logUot,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 6.h),
+
+                              // To'lovlar soni
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "To'lovlar soni:",
+                                    style: AppTextStyles.style10.copyWith(
+                                      color: myTheme.text,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${state.statsResponse!.data.shift2!.paymentCount} ta",
+                                    style: AppTextStyles.style12.copyWith(
+                                      color: myTheme.text,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 6.h),
+
+                              // Noyob haydovchilar
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Noyob:",
+                                    style: AppTextStyles.style10.copyWith(
+                                      color: myTheme.text,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${state.statsResponse!.data.shift2!.paymentUniqueDriversCount} ta",
+                                    style: AppTextStyles.style12.copyWith(
+                                      color: myTheme.text,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
