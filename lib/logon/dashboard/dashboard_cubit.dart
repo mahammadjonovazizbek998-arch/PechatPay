@@ -20,10 +20,10 @@ class DashboardCubit extends Cubit<DashboardState> {
               name: "Barcha filiallar bo'yicha",
               phone: "",
               role: "",
-              shift1Start: "",
-              shift1End: "",
-              shift2Start: "",
-              shift2End: "",
+              shift1Start: "08:00",
+              shift1End: "18:00",
+              shift2Start: "18:00",
+              shift2End: "06:00",
               stampPrice: 0,
               stampPauseHours: 0,
             ),
@@ -77,6 +77,7 @@ class DashboardCubit extends Cubit<DashboardState> {
         ),
       );
     }
+    await statisticsBrench();
   }
 
   Future<void> selected(int? index, DateTime? data) async {
@@ -105,6 +106,7 @@ class DashboardCubit extends Cubit<DashboardState> {
         ),
       );
     }
+    await statisticsBrench();
   }
 
   Future<void> filiallPage() async {
@@ -178,5 +180,136 @@ class DashboardCubit extends Cubit<DashboardState> {
         statisticsBool: value,
       ),
     );
+  }
+
+  Future<void> statisticsBrench() async {
+    int? key;
+    if (state.index != 0 && state.index < state.filiallPagel.length) {
+      key = state.filiallPagel[state.index].id;
+    } else {
+      key = null;
+    }
+
+    emit(
+      DashboardLoding(
+        index: state.index,
+        filiallPagel: state.filiallPagel,
+        chip: state.chip,
+        selectedDate: state.selectedDate,
+        selectedIndex: state.selectedIndex,
+        statsResponse: null,
+        statisticsBool: state.statisticsBool,
+      ),
+    );
+
+    final dynamic response;
+    final year = state.selectedDate.year;
+    final month = state.selectedDate.month.toString().padLeft(2, '0');
+    final day = state.selectedDate.day.toString().padLeft(2, '0');
+    final formattedDate = "$year-$month-$day";
+
+    if (state.chip[4].selected == true) {
+      // Kunlik
+      response = await authRepository.dashboard(
+        key,
+        "day",
+        formattedDate,
+        null,
+        null,
+        null,
+        null,
+      );
+    } else if (state.chip[3].selected == true) {
+      // Haftalik (Dushanba - Yakshanba)
+      final monday = state.selectedDate.subtract(
+        Duration(days: state.selectedDate.weekday - 1),
+      );
+      final sunday = monday.add(const Duration(days: 6));
+      final wStart = "${monday.year}-${monday.month.toString().padLeft(2, '0')}-${monday.day.toString().padLeft(2, '0')}";
+      final wEnd = "${sunday.year}-${sunday.month.toString().padLeft(2, '0')}-${sunday.day.toString().padLeft(2, '0')}";
+
+      response = await authRepository.dashboard(
+        key,
+        "week",
+        null,
+        wStart,
+        wEnd,
+        null,
+        null,
+      );
+    } else if (state.chip[2].selected == true) {
+      // Oylik
+      response = await authRepository.dashboard(
+        key,
+        "month",
+        null,
+        null,
+        null,
+        state.selectedDate.month.toString(), // <-- Faqat oy raqami (masalan: "10")
+        state.selectedDate.year.toString(),
+      );
+    } else if (state.chip[1].selected == true) {
+      // Yillik
+      response = await authRepository.dashboard(
+        key,
+        "year",
+        null,
+        null,
+        null,
+        null,
+        "$year",
+      );
+    } else {
+      // Barchasi
+      response = await authRepository.dashboard(
+        key,
+        "all",
+        null,
+        null,
+        null,
+        null,
+        null,
+      );
+    }
+
+    if (response is TokenErorrModel) {
+      emit(
+        DashboardError(
+          filiallPagel: state.filiallPagel,
+          tokenErorrModel: response,
+          statsResponse: state.statsResponse,
+          chip: state.chip,
+          index: state.index,
+          selectedDate: state.selectedDate,
+          selectedIndex: state.selectedIndex,
+          statisticsBool: state.statisticsBool,
+        ),
+      );
+    } else if (response is StatsResponse) {
+      emit(
+        DashboardFinish(
+          chip: state.chip,
+          index: state.index,
+          filiallPagel: state.filiallPagel,
+          selectedDate: state.selectedDate,
+          selectedIndex: state.selectedIndex,
+          statsResponse: response,
+          statisticsBool: state.statisticsBool,
+        ),
+      );
+    } else {
+      // Fallback (kutilmagan javob kelganda loadingda qotib qolmasligi uchun)
+      emit(
+        DashboardFinish(
+          chip: state.chip,
+          index: state.index,
+          filiallPagel: state.filiallPagel,
+          selectedDate: state.selectedDate,
+          selectedIndex: state.selectedIndex,
+          statsResponse: state.statsResponse,
+          statisticsBool: state.statisticsBool,
+        ),
+      );
+    }
   }
 }

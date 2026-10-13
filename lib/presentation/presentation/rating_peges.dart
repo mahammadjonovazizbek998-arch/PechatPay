@@ -24,9 +24,11 @@ class RatingPeges extends StatefulWidget {
 }
 
 class _RatingPegesState extends State<RatingPeges> {
+  bool isLoadingShown = false;
   String name() {
     final state = context.read<DashboardCubit>().state;
-    final branchName = state.filiallPagel.isNotEmpty && state.index < state.filiallPagel.length
+    final branchName =
+        state.filiallPagel.isNotEmpty && state.index < state.filiallPagel.length
         ? state.filiallPagel[state.index].name
         : "";
 
@@ -55,130 +57,172 @@ class _RatingPegesState extends State<RatingPeges> {
 
     return Scaffold(
       appBar: AppBarWidget(),
-      body: BlocBuilder<DashboardCubit, DashboardState>(
+      body: BlocConsumer<DashboardCubit, DashboardState>(
         builder: (context, state) {
-          return CustomScrollView(
-            slivers: [
-              SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                sliver: SliverMainAxisGroup(
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-                        decoration: AppTextFormStyle.container(
-                          color: myTheme.textColor,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Flexible(
-                                  child: DashboardButton(
-                                    onFilterSelected: (value) => context
-                                        .read<DashboardCubit>()
-                                        .onTap(int.parse(value), null),
-                                  ),
-                                ),
-                                SizedBox(width: 12.w),
-                                SizedBox(
-                                  width: 44.w,
-                                  height: 44.h,
-                                  child: ElevatedButton(
-                                    style: AppTextFormStyle.buttonStyleBorder(
-                                      background: myTheme.text.withValues(alpha: 0.1),
-                                      foreground: myTheme.text.withValues(alpha: 0.9),
-                                      padding: true,
-                                    ),
-                                    onPressed: () => context.read<DashboardCubit>().filiallPage(),
-                                    child: Icon(
-                                      Icons.refresh,
-                                      color: myTheme.text,
+          if (state is DashboardError) {
+            return Center(child: Text("Hatolik yuz berdi"));
+          } else if (state is DashboardLoding &&
+            state.statsResponse == null) {
+            return Center(
+              child: CircularProgressIndicator(color: myTheme.globalColor),
+            );
+          }else{
+            return CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  sliver: SliverMainAxisGroup(
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 12.h,
+                          ),
+                          decoration: AppTextFormStyle.container(
+                            color: myTheme.textColor,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Flexible(
+                                    child: DashboardButton(
+                                      onFilterSelected: (value) => context
+                                          .read<DashboardCubit>()
+                                          .onTap(int.parse(value), null),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 10.h),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  height: lineHeight,
-                                  child: Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: Icon(
-                                      state.chip[4].selected == true
-                                          ? Icons.access_time
-                                          : Icons.calendar_month_outlined,
-                                      color: myTheme.globalColor,
-                                      size: 15.w,
+                                  SizedBox(width: 12.w),
+                                  SizedBox(
+                                    width: 44.w,
+                                    height: 44.h,
+                                    child: ElevatedButton(
+                                      style: AppTextFormStyle.buttonStyleBorder(
+                                        background: myTheme.text.withValues(
+                                          alpha: 0.1,
+                                        ),
+                                        foreground: myTheme.text.withValues(
+                                          alpha: 0.9,
+                                        ),
+                                        padding: true,
+                                      ),
+                                      onPressed: () => context
+                                          .read<DashboardCubit>()
+                                          .statisticsBrench(),
+                                      child: Icon(
+                                        Icons.refresh,
+                                        color: myTheme.text,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(width: 2.w),
-                                Flexible(
-                                  child: Text(
-                                    textAlign: TextAlign.start,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                    name(),
-                                    style: AppTextStyles.style12.copyWith(
-                                      color: myTheme.text,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(child: SizedBox(height: 12.h)),
-                    SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: 40.h,
-                        child: ListView.separated(
-                          itemCount: state.chip.length,
-                          itemBuilder: (context, index) {
-                            return SizedBox(
-                              child: ChipWidget(
-                                name: state.chip[index].name,
-                                isSelected: state.chip[index].selected,
-                                onTap: () => context.read<DashboardCubit>().onTap(
-                                  null,
-                                  index,
-                                ),
+                                ],
                               ),
-                            );
-                          },
-                          scrollDirection: Axis.horizontal,
-                          separatorBuilder: (BuildContext context, int index) {
-                            return SizedBox(width: 8.w);
-                          },
+                              SizedBox(height: 10.h),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: lineHeight,
+                                    child: Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Icon(
+                                        state.chip[4].selected == true
+                                            ? Icons.access_time
+                                            : Icons.calendar_month_outlined,
+                                        color: myTheme.globalColor,
+                                        size: 15.w,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 2.w),
+                                  Flexible(
+                                    child: Text(
+                                      textAlign: TextAlign.start,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      name(),
+                                      style: AppTextStyles.style12.copyWith(
+                                        color: myTheme.text,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    if (state.chip[0].selected != true)
                       SliverToBoxAdapter(child: SizedBox(height: 12.h)),
-                    if (state.chip[0].selected != true)
-                      SliverToBoxAdapter(child: DataWidget()),
-                    if (state.chip[4].selected == true) ...[
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: 40.h,
+                          child: ListView.separated(
+                            itemCount: state.chip.length,
+                            itemBuilder: (context, index) {
+                              return SizedBox(
+                                child: ChipWidget(
+                                  name: state.chip[index].name,
+                                  isSelected: state.chip[index].selected,
+                                  onTap: () => context
+                                      .read<DashboardCubit>()
+                                      .onTap(null, index),
+                                ),
+                              );
+                            },
+                            scrollDirection: Axis.horizontal,
+                            separatorBuilder: (BuildContext context, int index) {
+                              return SizedBox(width: 8.w);
+                            },
+                          ),
+                        ),
+                      ),
+                      if (state.chip[0].selected != true)
+                        SliverToBoxAdapter(child: SizedBox(height: 12.h)),
+                      if (state.chip[0].selected != true)
+                        SliverToBoxAdapter(child: DataWidget()),
+                      if (state.chip[4].selected == true) ...[
+                        SliverToBoxAdapter(child: SizedBox(height: 12.h)),
+                        SliverToBoxAdapter(child: DayPage()),
+                      ],
                       SliverToBoxAdapter(child: SizedBox(height: 12.h)),
-                      SliverToBoxAdapter(child: DayPage()),
+                      SliverToBoxAdapter(child: Statistics()),
+                      SliverToBoxAdapter(child: SizedBox(height: 12.h)),
+                      SliverToBoxAdapter(child: TopDriversCard()),
                     ],
-                    SliverToBoxAdapter(child: SizedBox(height: 12.h)),
-                    SliverToBoxAdapter(child: Statistics()),
-                    SliverToBoxAdapter(child: SizedBox(height: 12.h)),
-                    SliverToBoxAdapter(child: TopDriversCard()),
-                  ],
+                  ),
+                ),
+              ],
+            );}
+        },
+        listener: (context, state) {
+        if (state is DashboardLoding && state.filiallPagel.length>=2&&state.statsResponse!=null ) {
+          if (!isLoadingShown) {
+            isLoadingShown = true;
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              barrierColor: Colors.black54,
+              useRootNavigator: true,
+              builder: (_) => PopScope(
+                canPop: false,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: myTheme.globalColor,
+                  ),
                 ),
               ),
-            ],
-          );
-        },
+            ).then((_) => isLoadingShown = false);
+          }
+        } else {
+          if (isLoadingShown) {
+            Navigator.of(context, rootNavigator: true).pop();
+            isLoadingShown = false;
+          }
+        }
+      },
       ),
     );
   }

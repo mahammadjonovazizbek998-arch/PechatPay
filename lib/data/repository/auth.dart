@@ -701,7 +701,7 @@ class AuthRepository {
   Future<dynamic> dashboard(
       int? id,
       String type,
-      String data,
+      String? data,
       String? weekStart,
       String? weekEnd,
       String? month,
