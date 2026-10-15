@@ -17,7 +17,7 @@ class AppTextFormStyle {
       borderRadius: BorderRadius.circular(15.r),
     );
     return InputDecoration(
-      constraints: BoxConstraints(minHeight: 47.h, maxHeight: 62.h),
+      constraints: BoxConstraints(minHeight: 47.h, maxHeight: 75.h),
 
       suffixIcon: visibilityOff
           ? eye

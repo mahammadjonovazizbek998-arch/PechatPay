@@ -23,11 +23,15 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
     return BlocBuilder<TasksCubit, TasksState>(
       builder: (context, state) {
         return Container(
-          margin: .symmetric(vertical: 14.h),
+          margin: .symmetric(vertical: 5.h),
           decoration: AppTextFormStyle.container(
             shadow: true,
             color: myTheme.cardColor,
-            borderColor: myTheme.globalColor,
+            borderColor:  state
+                .driverHistoryResponse!
+                .data[state.selectedIndex!]
+                .action ==
+                "pay"?myTheme.globalColor:myTheme.phonColor,
           ),
 
           child: Column(
@@ -60,7 +64,11 @@ class _HistoryOfOperationsState extends State<HistoryOfOperations> {
                           .summa
                           .toString(),
                       style: AppTextStyles.style14.copyWith(
-                        color: myTheme.globalColor,
+                        color:     state
+                            .driverHistoryResponse!
+                            .data[state.selectedIndex!]
+                            .action ==
+                            "pay"?myTheme.globalColor:myTheme.phonColor,
                       ),
                     ),
                   ],

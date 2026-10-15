@@ -191,88 +191,91 @@ class _BranchComponetsState extends State<BranchComponets> {
                 padding: .only(left: 16.w, right: 16.w),
                 child: Row(
                   children: [
-                    Container(
-                      decoration: AppTextFormStyle.container(
-                        color: myTheme.shiftColor.withValues(alpha: 0.06),
-                      ),
-                      padding: .symmetric(horizontal: 10.w, vertical: 10.h),
-                      width: 159.w,
-                      child: Column(
-                        crossAxisAlignment: .start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.wb_sunny_outlined,
-                                size: 15.sp,
-                                color: myTheme.shiftColor,
-                              ),
-                              Text(
-                                " Kunduzgi smena",
-                                style: AppTextStyles.style10.copyWith(
-                                  color: myTheme.shiftColor.withValues(
-                                    alpha: 0.8,
+                    Flexible(
+                      child: Container(
+                        decoration: AppTextFormStyle.container(
+                          color: myTheme.shiftColor.withValues(alpha: 0.06),
+                        ),
+                        padding: .symmetric(horizontal: 10.w, vertical: 10.h),
+                        child: Column(
+                          crossAxisAlignment: .start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.wb_sunny_outlined,
+                                  size: 15.sp,
+                                  color: myTheme.shiftColor,
+                                ),
+                                Text(
+                                  " Kunduzgi smena",
+                                  style: AppTextStyles.style10.copyWith(
+                                    color: myTheme.shiftColor.withValues(
+                                      alpha: 0.8,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Text(
-                            textAlign: .start,
-                            widget.tokenModelApiUserModel==null
-                                ? "${state.token!.shift1Start.substring(0, state.token!.shift1Start.length - 3)} — ${state.token!.shift1End.substring(0, state.token!.shift1End.length - 3)}"
-                                : "${widget.tokenModelApiUserModel!.shift1Start.substring(0, widget.tokenModelApiUserModel!.shift1Start.length - 3)} — ${widget.tokenModelApiUserModel!.shift1End.substring(0, widget.tokenModelApiUserModel!.shift1End.length - 3)}",
-                            style: AppTextStyles.style14.copyWith(
-                              fontWeight: .bold,
-                              color: myTheme.text,
+                              ],
                             ),
-                          ),
-                          SizedBox(height: 3.h),
-                        ],
+                            Text(
+                              textAlign: .start,
+                              widget.tokenModelApiUserModel==null
+                                  ? "${state.token!.shift1Start.substring(0, state.token!.shift1Start.length - 3)} — ${state.token!.shift1End.substring(0, state.token!.shift1End.length - 3)}"
+                                  : "${widget.tokenModelApiUserModel!.shift1Start.substring(0, widget.tokenModelApiUserModel!.shift1Start.length - 3)} — ${widget.tokenModelApiUserModel!.shift1End.substring(0, widget.tokenModelApiUserModel!.shift1End.length - 3)}",
+                              style: AppTextStyles.style14.copyWith(
+                                fontWeight: .bold,
+                                color: myTheme.text,
+                              ),
+                            ),
+                            SizedBox(height: 3.h),
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(width: 8.w),
-                    Container(
-                      decoration: AppTextFormStyle.container(
-                        color: myTheme.globalColor.withValues(alpha: 0.05),
-                      ),
-                      padding: .symmetric(horizontal: 10.w, vertical: 10.h),
-                      width: 159.w,
-                      child: Column(
-                        crossAxisAlignment: .start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                color: myTheme.globalColor.withValues(
-                                  alpha: 0.5,
-                                ),
-                                Icons.nights_stay_outlined,
-                                size: 15.sp,
-                              ),
-                              Text(
-                                " Tungi smena",
-                                style: AppTextStyles.style10.copyWith(
+                    Flexible(
+                      child: Container(
+                        decoration: AppTextFormStyle.container(
+                          color: myTheme.globalColor.withValues(alpha: 0.05),
+                        ),
+                        padding: .symmetric(horizontal: 10.w, vertical: 10.h),
+
+                        child: Column(
+                          crossAxisAlignment: .start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
                                   color: myTheme.globalColor.withValues(
                                     alpha: 0.5,
                                   ),
+                                  Icons.nights_stay_outlined,
+                                  size: 15.sp,
                                 ),
-                              ),
-                            ],
-                          ),
-                          Text(
-                            textAlign: .start,
-                            widget.tokenModelApiUserModel==null
-                                ? "${state.token!.shift2Start.substring(0, state.token!.shift2Start.length - 3)} — ${state.token!.shift2End.substring(0, state.token!.shift2End.length - 3)}"
-                                : "${widget.tokenModelApiUserModel!.shift2Start.substring(0, widget.tokenModelApiUserModel!.shift2Start.length - 3)} — ${widget.tokenModelApiUserModel!.shift2End.substring(0, widget.tokenModelApiUserModel!.shift2End.length - 3)}",
-
-                            style: AppTextStyles.style14.copyWith(
-                              fontWeight: .bold,
-                              color: myTheme.text,
+                                Text(
+                                  " Tungi smena",
+                                  style: AppTextStyles.style10.copyWith(
+                                    color: myTheme.globalColor.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          SizedBox(height: 3.h),
-                        ],
+                            Text(
+                              textAlign: .start,
+                              widget.tokenModelApiUserModel==null
+                                  ? "${state.token!.shift2Start.substring(0, state.token!.shift2Start.length - 3)} — ${state.token!.shift2End.substring(0, state.token!.shift2End.length - 3)}"
+                                  : "${widget.tokenModelApiUserModel!.shift2Start.substring(0, widget.tokenModelApiUserModel!.shift2Start.length - 3)} — ${widget.tokenModelApiUserModel!.shift2End.substring(0, widget.tokenModelApiUserModel!.shift2End.length - 3)}",
+
+                              style: AppTextStyles.style14.copyWith(
+                                fontWeight: .bold,
+                                color: myTheme.text,
+                              ),
+                            ),
+                            SizedBox(height: 3.h),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -285,35 +288,6 @@ class _BranchComponetsState extends State<BranchComponets> {
                     ? widget.isacctiv||state.token!.role=="owner"
                           ? Row(
                               children: [
-                                Expanded(
-                                  child: SizedBox(
-                                    height: 48.h,
-
-                                    child: ElevatedButton(
-                                      style: AppTextFormStyle.buttonStyleBorder(
-                                        background: myTheme.unselctedCardColor,
-                                        foreground: myTheme.text,
-                                        button: true,
-                                      ),
-                                      onPressed: () {},
-                                      child: Row(
-                                        mainAxisSize: .min,
-                                        children: [
-                                          Image.asset(
-                                            "assets/img.png",
-                                            width: 14.w,
-                                            color: myTheme.text,
-                                          ),
-                                          Text(
-                                            " Statistika",
-                                            style: AppTextStyles.style14,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 8.w),
                                 Expanded(
                                   child: SizedBox(
                                     height: 48.h,

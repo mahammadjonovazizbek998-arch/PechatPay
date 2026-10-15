@@ -34,50 +34,6 @@ class _ProfilComponetsState extends State<ProfilComponets> {
                   ListTileWidget(
                     color: myTheme.unselctedColor,
                     onTap: () {
-                      context.read<BottomNavigationBarCubit>().onTap(
-                        holat.currentIndex,
-                        AppProfilPeges.myAccount,
-                      );
-                    },
-
-                    selected: Text(
-                      textAlign: .start,
-                      "Umumiy statistika",
-                      style: AppTextStyles.style14.copyWith(
-                        fontWeight: .bold,
-                        color: myTheme.text,
-                      ),
-                    ),
-                    unselected: Text(
-                      textAlign: .start,
-                      "Muhrlar aylanmasi, kassa hisoboti",
-                      style: AppTextStyles.style13.copyWith(
-                        fontWeight: .w500,
-                        color: myTheme.text.withValues(alpha: 0.8),
-                      ),
-                    ),
-                    leading: ContainerWidget(
-                      vertical: 46.h,
-                      horizontal: 44.w,
-                      assets: "assets/img.png",
-                      assetsHorizontal: 16.75,
-                      assetsVertical: 17.5,
-                      assetsColor: myTheme.globalColor,
-                      boxDecoration: AppTextFormStyle.container(
-                        color: myTheme.unselctedCardColor,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: Divider(
-                      color: myTheme.unselctedColor.withValues(alpha: 0.3),
-                      height: 0.3.h,
-                    ),
-                  ),
-                  ListTileWidget(
-                    color: myTheme.unselctedColor,
-                    onTap: () {
 
                     Navigator.push(context, MaterialPageRoute(builder: (_)=>BranchPeges()));
                     },

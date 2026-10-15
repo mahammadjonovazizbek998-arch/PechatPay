@@ -20,6 +20,28 @@ class ProfilePeges extends StatefulWidget {
 }
 
 class _ProfilePegesState extends State<ProfilePeges> {
+  double get shortestSide => MediaQuery.sizeOf(context).shortestSide;
+
+  bool get isPhone => shortestSide < 600;
+
+  bool get isSmallTablet => shortestSide >= 600 && shortestSide < 840;
+
+  bool get isTablet => shortestSide >= 840;
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(appBar: isPhone?AppBarWidget():null,body: isPhone?const IsPhoneProfilePeges():isSmallTablet?IsSmallTabletProfilePeges():IsTabletProfilePeges(),);
+  }
+}
+class IsPhoneProfilePeges extends StatefulWidget {
+  const IsPhoneProfilePeges({super.key});
+
+  @override
+  State<IsPhoneProfilePeges> createState() => _IsPhoneProfilePegesState();
+}
+
+class _IsPhoneProfilePegesState extends State<IsPhoneProfilePeges> {
   @override
   Widget build(BuildContext context) {
     final myTheme = Theme.of(context).extension<ThemeClass>()!;
@@ -27,76 +49,73 @@ class _ProfilePegesState extends State<ProfilePeges> {
       builder: (ctx, state) {
         return BlocBuilder<BottomNavigationBarCubit, BottomNavigationBarState>(
           builder: (context, holat) {
-            return Scaffold(
-              appBar: AppBarWidget(),
-              body: CustomScrollView(
-                slivers: [
-                  SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.h),
-                    sliver: SliverMainAxisGroup(
-                      slivers: [
-                        SliverToBoxAdapter(child: BranchComponets()),
-                        SliverToBoxAdapter(child: SizedBox(height: 12.h)),
-                        SliverToBoxAdapter(
-                          child: Text(
-                            "BOSHQARUV VA MONITORING",
-                            style: AppTextStyles.style12.copyWith(
-                              color: myTheme.text.withValues(alpha: 0.9),
-                              fontWeight: FontWeight.w500,
-                            ),
+            return CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.h),
+                  sliver: SliverMainAxisGroup(
+                    slivers: [
+                      SliverToBoxAdapter(child: BranchComponets()),
+                      SliverToBoxAdapter(child: SizedBox(height: 12.h)),
+                      SliverToBoxAdapter(
+                        child: Text(
+                          "BOSHQARUV VA MONITORING",
+                          style: AppTextStyles.style12.copyWith(
+                            color: myTheme.text.withValues(alpha: 0.9),
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                        SliverToBoxAdapter(child: ProfilComponets()),
-                        SliverToBoxAdapter(child: SizedBox(height: 12.h)),
-                        SliverToBoxAdapter(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 10.h),
-                            width: 358.w,
+                      ),
+                      SliverToBoxAdapter(child: ProfilComponets()),
+                      SliverToBoxAdapter(child: SizedBox(height: 12.h)),
+                      SliverToBoxAdapter(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 10.h),
+                          width: 358.w,
 
-                            decoration: AppTextFormStyle.container(
-                              shadow: true,
-                              color: myTheme.cardColor,
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 16.w, right: 16.w),
-                              child: SizedBox(
-                                height: 48.h,
-                                width: MediaQuery.of(context).size.width,
-                                child: ElevatedButton(
-                                  style: AppTextFormStyle.buttonStyleBorder(
-                                    background: myTheme.logUot.withValues(
-                                      alpha: 0.1,
+                          decoration: AppTextFormStyle.container(
+                            shadow: true,
+                            color: myTheme.cardColor,
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 16.w, right: 16.w),
+                            child: SizedBox(
+                              height: 48.h,
+                              width: MediaQuery.of(context).size.width,
+                              child: ElevatedButton(
+                                style: AppTextFormStyle.buttonStyleBorder(
+                                  background: myTheme.logUot.withValues(
+                                    alpha: 0.1,
+                                  ),
+                                  foreground: myTheme.logUot,
+                                ),
+                                onPressed: () {
+                                  showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (context) => LogoutDialog(),
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.logout, size: 18.w),
+                                    Text(
+                                      " Filial tizimidan chiqish",
+                                      style: AppTextStyles.style14,
                                     ),
-                                    foreground: myTheme.logUot,
-                                  ),
-                                  onPressed: () {
-                                    showDialog(
-                                      barrierDismissible: false,
-                                      context: context,
-                                      builder: (context) => LogoutDialog(),
-                                    );
-                                  },
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(Icons.logout, size: 18.w),
-                                      Text(
-                                        " Filial tizimidan chiqish",
-                                        style: AppTextStyles.style14,
-                                      ),
-                                    ],
-                                  ),
+                                  ],
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        SliverToBoxAdapter(child: SizedBox(height: 30.h)),
-                      ],
-                    ),
+                      ),
+                      SliverToBoxAdapter(child: SizedBox(height: 30.h)),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             );
           },
         );
@@ -104,3 +123,186 @@ class _ProfilePegesState extends State<ProfilePeges> {
     );
   }
 }
+
+
+class IsSmallTabletProfilePeges extends StatefulWidget {
+  const IsSmallTabletProfilePeges({super.key});
+
+  @override
+  State<IsSmallTabletProfilePeges> createState() => _IsSmallTabletProfilePegesState();
+}
+
+class _IsSmallTabletProfilePegesState extends State<IsSmallTabletProfilePeges> {
+  @override
+  Widget build(BuildContext context) {
+    final myTheme = Theme.of(context).extension<ThemeClass>()!;
+    return BlocBuilder<LoginCubit, LoginState>(
+      builder: (ctx, state) {
+        return BlocBuilder<BottomNavigationBarCubit, BottomNavigationBarState>(
+          builder: (context, holat) {
+            return CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 16.h),
+                  sliver: SliverMainAxisGroup(
+                    slivers: [
+                      SliverToBoxAdapter(child: BranchComponets()),
+                      SliverToBoxAdapter(child: SizedBox(height: 16.h)),
+                      SliverToBoxAdapter(
+                        child: Text(
+                          "BOSHQARUV VA MONITORING",
+                          style: AppTextStyles.style12.copyWith(
+                            color: myTheme.text.withValues(alpha: 0.9),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      SliverToBoxAdapter(child: ProfilComponets()),
+                      SliverToBoxAdapter(child: SizedBox(height: 8.h)),
+                      SliverToBoxAdapter(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 10.h),
+                          width: 358.w,
+
+                          decoration: AppTextFormStyle.container(
+                            shadow: true,
+                            color: myTheme.cardColor,
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 16.w, right: 16.w),
+                            child: SizedBox(
+                              height: 48.h,
+                              width: MediaQuery.of(context).size.width,
+                              child: ElevatedButton(
+                                style: AppTextFormStyle.buttonStyleBorder(
+                                  background: myTheme.logUot.withValues(
+                                    alpha: 0.1,
+                                  ),
+                                  foreground: myTheme.logUot,
+                                ),
+                                onPressed: () {
+                                  showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (context) => LogoutDialog(),
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.logout, size: 18.w),
+                                    Text(
+                                      " Filial tizimidan chiqish",
+                                      style: AppTextStyles.style14,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SliverToBoxAdapter(child: SizedBox(height: 30.h)),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+
+ class IsTabletProfilePeges extends StatefulWidget {
+   const IsTabletProfilePeges({super.key});
+
+   @override
+   State<IsTabletProfilePeges> createState() => _IsTabletProfilePegesState();
+ }
+
+ class _IsTabletProfilePegesState extends State<IsTabletProfilePeges> {
+   @override
+   Widget build(BuildContext context) {
+     final myTheme = Theme.of(context).extension<ThemeClass>()!;
+     return BlocBuilder<LoginCubit, LoginState>(
+       builder: (ctx, state) {
+         return BlocBuilder<BottomNavigationBarCubit, BottomNavigationBarState>(
+           builder: (context, holat) {
+             return CustomScrollView(
+               slivers: [
+                 SliverPadding(
+                   padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 16.h),
+                   sliver: SliverMainAxisGroup(
+                     slivers: [
+                       SliverToBoxAdapter(child: BranchComponets()),
+                       SliverToBoxAdapter(child: SizedBox(height: 16.h)),
+                       SliverToBoxAdapter(
+                         child: Text(
+                           "BOSHQARUV VA MONITORING",
+                           style: AppTextStyles.style12.copyWith(
+                             color: myTheme.text.withValues(alpha: 0.9),
+                             fontWeight: FontWeight.w500,
+                           ),
+                         ),
+                       ),
+                       SliverToBoxAdapter(child: ProfilComponets()),
+                       SliverToBoxAdapter(child: SizedBox(height: 8.h)),
+                       SliverToBoxAdapter(
+                         child: Container(
+                           padding: EdgeInsets.symmetric(vertical: 10.h),
+                           width: 358.w,
+
+                           decoration: AppTextFormStyle.container(
+                             shadow: true,
+                             color: myTheme.cardColor,
+                           ),
+                           child: Padding(
+                             padding: EdgeInsets.only(left: 16.w, right: 16.w),
+                             child: SizedBox(
+                               height: 48.h,
+                               width: MediaQuery.of(context).size.width,
+                               child: ElevatedButton(
+                                 style: AppTextFormStyle.buttonStyleBorder(
+                                   background: myTheme.logUot.withValues(
+                                     alpha: 0.1,
+                                   ),
+                                   foreground: myTheme.logUot,
+                                 ),
+                                 onPressed: () {
+                                   showDialog(
+                                     barrierDismissible: false,
+                                     context: context,
+                                     builder: (context) => LogoutDialog(),
+                                   );
+                                 },
+                                 child: Row(
+                                   mainAxisSize: MainAxisSize.min,
+                                   children: [
+                                     Icon(Icons.logout, size: 18.w),
+                                     Text(
+                                       " Filial tizimidan chiqish",
+                                       style: AppTextStyles.style14,
+                                     ),
+                                   ],
+                                 ),
+                               ),
+                             ),
+                           ),
+                         ),
+                       ),
+                       SliverToBoxAdapter(child: SizedBox(height: 30.h)),
+                     ],
+                   ),
+                 ),
+               ],
+             );
+           },
+         );
+       },
+     );
+   }
+ }
+
