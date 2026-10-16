@@ -72,8 +72,7 @@ class _StatisticsState extends State<Statistics> {
         final data = state.statsResponse!.data;
         final isPechat = state.statisticsBool;
         final Color mainColor = isPechat
-            ? myTheme.globalColor
-            : myTheme.phonColor;
+            ?myTheme.phonColor: myTheme.globalColor;
 
         final List<int> pichatIndex = AuthRepository.findPeakIndexes(
           data.pechatTrend,

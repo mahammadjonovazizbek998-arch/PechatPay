@@ -141,14 +141,14 @@ class _isPhineTasksWidgetState extends State<isPhineTasksWidget> {
             return Center(
               child: CircularProgressIndicator(color: myTheme.globalColor),
             );
-          } else if (state.driversPage != null) {
+          } else if (state.driversPage != null && state is TasksFinish) {
             return AppSmartRefresher(
               onLoading: () => _onLoading(),
               onRefresh: () => _onRefresh(),
               controller: _refreshController,
               child: CustomScrollView(
                 slivers: [
-                  SliverToBoxAdapter(child: SizedBox(height: 14.h,),),
+                  SliverToBoxAdapter(child: SizedBox(height: 14.h)),
                   SliverPadding(
                     padding: .symmetric(horizontal: 14.w),
                     sliver: SliverMainAxisGroup(
@@ -319,23 +319,17 @@ class _isPhineTasksWidgetState extends State<isPhineTasksWidget> {
                           ),
                         ),
                         SliverToBoxAdapter(child: SizedBox(height: 10.h)),
-                        if (state.driversPage != null &&
-                            state.driversPage!.data.isNotEmpty)
-                          SliverList.separated(
-                            itemBuilder: (ctx, index) {
-                              return TaxisWidget(
-                                key: ValueKey(index),
-                                driverNoactiveModel:
-                                    state.driversPage!.data[index],
-                              );
-                            },
-                            itemCount: state.driversPage?.data.length ?? 0,
-                            separatorBuilder: (ctx, index) =>
-                                SizedBox(height: 12.h, key: ValueKey(index)),
-                          ),
-                        SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: Center(child: Text("Haydochi topilmadi")),
+                        SliverList.separated(
+                          itemBuilder: (ctx, index) {
+                            return TaxisWidget(
+                              key: ValueKey(index),
+                              driverNoactiveModel:
+                                  state.driversPage!.data[index],
+                            );
+                          },
+                          itemCount: state.driversPage?.data.length ?? 0,
+                          separatorBuilder: (ctx, index) =>
+                              SizedBox(height: 12.h, key: ValueKey(index)),
                         ),
                       ],
                     ),
@@ -647,10 +641,6 @@ class _isSmallTabletTasksWidgetState extends State<isSmallTabletTasksWidget> {
                             separatorBuilder: (ctx, index) =>
                                 SizedBox(height: 12.h, key: ValueKey(index)),
                           ),
-                        SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: Center(child: Text("Haydochi topilmadi")),
-                        ),
                       ],
                     ),
                   ),
@@ -787,8 +777,7 @@ class _isTabletTasksWidgetState extends State<isTabletTasksWidget> {
                               children: [
                                 Flexible(
                                   child: Container(
-
-                                    constraints:BoxConstraints(
+                                    constraints: BoxConstraints(
                                       minWidth: 200.w,
                                       maxWidth: 400.w,
                                       minHeight: 44.h,
@@ -953,8 +942,6 @@ class _isTabletTasksWidgetState extends State<isTabletTasksWidget> {
                           ),
                         ),
                         SliverToBoxAdapter(child: SizedBox(height: 10.h)),
-                        if (state.driversPage != null &&
-                            state.driversPage!.data.isNotEmpty)
                           SliverPadding(
                             padding: .symmetric(horizontal: 20.w),
                             sliver: SliverList.separated(
@@ -970,10 +957,6 @@ class _isTabletTasksWidgetState extends State<isTabletTasksWidget> {
                                   SizedBox(height: 20.h, key: ValueKey(index)),
                             ),
                           ),
-                        SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: Center(child: Text("Haydochi topilmadi")),
-                        ),
                       ],
                     ),
                   ),

@@ -308,62 +308,63 @@ class _DataWidgetState extends State<DataWidget> {
             mainAxisAlignment: .center,
             children: [
               Row(
-                mainAxisAlignment: .center,
+                mainAxisAlignment: .spaceAround,
                 crossAxisAlignment: .center,
                 children: [
-                  Container(
-                    height: 44.h,
-                    width: 242.w,
-                    decoration: AppTextFormStyle.container(
-                      borderColor: myTheme.text.withValues(alpha: 0.3),
-                      color: myTheme.unselctedColor.withValues(alpha: 0.1),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: .spaceEvenly,
-                      children: [
-                        IconButton(
-                          onPressed: () =>
-                              context.read<DashboardCubit>().selected(
-                                state.selectedIndex == 0
-                                    ? 0
-                                    : state.selectedIndex - 1,
-                                null,
-                              ),
-                          icon: Icon(
-                            Icons.arrow_back_ios,
-                            color: state.selectedIndex != 0
-                                ? myTheme.text
-                                : myTheme.unselctedColor,
-                            size: 15.w,
-                          ),
-                        ),
-                        Flexible(
-                          child: Text(
-                            maxLines: 1,
-                            overflow: .clip,
-                            name(state.selectedIndex),
-                            style: AppTextStyles.style12.copyWith(
-                              color: myTheme.text,
+                  Flexible(
+                    child: Container(
+                      height: 44.h,
+                      decoration: AppTextFormStyle.container(
+                        borderColor: myTheme.text.withValues(alpha: 0.3),
+                        color: myTheme.unselctedColor.withValues(alpha: 0.1),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: .spaceEvenly,
+                        children: [
+                          IconButton(
+                            onPressed: () =>
+                                context.read<DashboardCubit>().selected(
+                                  state.selectedIndex == 0
+                                      ? 0
+                                      : state.selectedIndex - 1,
+                                  null,
+                                ),
+                            icon: Icon(
+                              Icons.arrow_back_ios,
+                              color: state.selectedIndex != 0
+                                  ? myTheme.text
+                                  : myTheme.unselctedColor,
+                              size: 15.w,
                             ),
                           ),
-                        ),
-                        IconButton(
-                          onPressed: () =>
-                              context.read<DashboardCubit>().selected(
-                                state.selectedIndex == itemCount() - 1
-                                    ? state.selectedIndex
-                                    : state.selectedIndex + 1,
-                                null,
+                          Flexible(
+                            child: Text(
+                              maxLines: 1,
+                              overflow: .clip,
+                              name(state.selectedIndex),
+                              style: AppTextStyles.style12.copyWith(
+                                color: myTheme.text,
                               ),
-                          icon: Icon(
-                            Icons.arrow_forward_ios,
-                            color: state.selectedIndex != itemCount() - 1
-                                ? myTheme.text
-                                : myTheme.unselctedColor,
-                            size: 15.w,
+                            ),
                           ),
-                        ),
-                      ],
+                          IconButton(
+                            onPressed: () =>
+                                context.read<DashboardCubit>().selected(
+                                  state.selectedIndex == itemCount() - 1
+                                      ? state.selectedIndex
+                                      : state.selectedIndex + 1,
+                                  null,
+                                ),
+                            icon: Icon(
+                              Icons.arrow_forward_ios,
+                              color: state.selectedIndex != itemCount() - 1
+                                  ? myTheme.text
+                                  : myTheme.unselctedColor,
+                              size: 15.w,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(width: 12.w),

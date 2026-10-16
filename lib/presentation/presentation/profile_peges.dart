@@ -31,7 +31,16 @@ class _ProfilePegesState extends State<ProfilePeges> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(appBar: isPhone?AppBarWidget():null,body: isPhone?const IsPhoneProfilePeges():isSmallTablet?IsSmallTabletProfilePeges():IsTabletProfilePeges(),);
+    return Scaffold(
+      appBar: isPhone ? AppBarWidget() : null,
+      body: SafeArea(
+        child: isPhone
+            ? const IsPhoneProfilePeges()
+            : isSmallTablet
+                ? const IsSmallTabletProfilePeges()
+                : const IsTabletProfilePeges(),
+      ),
+    );
   }
 }
 class IsPhoneProfilePeges extends StatefulWidget {

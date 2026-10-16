@@ -351,7 +351,7 @@ class _IsSmallTabletNoActiveDriverState
                         ),
                       ),
                       SliverToBoxAdapter(child: SizedBox(height: 10.h)),
-                      SliverList.separated(
+                      SliverPadding(padding: .symmetric(horizontal: 14.h),sliver: SliverList.separated(
                         itemCount: state.driverNoactiveModel != null
                             ? state.driverNoactiveModel!.data.length
                             : 0,
@@ -363,9 +363,9 @@ class _IsSmallTabletNoActiveDriverState
                           );
                         },
                         separatorBuilder: (context, index) {
-                          return SizedBox(height: 16.h);
+                          return SizedBox(height: 20.h);
                         },
-                      ),
+                      ),)
                     ],
                   ),
                 ),

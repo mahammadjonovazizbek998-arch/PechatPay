@@ -196,9 +196,9 @@ class DashboardButton extends StatelessWidget {
           )
               .toList(),
           child: Container(
-            constraints: BoxConstraints(minWidth: 280.w, maxWidth: 300.w,minHeight: 44.h),
+            constraints: BoxConstraints(minWidth: 280.w, maxWidth: 500.w,minHeight: 44.h),
             decoration: AppTextFormStyle.container(
-              color: myTheme.unselctedColor.withValues(alpha: 0.4),
+              color: myTheme.unselctedColor.withValues(alpha: 0.1),
 borderColor: myTheme.text
             ),
             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
@@ -218,8 +218,6 @@ borderColor: myTheme.text
                     ),
                   ),
                 ),
-                SizedBox(width: 4.w),
-                Icon(Icons.arrow_drop_down, size: 18.w, color: myTheme.text),
               ],
             ),
           ),

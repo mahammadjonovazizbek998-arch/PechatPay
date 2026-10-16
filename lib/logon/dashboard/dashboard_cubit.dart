@@ -127,8 +127,8 @@ class DashboardCubit extends Cubit<DashboardState> {
       authRepository.dashboard(
         sl<LoginCubit>().state.token!.id,
         "day",
-        "2026-09-04",
-        //"${state.selectedDate.year}-${state.selectedDate.month}-${state.selectedDate.day}",
+        //"2026-09-04",
+        "${state.selectedDate.year}-${state.selectedDate.month}-${state.selectedDate.day}",
         null,
         null,
         null,

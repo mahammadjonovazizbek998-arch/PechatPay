@@ -62,11 +62,13 @@ class _BranchPegesState extends State<BranchPeges> {
           ],
         ),
       ),
-      body: isPhone
-          ? IsPhoneBranchPeges()
-          : isSmallTablet
-          ? IsSmallTabletBranchPeges()
-          : IsTabletBranchPeges(),
+      body: SafeArea(
+        child: isPhone
+            ? IsPhoneBranchPeges()
+            : isSmallTablet
+            ? IsSmallTabletBranchPeges()
+            : IsTabletBranchPeges(),
+      ),
     );
   }
 }

@@ -50,9 +50,9 @@ class _DayPageState extends State<DayPage> {
           children: [
             Row(
               children: [
-                ConterinWidget(),
+                Flexible(child: ConterinWidget()),
                 SizedBox(width: 12.w),
-                PayConterinWidget(),
+                Flexible(child: PayConterinWidget()),
               ],
             ),
 
@@ -394,7 +394,7 @@ class _DayPageState extends State<DayPage> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Noyob:",
+                                    "Noyob haydchilar:",
                                     style: AppTextStyles.style10.copyWith(
                                       color: myTheme.text,
                                     ),
@@ -588,7 +588,7 @@ class _DayPageState extends State<DayPage> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Noyob:",
+                                    "Noyob haydchilar:",
                                     style: AppTextStyles.style10.copyWith(
                                       color: myTheme.text,
                                     ),

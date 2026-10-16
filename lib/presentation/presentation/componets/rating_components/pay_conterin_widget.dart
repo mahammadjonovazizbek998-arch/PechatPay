@@ -29,7 +29,6 @@ class PayConterinWidget extends StatelessWidget {
 
         return Container(
           padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 12.w),
-          width: 173.w,
           decoration: AppTextFormStyle.container(
             color: myTheme.textColor,
             borderColor: myTheme.text,
@@ -145,7 +144,7 @@ class PayConterinWidget extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      "Noyob hayd.:",
+                      "Noyob haydchilar:",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: AppTextStyles.style12.copyWith(
